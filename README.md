@@ -59,14 +59,13 @@
 ![User - Recipes](https://i.imgur.com/thEU042.png)
 ![User - Tastemaster Ideas](https://i.imgur.com/4t8fPVk.png)
 ![User - Community](https://i.imgur.com/vWIRG8j.png)
-![Mobile View](https://i.imgur.com/V558tS8.png)
+![Mobile View](https://i.imgur.com/gBe83jH.png)
 
 
 #### Component Tree
 
-> Use this section to display the structure of how your React components are being rendered. This should show the parent to child relation between you components. In other words, show which components are rendering the other components. Include a link to your component tree
+![https://i.imgur.com/U95BoUb.png](https://i.imgur.com/U95BoUb.png)
 
-[Component Tree Sample](https://gist.git.generalassemb.ly/davidtwhitlatch/414107e2560ae0bb65e233570f2fe056#file-component-tree-png)
 
 #### Component Architecture
 
@@ -79,17 +78,24 @@ src
       |__ graphics
       |__ images
       |__ mockups
+|__ layouts/
+      |__ Layout.jsx
+|__ screens/
+      |__ Home.jsx
+      |__ SignIn.jsx
+      |__ Register.jsx
 |__ components/
       |__ Header.jsx
       |__ Footer.jsx
       |__ Layout.jsx
       |__ UserRecipes.jsx
+      |__ UserRecipeDetails.jsx
       |__ UserNewRecipe.jsx
-      |__ UserEditRecipe.jsx
       |__ UserTastemasters.jsx
+      |__ UserTastemasterDetails.jsx
       |__ UserNewTastemaster.jsx
-      |__ UserEditTastemaster.jsx
-      |__ UserCommunity.jsx
+      |__ CommunityRecipes.jsx
+      |__ CommunityTastemasters.jsx
 |__ services/
 
 ```
