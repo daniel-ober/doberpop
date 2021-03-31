@@ -76,7 +76,7 @@ User - Community
 
 #### Component Tree
 
-![https://i.imgur.com/l0mX4xw.png](https://i.imgur.com/l0mX4xw.png)
+![https://i.imgur.com/Qf7MMh4.png](https://i.imgur.com/Qf7MMh4.png)
 
 
 #### Component Architecture
