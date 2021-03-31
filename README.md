@@ -140,7 +140,7 @@ src
 
 #### ERD Model
 
-![https://i.imgur.com/jyHudLO.png](https://i.imgur.com/jyHudLO.png)
+![https://i.imgur.com/PGd0bA5.png](https://i.imgur.com/PGd0bA5.png)
 
 
 <br>
