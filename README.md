@@ -67,7 +67,7 @@
 - Users - Tastemaster Ideas
 ![User - Tastemaster Ideas](https://i.imgur.com/4t8fPVk.png)
 
-User - Community
+- User - Community
 ![User - Community](https://i.imgur.com/vWIRG8j.png)
 
 - Mobile (all)
