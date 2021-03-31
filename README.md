@@ -52,19 +52,31 @@
 ### Client (Front End)
 
 #### Wireframes
-
+- Landing Page
 ![Landing Page](https://i.imgur.com/454UcjD.png)
+
+- Login / Register
 ![Register/Signin](https://i.imgur.com/uYamyuA.png)
+
+- User - Main
 ![User - Main](https://i.imgur.com/5pgZd91.png)
+
+- User - Recipes
 ![User - Recipes](https://i.imgur.com/thEU042.png)
+
+- Users - Tastemaster Ideas
 ![User - Tastemaster Ideas](https://i.imgur.com/4t8fPVk.png)
+
+User - Community
 ![User - Community](https://i.imgur.com/vWIRG8j.png)
+
+- Mobile (all)
 ![Mobile View](https://i.imgur.com/gBe83jH.png)
 
 
 #### Component Tree
 
-![https://i.imgur.com/U95BoUb.png](https://i.imgur.com/U95BoUb.png)
+![https://i.imgur.com/l0mX4xw.png](https://i.imgur.com/l0mX4xw.png)
 
 
 #### Component Architecture
