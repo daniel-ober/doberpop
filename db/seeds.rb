@@ -5,8 +5,21 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+Ingredient.destroy_all
+Recipe.destroy_all
+User.destroy_all
+
+users = {
+        username: "dober",
+        email: "dober@doberpop.com",
+        password: "321321",
+    }
+
+@user = User.create!(users)
 recipes = [
     {
+        user: @user,
         name: "Cookies and Cream",
         description: "soft blend of oreo cookie mixed with melted vanilla fudge, sprinkled with crushed oreo",
         kernal: "Mushroom",
@@ -19,10 +32,11 @@ recipes = [
         yield: "6",
     },
     {
+        user: @user,
         name: "Maple & Bourbon",
         description: "a candy like maple glaze popcorn, infused with one of the finest double barreled bourbons, lightly sprinkled with some cinnemon sugar",
         kernal: "Jumbo",
-        instructions: "-melt 1 tablespoon of white coconut oil popper
+        instructions: "-melt 1 tablespoon of white coconut oil popper,
         -add 1/4 cup of jumbo kernals
         -remove from stove once popping slows
         -over medium heat, add 1/4 cup of maple syrup
@@ -31,7 +45,7 @@ recipes = [
         -once brought to a boil, remove from heat and continue stirring for 2 minutes
         -drizzle over popcorn and make sure to stir popcorn well, covering all pieces
         -lightly sprinkle some cinnemon sugar
-        -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes"
+        -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes",
         yield: "6",
     },
 ]
@@ -82,3 +96,6 @@ ingredients = [
         name: "vanilla extract",
     },
 ]
+
+Recipe.create!(recipes)
+Ingredient.create!(ingredients)
