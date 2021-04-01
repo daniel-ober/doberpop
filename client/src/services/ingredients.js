@@ -1,11 +1,11 @@
-import axios from './api-config';
+import api from './api-config';
 
-const getAllIngredients = async () => {
-    const resp = api.get('/ingredients');
+export const getAllIngredients = async () => {
+    const resp = await api.get('/ingredients');
     return resp.data
 }
 
-const addIngredient = async (recipeId, ingredientId) => {
-    const resp = api.post(`/recipes/${recipeId}/ingredients/${ingredientId}`);
+export const addIngredient = async (recipeId, ingredientId) => {
+    const resp = await api.post(`/recipes/${recipeId}/ingredients/${ingredientId}`);
     return resp.data;
 }

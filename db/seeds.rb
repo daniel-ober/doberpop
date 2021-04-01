@@ -17,6 +17,7 @@ users = {
     }
 
 @user = User.create!(users)
+
 recipes = [
     {
         user: @user,
@@ -49,6 +50,7 @@ recipes = [
         yield: "6",
     },
 ]
+
 ingredients = [
     {
         name: "coconut oil",
