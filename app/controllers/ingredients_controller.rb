@@ -8,6 +8,11 @@ class IngredientsController < ApplicationController
     render json: @ingredients
   end
 
+  def add_ingredient
+    @recipe = Recipe.find(params[:recipe_id])
+    @ingredient = Ingredient.find(params[:id])
+    @recipe.ingredients << @ingredient
+  end
   # # GET /ingredients/1
   # def show
   #   render json: @ingredient
