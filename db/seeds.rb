@@ -5,3 +5,80 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+recipes = [
+    {
+        name: "Cookies and Cream",
+        description: "soft blend of oreo cookie mixed with melted vanilla fudge, sprinkled with crushed oreo",
+        kernal: "Mushroom",
+        instructions: "-melt 1 tablespoon of white coconut oil in popper
+        -add 1/4 cup of mushroom kernals
+        -remove from stove once popping slows
+        -melt 2 cups of white chocolate on stovetop or in microwave
+        -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
+        -drizzle on popcorn and sprinkle on remaining oreos",
+        yield: "6",
+    },
+    {
+        name: "Maple & Bourbon",
+        description: "a candy like maple glaze popcorn, infused with one of the finest double barreled bourbons, lightly sprinkled with some cinnemon sugar",
+        kernal: "Jumbo",
+        instructions: "-melt 1 tablespoon of white coconut oil popper
+        -add 1/4 cup of jumbo kernals
+        -remove from stove once popping slows
+        -over medium heat, add 1/4 cup of maple syrup
+        -once syrup becomes easy to stir, add in 2 oz. of Woodford Reserve Double Oaked bourbon
+        -stir over medium heat and bring to a boil
+        -once brought to a boil, remove from heat and continue stirring for 2 minutes
+        -drizzle over popcorn and make sure to stir popcorn well, covering all pieces
+        -lightly sprinkle some cinnemon sugar
+        -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes"
+        yield: "6",
+    },
+]
+ingredients = [
+    {
+        name: "coconut oil",
+    },
+    {
+        name: "salt",
+    },
+    {
+        name: "butter",
+    },
+    {
+        name: "corn syrup",
+    },
+    {
+        name: "flavor seasoning",
+    },
+    {
+        name: "oreo cookies",
+    },
+    {
+        name: "cereal",
+    },
+    {
+        name: "sugar",
+    },
+    {
+        name: "pepper",
+    },
+    {
+        name: "Flavacol",
+    },
+    {
+        name: "white chocolate chips/wafers",
+    },
+    {
+        name: "dark chocolate chips/wafers",
+    },
+    {
+        name: "milk chocolate chips/wafers",
+    },
+    {
+        name: "flavored stevia",
+    },
+    {
+        name: "vanilla extract",
+    },
+]
