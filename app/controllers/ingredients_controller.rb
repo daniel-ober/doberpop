@@ -12,6 +12,8 @@ class IngredientsController < ApplicationController
     @recipe = Recipe.find(params[:recipe_id])
     @ingredient = Ingredient.find(params[:id])
     @recipe.ingredients << @ingredient
+
+    render json: @recipe, include: :ingredients
   end
   # # GET /ingredients/1
   # def show
