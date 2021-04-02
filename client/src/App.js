@@ -24,6 +24,7 @@ function App() {
     <div className="App">
       <Layout>
         <Switch>
+          <Route path='/home'></Route>
           <Route path='/login'>
             <Login
             handleLogin={handleLogin}

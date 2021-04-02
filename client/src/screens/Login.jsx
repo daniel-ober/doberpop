@@ -23,6 +23,8 @@ export default function Login(props) {
             e.preventDefault();
             handleLogin(formData);
         }}>
+            <img src='https://i.imgur.com/Hj8iyBo.png' alt='logo'/>
+            <br/>
             <label>
                 <input
                 type='text'
