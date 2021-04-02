@@ -19,6 +19,11 @@ users = {
 
 @user = User.create!(users)
 
+@oil = Ingredient.create!(name: 'oil')
+@salt = Ingredient.create!(name: 'salt')
+@butter = Ingredient.create!(name: 'butter')
+@seasoning = Ingredient.create!(name: 'seasoning')
+
 recipes = [
     {
         user: @user,
@@ -32,7 +37,7 @@ recipes = [
         -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
         -drizzle on popcorn and sprinkle on remaining oreos",
         yield: "5",
-        # ingredients: @oil,
+        ingredients: [@oil, @butter]
     },
     {
         user: @user,
@@ -70,55 +75,55 @@ recipes = [
 
 Recipe.create!(recipes)
 
-ingredients = [
-    {
-        name: "coconut oil",
-    },
-    {
-        name: "salt",
-    },
-    {
-        name: "butter",
-    },
-    {
-        name: "corn syrup",
-    },
-    {
-        name: "flavor seasoning",
-    },
-    {
-        name: "oreo cookies",
-    },
-    {
-        name: "cereal",
-    },
-    {
-        name: "sugar",
-    },
-    {
-        name: "pepper",
-    },
-    {
-        name: "Flavacol",
-    },
-    {
-        name: "white chocolate chips/wafers",
-    },
-    {
-        name: "dark chocolate chips/wafers",
-    },
-    {
-        name: "milk chocolate chips/wafers",
-    },
-    {
-        name: "flavored stevia",
-    },
-    {
-        name: "vanilla extract",
-    },
-]
+# ingredients = [
+#     {
+#         name: "coconut oil",
+#     },
+#     {
+#         name: "salt",
+#     },
+#     {
+#         name: "butter",
+#     },
+#     {
+#         name: "corn syrup",
+#     },
+#     {
+#         name: "flavor seasoning",
+#     },
+#     {
+#         name: "oreo cookies",
+#     },
+#     {
+#         name: "cereal",
+#     },
+#     {
+#         name: "sugar",
+#     },
+#     {
+#         name: "pepper",
+#     },
+#     {
+#         name: "Flavacol",
+#     },
+#     {
+#         name: "white chocolate chips/wafers",
+#     },
+#     {
+#         name: "dark chocolate chips/wafers",
+#     },
+#     {
+#         name: "milk chocolate chips/wafers",
+#     },
+#     {
+#         name: "flavored stevia",
+#     },
+#     {
+#         name: "vanilla extract",
+#     },
+# ]
 
-Ingredient.create!(ingredients)
+# Ingredient.create!(ingredients)
 
 # Recipe.destroy_all
 # Ingredient.destroy.all

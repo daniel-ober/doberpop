@@ -10,15 +10,18 @@ class RecipesController < ApplicationController
 
   # GET /recipes/1
   def show
+
     render json: @recipe, include: :ingredients
   end
 
   # POST /recipes
   def create
+
+    # @user = User.find(params[:user_id])
     @recipe = Recipe.new(recipe_params)
     @recipe.user = @current_user
     if @recipe.save
-      render json: @recipe, status: :created, location: @recipe
+      render json: @recipe, status: :created
     else
       render json: @recipe.errors, status: :unprocessable_entity
     end
@@ -46,6 +49,6 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:name, :descriptopn, :kernal, :instructions, :yield, :ingredient_id)
+      params.permit(:name, :description, :kernal, :instructions, :yield, :ingredients, :user_id)
     end
 end
