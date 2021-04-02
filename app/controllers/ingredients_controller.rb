@@ -46,6 +46,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def ingredient_params
-      params.permit(:name)
+      params.require(:ingredient).permit(:name)
     end
 end

@@ -29,9 +29,9 @@ recipes = [
         user: @user,
         name: "Cookies and Cream",
         description: "soft blend of oreo cookie mixed with melted vanilla fudge, sprinkled with crushed oreo",
-        kernal: "Mushroom",
+        kernel_type: "Mushroom",
         instructions: "-melt 1 tablespoon of white coconut oil in popper
-        -add 1/4 cup of mushroom kernals
+        -add 1/4 cup of mushroom kernel_types
         -remove from stove once popping slows
         -melt 2 cups of white chocolate on stovetop or in microwave
         -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
@@ -43,9 +43,9 @@ recipes = [
         user: @user,
         name: "Maple & Bourbon",
         description: "a candy like maple glaze popcorn, infused with one of the finest double barreled bourbons, lightly sprinkled with some cinnemon sugar",
-        kernal: "Jumbo",
+        kernel_type: "Jumbo",
         instructions: "-melt 1 tablespoon of white coconut oil popper,
-        -add 1/4 cup of jumbo kernals
+        -add 1/4 cup of jumbo kernel_types
         -remove from stove once popping slows
         -over medium heat, add 1/4 cup of maple syrup
         -once syrup becomes easy to stir, add in 2 oz. of Woodford Reserve Double Oaked bourbon
@@ -61,9 +61,9 @@ recipes = [
         user: @user,
         name: "Chicago Style",
         description: "classic cheddar cheese mixed with caramel corn",
-        kernal: "Mushroom",
+        kernel_type: "Mushroom",
         instructions: "-melt 1 tablespoon of white coconut oil in popper
-        -add 1/4 cup of mushroom kernals
+        -add 1/4 cup of mushroom kernel_types
         -remove from stove once popping slows
         -mix 1/3 cup of cheese powder with 4 tablespoons of yellow coconut oil
         -microwave for 1 minute, stirring half way through and at the end
