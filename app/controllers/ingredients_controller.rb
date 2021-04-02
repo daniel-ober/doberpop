@@ -1,10 +1,9 @@
 class IngredientsController < ApplicationController
-  # before_action :set_ingredient, only: [:update, :destroy]
+  before_action :set_ingredient, only: [:show, :update, :destroy]
 
   # GET /ingredients
   def index
     @ingredients = Ingredient.all
-
     render json: @ingredients
   end
 
@@ -17,30 +16,30 @@ class IngredientsController < ApplicationController
   end
   # GET /ingredients/1
   def show
-    @recipe = Recipe.find(params[:id])
+    # @recipe = Recipe.find(params[:recipe_id])
     @ingredient = Ingredient.find(params[:id])
     render json: @ingredient
   end
 
-  # # POST /ingredients
-  # def create
-  #   @ingredient = Ingredient.new(ingredient_params)
+  # POST /ingredients
+  def create
+    @ingredient = Ingredient.new(ingredient_params)
 
-  #   if @ingredient.save
-  #     render json: @ingredient, status: :created, location: @ingredient
-  #   else
-  #     render json: @ingredient.errors, status: :unprocessable_entity
-  #   end
-  # end
+    if @ingredient.save
+      render json: @ingredient, status: :created, location: @ingredient
+    else
+      render json: @ingredient.errors, status: :unprocessable_entity
+    end
+  end
 
-  # private
-  #   # Use callbacks to share common setup or constraints between actions.
-  #   def set_ingredient
-  #     @ingredient = Ingredient.find(params[:id])
-  #   end
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_ingredient
+      @ingredient = Ingredient.find(params[:id])
+    end
 
-  #   # Only allow a list of trusted parameters through.
-  #   def ingredient_params
-  #     params.require(:ingredient).permit(:name)
-  #   end
+    # Only allow a list of trusted parameters through.
+    def ingredient_params
+      params.require(:ingredient).permit(:name, :recipe_id)
+    end
 end

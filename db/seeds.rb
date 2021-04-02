@@ -10,29 +10,6 @@ Ingredient.destroy_all
 Recipe.destroy_all
 User.destroy_all
 
-# Recipe.destroy_all
-# Ingredient.destroy.all
-# User.destroy_all
-
-# @admin = User.create!(username: 'admin', email: 'admin@email.com', password: '321321')
-
-# puts "#{User.count} users created"
-
-# @oil = Ingredient.create!(name: 'oil')
-# @salt = Ingredient.create!(name: 'salt')
-# @butter = Ingredient.create!(name: 'butter')
-# @seasoning = Ingredient.create!(name: 'seasoning')
-
-# puts "#{Ingredient.count} ingredients created"
-
-# Recipe.create!(name: 'cookies and cream', user: @admin, ingredients: [@oil, @butter, @seasoning])
-# @cookies_and_cream = Recipe.create!(name: 'cookies and cream', user: @admin)
-
-# @cookies_and_cream.ingredients.push(@oil, @butter, @seasoning)
-
-# @maple_and_bourbon = Recipe.create!(name: 'maple and bourbon', user: @admin)
-
-# puts "#{Recipe.count} recipes created"
 
 users = {
         username: "dober",
@@ -54,7 +31,8 @@ recipes = [
         -melt 2 cups of white chocolate on stovetop or in microwave
         -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
         -drizzle on popcorn and sprinkle on remaining oreos",
-        yield: "6",
+        yield: "5",
+        ingredient_id: @ingredients[0].id
     },
     {
         user: @user,
@@ -72,8 +50,24 @@ recipes = [
         -lightly sprinkle some cinnemon sugar
         -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes",
         yield: "6",
+        ingredient_id: @ingredients[1].id
     },
+    # {
+    #     user: @user,
+    #     name: "Chicago Style",
+    #     description: "classic cheddar cheese mixed with caramel corn",
+    #     kernal: "Mushroom",
+    #     instructions: "-melt 1 tablespoon of white coconut oil in popper
+    #     -add 1/4 cup of mushroom kernals
+    #     -remove from stove once popping slows
+    #     -mix 1/3 cup of cheese powder with 4 tablespoons of yellow coconut oil
+    #     -microwave for 1 minute, stirring half way through and at the end
+    #     -drizzle cheddar mix over popcorn",
+    #     yield: "8",
+    # },
 ]
+
+Recipe.create!(recipes)
 
 ingredients = [
     {
@@ -123,5 +117,28 @@ ingredients = [
     },
 ]
 
-Recipe.create!(recipes)
 Ingredient.create!(ingredients)
+
+# Recipe.destroy_all
+# Ingredient.destroy.all
+# User.destroy_all
+
+# @admin = User.create!(username: 'admin', email: 'admin@email.com', password: '321321')
+
+# puts "#{User.count} users created"
+
+# @oil = Ingredient.create!(name: 'oil')
+# @salt = Ingredient.create!(name: 'salt')
+# @butter = Ingredient.create!(name: 'butter')
+# @seasoning = Ingredient.create!(name: 'seasoning')
+
+# puts "#{Ingredient.count} ingredients created"
+
+# Recipe.create!(name: 'cookies and cream', user: @admin, ingredients: [@oil, @butter, @seasoning])
+# @cookies_and_cream = Recipe.create!(name: 'cookies and cream', user: @admin)
+
+# @cookies_and_cream.ingredients.push(@oil, @butter, @seasoning)
+
+# @maple_and_bourbon = Recipe.create!(name: 'maple and bourbon', user: @admin)
+
+# puts "#{Recipe.count} recipes created"
