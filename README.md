@@ -76,7 +76,7 @@
 
 #### Component Tree
 
-![https://i.imgur.com/l0mX4xw.png](https://i.imgur.com/l0mX4xw.png)
+![https://i.imgur.com/tXlBabh.png](https://i.imgur.com/tXlBabh.png)
 
 
 #### Component Architecture
@@ -117,19 +117,19 @@ src
 
 | Task                     |  Priority | Estimated Time | Time Invested | Actual Time |
 | ------------------------ | :-------: | :------------: | :-----------: | :---------: |
-| Psuedocode               |     H     |     2 hrs      |     - hrs     |    - hrs    |
-| Schema / Models          |     H     |     2 hrs      |     - hrs     |    - hrs    |
-| Backend: Seed Data       |     H     |     2 hrs      |     - hrs     |    - hrs    |
-| Create CRUD Actions      |     H     |     6 hrs      |     - hrs     |    - hrs    |
+| Psuedocode               |     H     |     2 hrs      |     1 hrs     |    - hrs    |
+| Schema / Models          |     H     |     2 hrs      |     4 hrs     |    - hrs    |
+| Backend: Seed Data       |     H     |     2 hrs      |     4 hrs     |    - hrs    |
+| Create CRUD Actions      |     H     |     6 hrs      |     8 hrs     |    - hrs    |
 | Setup React App          |     H     |     1 hrs      |     - hrs     |    - hrs    |
-| Screens Setup            |     H     |     6 hrs      |     - hrs     |    - hrs    |
-| Components Setup         |     H     |     6 hrs      |     - hrs     |    - hrs    |
-| App.js Routes            |     H     |     2 hrs      |     - hrs     |    - hrs    |
-| Services / Axios Calls   |     H     |     4 hrs      |     - hrs     |    - hrs    |
+| Screens Setup            |     H     |     6 hrs      |     4 hrs     |    - hrs    |
+| Components Setup         |     H     |     6 hrs      |     1 hrs     |    - hrs    |
+| App.js Routes            |     H     |     2 hrs      |     1 hrs     |    - hrs    |
+| Services / Axios Calls   |     H     |     4 hrs      |     2 hrs     |    - hrs    |
 | Render Component Data    |     H     |     2 hrs      |     - hrs     |    - hrs    |
-| CSS Styling              |     H     |     8 hrs      |     - hrs     |    - hrs    |
+| CSS Styling              |     H     |     8 hrs      |     1 hrs     |    - hrs    |
 | Media Queries            |     H     |     4 hrs      |     - hrs     |    - hrs    |
-| Debugging                |     H     |     4 hrs      |     - hrs     |    - hrs    |
+| Debugging                |     H     |     4 hrs      |     6 hrs     |    - hrs    |
 | Deployment               |     H     |     1 hrs      |     - hrs     |    - hrs    |
 | TOTAL                    |     H     |    50 hrs      |     - hrs     |    - hrs    |
 
