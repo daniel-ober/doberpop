@@ -10,6 +10,30 @@ Ingredient.destroy_all
 Recipe.destroy_all
 User.destroy_all
 
+# Recipe.destroy_all
+# Ingredient.destroy.all
+# User.destroy_all
+
+# @admin = User.create!(username: 'admin', email: 'admin@email.com', password: '321321')
+
+# puts "#{User.count} users created"
+
+# @oil = Ingredient.create!(name: 'oil')
+# @salt = Ingredient.create!(name: 'salt')
+# @butter = Ingredient.create!(name: 'butter')
+# @seasoning = Ingredient.create!(name: 'seasoning')
+
+# puts "#{Ingredient.count} ingredients created"
+
+# Recipe.create!(name: 'cookies and cream', user: @admin, ingredients: [@oil, @butter, @seasoning])
+# @cookies_and_cream = Recipe.create!(name: 'cookies and cream', user: @admin)
+
+# @cookies_and_cream.ingredients.push(@oil, @butter, @seasoning)
+
+# @maple_and_bourbon = Recipe.create!(name: 'maple and bourbon', user: @admin)
+
+# puts "#{Recipe.count} recipes created"
+
 users = {
         username: "dober",
         email: "dober@doberpop.com",
