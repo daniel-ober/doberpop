@@ -21,7 +21,7 @@ class RecipesController < ApplicationController
     @recipe = Recipe.new(recipe_params)
     @recipe.user = @current_user
     if @recipe.save
-      render json: @recipe, status: :created
+      render json: @recipe, include: ingredients, status: :ok
     else
       render json: @recipe.errors, status: :unprocessable_entity
     end
@@ -49,6 +49,6 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.permit(:name, :description, :kernal, :instructions, :yield, :ingredients, :user_id)
+      params.permit(:name, :description, :kernal, :instructions, :yield, :ingredients)
     end
 end

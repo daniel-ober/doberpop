@@ -55,7 +55,7 @@ recipes = [
         -lightly sprinkle some cinnemon sugar
         -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes",
         yield: "6",
-        # ingredients: @butter,
+        ingredients: [@oil, @salt]
     },
     {
         user: @user,
@@ -69,82 +69,8 @@ recipes = [
         -microwave for 1 minute, stirring half way through and at the end
         -drizzle cheddar mix over popcorn",
         yield: "8",
-        # ingredients: @salt,
+        ingredients: [@oil, @butter, @caramel]
     },
 ]
 
 Recipe.create!(recipes)
-
-# ingredients = [
-#     {
-#         name: "coconut oil",
-#     },
-#     {
-#         name: "salt",
-#     },
-#     {
-#         name: "butter",
-#     },
-#     {
-#         name: "corn syrup",
-#     },
-#     {
-#         name: "flavor seasoning",
-#     },
-#     {
-#         name: "oreo cookies",
-#     },
-#     {
-#         name: "cereal",
-#     },
-#     {
-#         name: "sugar",
-#     },
-#     {
-#         name: "pepper",
-#     },
-#     {
-#         name: "Flavacol",
-#     },
-#     {
-#         name: "white chocolate chips/wafers",
-#     },
-#     {
-#         name: "dark chocolate chips/wafers",
-#     },
-#     {
-#         name: "milk chocolate chips/wafers",
-#     },
-#     {
-#         name: "flavored stevia",
-#     },
-#     {
-#         name: "vanilla extract",
-#     },
-# ]
-
-# Ingredient.create!(ingredients)
-
-# Recipe.destroy_all
-# Ingredient.destroy.all
-# User.destroy_all
-
-# @admin = User.create!(username: 'admin', email: 'admin@email.com', password: '321321')
-
-# puts "#{User.count} users created"
-
-# @oil = Ingredient.create!(name: 'oil')
-# @salt = Ingredient.create!(name: 'salt')
-# @butter = Ingredient.create!(name: 'butter')
-# @seasoning = Ingredient.create!(name: 'seasoning')
-
-# puts "#{Ingredient.count} ingredients created"
-
-# Recipe.create!(name: 'cookies and cream', user: @admin, ingredients: [@oil, @butter, @seasoning])
-# @cookies_and_cream = Recipe.create!(name: 'cookies and cream', user: @admin)
-
-# @cookies_and_cream.ingredients.push(@oil, @butter, @seasoning)
-
-# @maple_and_bourbon = Recipe.create!(name: 'maple and bourbon', user: @admin)
-
-# puts "#{Recipe.count} recipes created"
