@@ -3,7 +3,8 @@ import Layout from './layouts/Layout'
 import Login from './screens/Login'
 import { Switch, Route } from 'react-router-dom'
 import { useState} from 'react'
-import { loginUser } from './services/auth'
+import { loginUser, registerUser } from './services/auth'
+import Register from './screens/Register'
 
 
 function App() {
@@ -13,6 +14,12 @@ function App() {
     const userData = await loginUser(formData);
     setCurrentUser(userData);
   }
+
+  const handleRegister = async (formData) => {
+    const userData = await registerUser(formData);
+    setCurrentUser(userData)
+  }
+
   return (
     <div className="App">
       <Layout>
@@ -20,6 +27,11 @@ function App() {
           <Route path='/login'>
             <Login
             handleLogin={handleLogin}
+            />
+          </Route>
+          <Route path='/register'>
+            <Register
+            handleRegister={handleRegister}
             />
           </Route>
         </Switch>
