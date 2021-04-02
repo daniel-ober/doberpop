@@ -4,7 +4,7 @@ class IngredientsController < ApplicationController
   # GET /ingredients
   def index
     @ingredients = Ingredient.all
-    render json: @ingredients
+    render json: @ingredients, include: :recipes
   end
 
   def add_ingredient
@@ -12,7 +12,7 @@ class IngredientsController < ApplicationController
     @ingredient = Ingredient.find(params[:id])
     @recipe.ingredients << @ingredient
 
-    render json: @recipe, include: :ingredients
+    render json: @ingredients, include: :ingredients. 
   end
   # GET /ingredients/1
   def show

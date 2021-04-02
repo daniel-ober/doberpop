@@ -32,7 +32,7 @@ recipes = [
         -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
         -drizzle on popcorn and sprinkle on remaining oreos",
         yield: "5",
-        ingredients: @oil
+        # ingredients: @oil,
     },
     {
         user: @user,
@@ -50,74 +50,75 @@ recipes = [
         -lightly sprinkle some cinnemon sugar
         -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes",
         yield: "6",
-        ingredients: @butter
+        # ingredients: @butter,
     },
-    # {
-    #     user: @user,
-    #     name: "Chicago Style",
-    #     description: "classic cheddar cheese mixed with caramel corn",
-    #     kernal: "Mushroom",
-    #     instructions: "-melt 1 tablespoon of white coconut oil in popper
-    #     -add 1/4 cup of mushroom kernals
-    #     -remove from stove once popping slows
-    #     -mix 1/3 cup of cheese powder with 4 tablespoons of yellow coconut oil
-    #     -microwave for 1 minute, stirring half way through and at the end
-    #     -drizzle cheddar mix over popcorn",
-    #     yield: "8",
-    # },
+    {
+        user: @user,
+        name: "Chicago Style",
+        description: "classic cheddar cheese mixed with caramel corn",
+        kernal: "Mushroom",
+        instructions: "-melt 1 tablespoon of white coconut oil in popper
+        -add 1/4 cup of mushroom kernals
+        -remove from stove once popping slows
+        -mix 1/3 cup of cheese powder with 4 tablespoons of yellow coconut oil
+        -microwave for 1 minute, stirring half way through and at the end
+        -drizzle cheddar mix over popcorn",
+        yield: "8",
+        # ingredients: @salt,
+    },
 ]
 
 Recipe.create!(recipes)
 
-# ingredients = [
-#     {
-#         name: "coconut oil",
-#     },
-#     {
-#         name: "salt",
-#     },
-#     {
-#         name: "butter",
-#     },
-#     {
-#         name: "corn syrup",
-#     },
-#     {
-#         name: "flavor seasoning",
-#     },
-#     {
-#         name: "oreo cookies",
-#     },
-#     {
-#         name: "cereal",
-#     },
-#     {
-#         name: "sugar",
-#     },
-#     {
-#         name: "pepper",
-#     },
-#     {
-#         name: "Flavacol",
-#     },
-#     {
-#         name: "white chocolate chips/wafers",
-#     },
-#     {
-#         name: "dark chocolate chips/wafers",
-#     },
-#     {
-#         name: "milk chocolate chips/wafers",
-#     },
-#     {
-#         name: "flavored stevia",
-#     },
-#     {
-#         name: "vanilla extract",
-#     },
-# ]
+ingredients = [
+    {
+        name: "coconut oil",
+    },
+    {
+        name: "salt",
+    },
+    {
+        name: "butter",
+    },
+    {
+        name: "corn syrup",
+    },
+    {
+        name: "flavor seasoning",
+    },
+    {
+        name: "oreo cookies",
+    },
+    {
+        name: "cereal",
+    },
+    {
+        name: "sugar",
+    },
+    {
+        name: "pepper",
+    },
+    {
+        name: "Flavacol",
+    },
+    {
+        name: "white chocolate chips/wafers",
+    },
+    {
+        name: "dark chocolate chips/wafers",
+    },
+    {
+        name: "milk chocolate chips/wafers",
+    },
+    {
+        name: "flavored stevia",
+    },
+    {
+        name: "vanilla extract",
+    },
+]
 
-# Ingredient.create!(ingredients)
+Ingredient.create!(ingredients)
 
 # Recipe.destroy_all
 # Ingredient.destroy.all
@@ -127,12 +128,12 @@ Recipe.create!(recipes)
 
 # puts "#{User.count} users created"
 
-@oil = Ingredient.create!(name: 'oil')
-@salt = Ingredient.create!(name: 'salt')
-@butter = Ingredient.create!(name: 'butter')
-@seasoning = Ingredient.create!(name: 'seasoning')
+# @oil = Ingredient.create!(name: 'oil')
+# @salt = Ingredient.create!(name: 'salt')
+# @butter = Ingredient.create!(name: 'butter')
+# @seasoning = Ingredient.create!(name: 'seasoning')
 
-puts "#{Ingredient.count} ingredients created"
+# puts "#{Ingredient.count} ingredients created"
 
 # Recipe.create!(name: 'cookies and cream', user: @admin, ingredients: [@oil, @butter, @seasoning])
 # @cookies_and_cream = Recipe.create!(name: 'cookies and cream', user: @admin)
