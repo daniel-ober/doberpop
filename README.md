@@ -76,7 +76,7 @@
 
 #### Component Tree
 
-![https://i.imgur.com/tXlBabh.png](https://i.imgur.com/tXlBabh.png)
+![https://i.imgur.com/l0mX4xw.png](https://i.imgur.com/l0mX4xw.png)
 
 
 #### Component Architecture
@@ -140,7 +140,7 @@ src
 
 #### ERD Model
 
-![https://i.imgur.com/lC3OCLd.png](https://i.imgur.com/lC3OCLd.png)
+![https://i.imgur.com/tXlBabh.png](https://i.imgur.com/tXlBabh.png)
 
 
 <br>
