@@ -3,22 +3,25 @@ import './Layout.css'
 import { Link } from 'react-router-dom'
 
 export default function Layout(props) {
-    const {currentUser} = props;
+    const {currentUser, handleLogout} = props;
+
     return (
-        <div>
+        <div class='main-container'>
             <header>
             <Link to='/'><img src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' /></Link>
             {
                 currentUser ?
                 <>
-                <div class="dropdown">
-                    <img src='https://i.imgur.com/D5khdnp.png?3' onclick="myFunction()" class="dropbtn" alt='user'/>
-                    <div id="myDropdown" class="dropdown-content">
-                        <Link to='/recipes'>My Recipes</Link>
-                        <Link to='/ideas'>Tastemaster Ideas</Link>
-                        <Link to='/community'>Community</Link>
-                        <Link to='/logout'>Logout</Link>
-                    </div>
+                <div>
+                <p>{currentUser.username}</p>
+                <Link to='/recipes'>My Recipes</Link>
+                <br/>
+                <Link to='/ideas'>Tastemaster Ideas</Link>
+                <br/>
+                <Link to='/community'>Community</Link>
+                <br/>
+                <Link onClick={handleLogout}>Logout</Link>
+                <br/>
                 </div>
                 </>
                 :

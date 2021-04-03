@@ -1,10 +1,10 @@
 import './App.css'
 import Layout from './layouts/Layout'
-import Login from './screens/Login'
-import Register from './screens/Register'
+import Login from './screens/Login/Login'
+import Register from './screens/Register/Register'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { loginUser, registerUser, verifyUser } from './services/auth'
+import { loginUser, registerUser, removeToken, verifyUser } from './services/auth'
 
 
 function App() {
@@ -30,9 +30,18 @@ function App() {
     setCurrentUser(userData)
   }
 
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('authToken');
+    removeToken();
+  }
+
   return (
     <div className="App">
-      <Layout currentUser={currentUser}>
+      <Layout 
+      currentUser={currentUser}
+      handleLogout={handleLogout}
+      >
         <Switch>
           <Route path='/login'>
             <Login
