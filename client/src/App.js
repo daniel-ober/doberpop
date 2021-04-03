@@ -2,6 +2,7 @@ import './App.css'
 import Layout from './layouts/Layout'
 import Login from './screens/Login/Login'
 import Register from './screens/Register/Register'
+import Landing from './containers/Landing/Landing'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { loginUser, registerUser, removeToken, verifyUser } from './services/auth'
@@ -43,6 +44,9 @@ function App() {
       handleLogout={handleLogout}
       >
         <Switch>
+          <Route exact path='/'>
+            <Landing user={currentUser}/>
+          </Route>
           <Route path='/login'>
             <Login
             handleLogin={handleLogin}

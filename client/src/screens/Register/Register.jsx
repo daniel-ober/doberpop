@@ -58,11 +58,12 @@ export default function Register(props) {
             onChange={handleChange}
         />
         <br/>
+        <button>Create Account</button>
+        <br/>
         Already have an account? 
         <br/>
         <Link to='/login'>Sign In</Link>
         <br/>
-        <button>Create Account</button>
     </form>
     )
 }

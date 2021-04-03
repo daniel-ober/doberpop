@@ -6,9 +6,10 @@ export default function Layout(props) {
     const {currentUser, handleLogout} = props;
 
     return (
+        <body>
         <div class='main-container'>
             <header>
-            <Link to='/'><img src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' /></Link>
+            <Link to='/'><img className='header-logo' src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' /></Link>
             {
                 currentUser ?
                 <>
@@ -25,7 +26,7 @@ export default function Layout(props) {
                 </div>
                 </>
                 :
-                <Link to='/login'>Login/Register</Link>
+                null
             }
             </header>
             <hr/>
@@ -38,5 +39,6 @@ export default function Layout(props) {
             )}
             {props.children}
         </div>
+    </body>
     )
 }

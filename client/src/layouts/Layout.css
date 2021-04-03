@@ -1,7 +1,30 @@
-.dropbtn {
+body {
+  background-image: url('https://i.imgur.com/II8Rvqp.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:cover;
+  color:whitesmoke;
+  font-size: larger;
+  font-weight: bold;
+  height: 100%;
+}
+
+.landing-logo {
+  height: 60vh;
+}
+
+a {
+  color: rgb(255, 210, 49);
+  font-size: x-large;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* .dropbtn {
     background-color: #ffd54c00;
     color: rgb(0, 0, 0);
     font-size: 16px;
+    color:whitesmoke;
     border: none;
     cursor: pointer;
   }
@@ -34,4 +57,4 @@
   
   .dropdown a:hover {background-color: #ddd;}
   
-  .show {display: block;}
+  .show {display: block;} */
