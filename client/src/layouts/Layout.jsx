@@ -15,11 +15,9 @@ export default function Layout(props) {
                 <>
                 <div>
                 <p>{currentUser.username}</p>
-                <Link to='/recipes'>My Recipes</Link>
+                <Link to='/recipes'>Recipes</Link>
                 <br/>
-                <Link to='/ideas'>Tastemaster Ideas</Link>
-                <br/>
-                <Link to='/community'>Community</Link>
+                <Link to='/ingredients'>Ingredients</Link>
                 <br/>
                 <Link onClick={handleLogout}>Logout</Link>
                 <br/>
