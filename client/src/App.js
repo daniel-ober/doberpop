@@ -6,6 +6,7 @@ import Landing from './containers/Landing/Landing'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { loginUser, registerUser, removeToken, verifyUser } from './services/auth'
+import MainContainer from './containers/MainContainer/MainContainer'
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('authToken');
+    history.push('/landing');
     removeToken();
   }
 
@@ -44,7 +46,7 @@ function App() {
       handleLogout={handleLogout}
       >
         <Switch>
-          <Route exact path='/'>
+          <Route exact path='/landing'>
             <Landing user={currentUser}/>
           </Route>
           <Route path='/login'>
@@ -56,6 +58,9 @@ function App() {
             <Register
             handleRegister={handleRegister}
             />
+          </Route>
+          <Route path='/'>
+            <MainContainer />
           </Route>
         </Switch>
       </Layout>

@@ -9,7 +9,7 @@ export default function Layout(props) {
         <body>
         <div class='main-container'>
             <header>
-            <Link to='/'><img className='header-logo' src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' /></Link>
+            <Link to='/landing'><img className='header-logo' src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' /></Link>
             {
                 currentUser ?
                 <>

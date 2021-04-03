@@ -50,14 +50,6 @@ export default function Register(props) {
             onChange={handleChange}
         />
         <br/>
-            <input
-            type='password'
-            name='confirm-password'
-            placeholder='confirm password'
-            value={password}
-            onChange={handleChange}
-        />
-        <br/>
         <button>Create Account</button>
         <br/>
         Already have an account? 
