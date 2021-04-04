@@ -1,9 +1,9 @@
-import React from 'react'
+// import React from 'react'
 
-export default function Recipes() {
-    return (
-        <div>
-            <h2>My Recipes</h2>
-        </div>
-    )
-}
+// export default function Recipes(props) {
+//     return (
+//         <div>
+//             <h2> test</h2>
+//         </div>
+//     )
+// }

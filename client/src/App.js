@@ -63,9 +63,9 @@ function App() {
           <Route path='/'>
             <MainContainer />
           </Route>
-          <Route path='/home'>
+          {/* <Route path='/home'>
             <UserHome user={currentUser}/>
-          </Route>
+          </Route> */}
         </Switch>
       </Layout>
     </div>
