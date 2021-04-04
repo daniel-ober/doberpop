@@ -10,6 +10,7 @@ import RecipeCreate from '../screens/RecipeCreate'
 export default function MainContainer(props) {
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
+    const [ingredient, setIngredient] = useState({name:''});
     const history = useHistory();
     const { currentUser } = props;
     
@@ -35,7 +36,7 @@ export default function MainContainer(props) {
     }
 
     const handleCreate = async (recipeData) => {
-        const newRecipe = await postRecipe(recipeData);
+        const newRecipe = await postRecipe({...recipeData, ingredients:[ingredient]});
         setRecipes(prevState => [...prevState, newRecipe]);
         history.push('/recipes');
     }
@@ -51,6 +52,7 @@ export default function MainContainer(props) {
             <Route path='/recipes/new'>
                 <RecipeCreate 
                     handleCreate={handleCreate}
+                    setIngredient={setIngredient}
                 />
             </Route>
             <Route path='/recipes'>

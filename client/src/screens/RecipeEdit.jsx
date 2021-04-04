@@ -1,16 +1,16 @@
 import {useState} from 'react'
 
-export default function RecipeCreate(props) {
+export default function RecipeEdit(props) {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         kernel_type: '',
-        ingredients: [],
+        ingredients: '',
         yield: '',
         instructions: '',
     })
-    const {name, description, kernel_type, instructions} = formData;
-    const { handleCreate, setIngredient } = props;
+    const { name, description, kernel_type,ingredients, total_cups, instructions } = formData;
+    // const { handleCreate } = props;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,15 +55,15 @@ export default function RecipeCreate(props) {
                 type='text'
                 name='ingredients'
                 placeholder='Ingredients'
-                onChange=
-                {(e)=> setIngredient({name:e.target.value})}
+                value={ingredients}
+                onChange={handleChange}
             />
             <br/>
             <input
                 type='number'
-                name='yield'
+                name='total_cups'
                 placeholder='Yield'
-                value={formData.yield}
+                value={total_cups}
                 onChange={handleChange}
             />
             <br/>
