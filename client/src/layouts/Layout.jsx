@@ -5,8 +5,7 @@ export default function Layout(props) {
     const {currentUser, handleLogout} = props;
 
     return (
-        <body>
-        <div class='main-container'>
+        <div className='main-container'>
             <header>
             <img className='header-logo' src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' />
             {
@@ -37,6 +36,5 @@ export default function Layout(props) {
             )}
             {props.children}
         </div>
-    </body>
     )
 }

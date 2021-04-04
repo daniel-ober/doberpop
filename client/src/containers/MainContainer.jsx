@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { getAllIngredients } from '../services/ingredients'
-import { getAllRecipes } from '../services/recipes'
+import { destroyRecipe, getAllRecipes } from '../services/recipes'
 import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
 
@@ -26,6 +26,12 @@ export default function MainContainer() {
         fetchRecipes();
     }, [])
 
+    const handleDelete = async (id) => {
+        await destroyRecipe(id);
+        setRecipes(prevState => prevState.filter(recipe => recipe.id !== id))
+      }
+    
+
     return (
         <Switch>
             <Route path='/ingredients'>
@@ -36,6 +42,7 @@ export default function MainContainer() {
             <Route path='/recipes'>
                 <Recipes 
                     recipes={recipes}
+                    handleDelete={handleDelete}
                 />
             </Route>
         </Switch>

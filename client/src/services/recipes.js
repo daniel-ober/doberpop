@@ -17,10 +17,10 @@ export const postRecipe = async (recipeData) => {
 
 export const putRecipe = async (id, recipeData) => {
     const resp = await api.put(`/recipes/${id}`, { recipe: recipeData });
-    return resp.data
+    return resp.data;
 }
 
 export const destroyRecipe = async (id) => {
     const resp = await api.delete(`/recipes/${id}`);
-    return resp
+    return resp;
 }
