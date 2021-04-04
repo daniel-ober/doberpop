@@ -3,8 +3,9 @@ import { Switch, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { getAllIngredients } from '../services/ingredients'
 
-export default function MainContainer() {
+export default function MainContainer(props) {
     const [ingredients, setIngredients] = useState([]);
+    const {currentUser} = props;
 
     
     useEffect(() => {
@@ -14,8 +15,21 @@ export default function MainContainer() {
         }
         fetchIngredients();
     })
+
     return (
         <Switch>
+            {/* <Route path='/home'>
+            <div>
+                {currentUser && (
+            <>
+                <h3>Hello, {currentUser.username}!</h3>
+            <br/>
+                <p>Click the yellow avatar icon in the top right corner  to navigate around the site</p>
+            </>
+            )}
+            {props.children}
+        </div>
+            </Route> */}
             <Route path='/recipes'>
                 <h2>My Recipes</h2>
             </Route>

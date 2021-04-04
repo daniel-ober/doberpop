@@ -30,9 +30,9 @@ export default function Layout(props) {
             <hr/>
             {currentUser && (
             <>
-            <h3>Hello, {currentUser.username}!</h3>
+            {/* <h3>Hello, {currentUser.username}!</h3>
             <br/>
-            <p>Click the yellow avatar icon in the top right corner  to navigate around the site</p>
+            <p>Click the yellow avatar icon in the top right corner  to navigate around the site</p> */}
             </>
             )}
             {props.children}
