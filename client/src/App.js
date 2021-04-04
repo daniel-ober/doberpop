@@ -1,12 +1,12 @@
 import './App.css'
 import Layout from './layouts/Layout'
-import Login from './screens/Login/Login'
-import Register from './screens/Register/Register'
-import Landing from './containers/Landing/Landing'
+import Login from './screens/Login'
+import Register from './screens/Register'
+import Landing from './containers/Landing'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { loginUser, registerUser, removeToken, verifyUser } from './services/auth'
-import MainContainer from './containers/MainContainer/MainContainer'
+import MainContainer from './containers/MainContainer'
 
 
 function App() {

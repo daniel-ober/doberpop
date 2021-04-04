@@ -8,3 +8,26 @@ header {
   justify-content: space-between;
   padding: 20px 60px 0px 50px;
 }
+
+body {
+  background-image: url('https://i.imgur.com/II8Rvqp.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:cover;
+  color:whitesmoke;
+  font-size: larger;
+  font-weight: bold;
+  height: 100%;
+}
+
+a {
+  color: rgb(255, 210, 49);
+  font-size: x-large;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+.landing-logo {
+  height: 50vh;
+}
