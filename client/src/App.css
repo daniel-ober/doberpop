@@ -35,3 +35,12 @@ a {
 .login-logo {
   width: 50vh;
 }
+
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 5px black;
+  background-color: whitesmoke;
+  z-index: 3;
+}
