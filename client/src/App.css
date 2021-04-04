@@ -29,5 +29,9 @@ a {
 
 
 .landing-logo {
-  height: 50vh;
+  width: 60vh;
+}
+
+.login-logo {
+  width: 50vh;
 }

@@ -24,7 +24,7 @@ export default function Register(props) {
             e.preventDefault();
             handleRegister(formData);
         }}>
-        <img src='https://i.imgur.com/Hj8iyBo.png' alt='logo' />
+        <img className='login-logo'src='https://i.imgur.com/Hj8iyBo.png' alt='logo' />
         <br/>
         <input
             type='text'
