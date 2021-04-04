@@ -7,10 +7,11 @@ import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
 import RecipeCreate from '../screens/RecipeCreate'
 
-export default function MainContainer() {
+export default function MainContainer(props) {
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
     const history = useHistory();
+    const { currentUser } = props;
     
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -56,6 +57,7 @@ export default function MainContainer() {
                 <Recipes 
                     recipes={recipes}
                     handleDelete={handleDelete}
+                    currentUser={currentUser}
                 />
             </Route>
         </Switch>
