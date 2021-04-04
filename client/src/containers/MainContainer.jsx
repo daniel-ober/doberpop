@@ -1,8 +1,8 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 import { getAllIngredients } from '../services/ingredients'
-import { destroyRecipe, getAllRecipes } from '../services/recipes'
+import { destroyRecipe, getAllRecipes, postRecipe } from '../services/recipes'
 import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
 import RecipeCreate from '../screens/RecipeCreate'
@@ -10,6 +10,7 @@ import RecipeCreate from '../screens/RecipeCreate'
 export default function MainContainer() {
     const [ingredients, setIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
+    const history = useHistory();
     
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -30,7 +31,13 @@ export default function MainContainer() {
     const handleDelete = async (id) => {
         await destroyRecipe(id);
         setRecipes(prevState => prevState.filter(recipe => recipe.id !== id))
-      }
+    }
+
+    const handleCreate = async (recipeData) => {
+        const newRecipe = await postRecipe(recipeData);
+        setRecipes(prevState => [...prevState, newRecipe]);
+        history.push('/recipes');
+    }
     
 
     return (
@@ -41,7 +48,9 @@ export default function MainContainer() {
                 />
             </Route>
             <Route path='/recipes/new'>
-                <RecipeCreate />
+                <RecipeCreate 
+                    handleCreate={handleCreate}
+                />
             </Route>
             <Route path='/recipes'>
                 <Recipes 

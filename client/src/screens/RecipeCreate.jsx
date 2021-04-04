@@ -1,27 +1,37 @@
 import {useState} from 'react'
 
-export default function RecipeCreate() {
+export default function RecipeCreate(props) {
     const [formData, setFormData] = useState({
-        name: ''
+        name: '',
+        description: '',
+        kernel_type: '',
+        ingredients: '',
+        total_cups: "",
+        instructions: '',
     })
     const {name, description, kernel_type,ingredients, total_cups, instructions} = formData;
+    const { handleCreate } = props;
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value,
-            // [description]: value,
-            // [kernel_type]: value,
-            // [ingredients]: value,
-            // [total_cups]: value,
-            // [instructions]: value,
+            [description]: value,
+            [kernel_type]: value,
+            [ingredients]: value,
+            [total_cups]: value,
+            [instructions]: value,
         }))
     }
 
     return (
-        <form>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleCreate(formData);
+        }}>
             <h2>New Recipe</h2>
+            <label>
             <input
                 type='text'
                 name='name'
@@ -48,14 +58,6 @@ export default function RecipeCreate() {
             <br/>
             <input
                 type='text'
-                name='name'
-                placeholder='Recipe Title'
-                value={name}
-                onChange={handleChange}
-            />
-            <br/>
-            <input
-                type='text'
                 name='ingredients'
                 placeholder='Ingredients'
                 value={ingredients}
@@ -63,8 +65,8 @@ export default function RecipeCreate() {
             />
             <br/>
             <input
-                type='text'
-                name='yield'
+                type='number'
+                name='total_cups'
                 placeholder='Yield'
                 value={total_cups}
                 onChange={handleChange}
@@ -77,6 +79,7 @@ export default function RecipeCreate() {
                 value={instructions}
                 onChange={handleChange}
             />
+            </label>
             <br/>
             <button>Cancel</button>
             <br/>
