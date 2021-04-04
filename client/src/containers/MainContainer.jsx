@@ -5,6 +5,7 @@ import { getAllIngredients } from '../services/ingredients'
 import { destroyRecipe, getAllRecipes } from '../services/recipes'
 import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
+import RecipeCreate from '../screens/RecipeCreate'
 
 export default function MainContainer() {
     const [ingredients, setIngredients] = useState([]);
@@ -38,6 +39,9 @@ export default function MainContainer() {
                 <Ingredients 
                     ingredients={ingredients}
                 />
+            </Route>
+            <Route path='/recipes/new'>
+                <RecipeCreate />
             </Route>
             <Route path='/recipes'>
                 <Recipes 

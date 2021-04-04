@@ -1,4 +1,5 @@
-import {useState } from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Modal from '../components/Modal';
 
 export default function Recipes(props) {
@@ -22,6 +23,10 @@ export default function Recipes(props) {
                 handleDelete={handleDelete}
                 />
             )}
+            <br/>
+            <Link to='/recipes/new'>
+                <button>Add New Recipe</button>
+            </Link>
         </div>
     )
 }
