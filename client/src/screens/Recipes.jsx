@@ -7,7 +7,7 @@ export default function Recipes(props) {
             <h2>Recipes</h2>
             {
                 recipes.map(recipe => (
-                    <p>{recipe.name}</p>
+                    <p key={recipe.id}>{recipe.name}</p>
                 ))
             }
         </div>
