@@ -9,6 +9,7 @@ export default function RecipeCreate(props) {
         yield: '',
         instructions: '',
     })
+    
     const {name, description, kernel_type, instructions} = formData;
     const { handleCreate, setIngredient } = props;
 

@@ -12,15 +12,14 @@ export default function RecipeEdit(props) {
     })
     const {name, description, kernel_type, instructions} = formData;
     const { id } = useParams();
-    const { recipes, handleUpdate } = props;
-    const { setIngredient } = props;
+    const { recipes, handleUpdate, setIngredient } = props;
 
     useEffect(() => {
         const prefillFormData = () => {
             const recipeItem = recipes.find(recipe => recipe.id === Number(id));
             setFormData({
                 name: recipeItem.name,
-                description: recipeItem.description, 
+                description: recipeItem.description,
                 kernel_type: recipeItem.kernel_type,
                 ingredients: recipeItem.ingredients,
                 yield: recipeItem.yield,

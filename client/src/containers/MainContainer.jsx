@@ -50,7 +50,6 @@ export default function MainContainer(props) {
         history.push('/recipes');
     }
     
-
     return (
         <Switch>
             <Route path='/ingredients'>
@@ -68,6 +67,7 @@ export default function MainContainer(props) {
                 <RecipeEdit 
                 recipes={recipes}
                 handleUpdate={handleUpdate}
+                setIngredient={setIngredient}
                 />
             </Route>
             <Route path='/recipes'>
