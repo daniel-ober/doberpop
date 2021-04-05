@@ -2,12 +2,12 @@ import './App.css'
 import Layout from './layouts/Layout'
 import Login from './screens/Login'
 import Register from './screens/Register'
-import Landing from './containers/Landing'
-// import UserHome from './screens/UserHome'
+import Landing from './screens/Landing'
+import UserHome from './screens/UserHome'
+import MainContainer from './containers/MainContainer'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { loginUser, registerUser, removeToken, verifyUser } from './services/auth'
-import MainContainer from './containers/MainContainer'
 
 
 function App() {
@@ -25,18 +25,19 @@ function App() {
   const handleLogin = async (formData) => {
     const userData = await loginUser(formData);
     setCurrentUser(userData);
-    history.push('/');
+    history.push('/home');
   }
 
   const handleRegister = async (formData) => {
     const userData = await registerUser(formData);
-    setCurrentUser(userData)
+    setCurrentUser(userData);
+    history.push('/home');
   }
 
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('authToken');
-    history.push('/landing');
+    history.push('/login');
     removeToken();
   }
 
@@ -65,9 +66,6 @@ function App() {
               currentUser={currentUser}
             />
           </Route>
-          {/* <Route path='/home'>
-            <UserHome user={currentUser}/>
-          </Route> */}
         </Switch>
       </Layout>
     </div>

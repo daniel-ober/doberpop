@@ -7,7 +7,7 @@ export default function Layout(props) {
     return (
         <div className='main-container'>
             <header>
-            <img className='header-logo' src='https://i.imgur.com/Hj8iyBo.png?1' alt='logo' />
+            <Link to='/home'><img className='header-logo' src='https://i.imgur.com/1nzGA9M.png' alt='logo' /></Link>
             {
                 currentUser ?
                 <>
@@ -29,9 +29,6 @@ export default function Layout(props) {
             <hr/>
             {currentUser && (
             <>
-            {/* <h3>Hello, {currentUser.username}!</h3>
-            <br/>
-            <p>Click the yellow avatar icon in the top right corner  to navigate around the site</p> */}
             </>
             )}
             {props.children}

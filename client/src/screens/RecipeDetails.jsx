@@ -12,7 +12,7 @@ export default function RecipeDetails() {
             setRecipeItem(recipeData);
         }
         fetchRecipeItem()
-    }, [id])
+    }, [])
 
     return (
         <div>
@@ -20,7 +20,6 @@ export default function RecipeDetails() {
             {recipeItem?.ingredients.map(ingredient => (
                 <p key={ingredient.id}>{ingredient.name}</p>
             ))}
-            
         </div>
     )
 }

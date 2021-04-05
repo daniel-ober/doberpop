@@ -27,13 +27,16 @@ a {
   text-decoration: none;
 }
 
-
 .landing-logo {
-  width: 60vh;
+  width: 470px;
 }
 
 .login-logo {
-  width: 50vh;
+  width: 400px;
+}
+
+.header-logo {
+  width: 150px;
 }
 
 .modal-container {
