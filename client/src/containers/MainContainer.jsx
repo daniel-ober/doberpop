@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { getAllIngredients } from '../services/ingredients'
-import { destroyRecipe, getAllRecipes, postRecipe } from '../services/recipes'
+import { destroyRecipe, getAllRecipes, postRecipe, putRecipe } from '../services/recipes'
 import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
 import RecipeCreate from '../screens/RecipeCreate'
@@ -41,6 +41,14 @@ export default function MainContainer(props) {
         setRecipes(prevState => [...prevState, newRecipe]);
         history.push('/recipes');
     }
+
+    const handleUpdate = async (id, recipeData) => {
+        const updatedRecipe = await putRecipe(id, recipeData);
+        setRecipes(prevState => prevState.map(recipe => {
+            return recipe.id === Number(id) ? updatedRecipe : recipe
+        }))
+        history.push('/recipes');
+    }
     
 
     return (
@@ -59,6 +67,7 @@ export default function MainContainer(props) {
             <Route path='/recipes/:id/edit'>
                 <RecipeEdit 
                 recipes={recipes}
+                handleUpdate={handleUpdate}
                 />
             </Route>
             <Route path='/recipes'>
@@ -66,7 +75,7 @@ export default function MainContainer(props) {
                     recipes={recipes}
                     handleDelete={handleDelete}
                     currentUser={currentUser}
-                />
+                    />
             </Route>
         </Switch>
     )

@@ -12,7 +12,7 @@ export default function RecipeEdit(props) {
     })
     const {name, description, kernel_type, instructions} = formData;
     const { id } = useParams();
-    const { recipes } = props;
+    const { recipes, handleUpdate } = props;
     const { setIngredient } = props;
 
     useEffect(() => {
@@ -21,13 +21,16 @@ export default function RecipeEdit(props) {
             setFormData({
                 name: recipeItem.name,
                 description: recipeItem.description, 
-                kernel_type: recipeItem.kernel_type, 
+                kernel_type: recipeItem.kernel_type,
+                ingredients: recipeItem.ingredients,
                 yield: recipeItem.yield,
                 instructions: recipeItem.instructions,
             })
         }
-        prefillFormData()
-    }, [id])
+        if (recipes.length) {
+            prefillFormData()
+        }
+    }, [recipes, id])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +43,7 @@ export default function RecipeEdit(props) {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            // handleEdit(formData);
+            handleUpdate(id, formData);
         }}>
             <h2>Edit Recipe</h2>
             <label>
@@ -94,7 +97,7 @@ export default function RecipeEdit(props) {
             <br/>
             <button>Cancel</button>
             <br/>
-            <button>Add</button>
+            <button>Save</button>
         </form>
     )
 }
