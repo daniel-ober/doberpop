@@ -13,7 +13,7 @@ body {
   background-image: url('https://i.imgur.com/II8Rvqp.jpg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size:cover;
+  background-size: cover;
   color:whitesmoke;
   font-size: larger;
   font-weight: bold;
@@ -50,5 +50,43 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media only screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1366px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    header {
+      padding: 20px 40px 10px 30px;
+    }
+
+    .landing-logo {
+      width: 600px;
+    }
+    
+    .login-logo {
+      width: 500px;
+    }
+    
+    .header-logo {
+      width: 150px;
+    }
+}
+
+@media only screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 812px) 
+  and (-webkit-min-device-pixel-ratio: 3) { 
+    .landing-logo {
+      width: 350px;
+    }
+    
+    .login-logo {
+      width: 300px;
+    }
+    
+    .header-logo {
+      width: 100px;
+    }
 }
 
