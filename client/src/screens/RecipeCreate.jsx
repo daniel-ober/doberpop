@@ -55,8 +55,7 @@ export default function RecipeCreate(props) {
                 type='text'
                 name='ingredients'
                 placeholder='Ingredients'
-                onChange=
-                {(e)=> setIngredient({name:e.target.value})}
+                onChange={(e) => setIngredient({name:e.target.value})}
             />
             <br/>
             <input

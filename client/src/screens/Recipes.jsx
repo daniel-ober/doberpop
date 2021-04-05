@@ -12,6 +12,8 @@ export default function Recipes(props) {
                 recipes.map(recipe => (
                     <>
                     <p key={recipe.id}>{recipe.name}</p>
+                    <button>Back</button>
+                    <Link to={`/recipes/${recipe.id}/edit`}><button>Edit</button></Link>
                     <button onClick={() => handleOpen(recipe.id)}>DELETE RECIPE</button>
                     </>
                 ))

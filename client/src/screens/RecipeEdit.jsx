@@ -1,16 +1,33 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+import { useParams } from 'react-router-dom'
 
 export default function RecipeEdit(props) {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         kernel_type: '',
-        ingredients: '',
+        ingredients: [],
         yield: '',
         instructions: '',
     })
-    const { name, description, kernel_type,ingredients, total_cups, instructions } = formData;
-    // const { handleCreate } = props;
+    const {name, description, kernel_type, instructions} = formData;
+    const { id } = useParams();
+    const { recipes } = props;
+    const { setIngredient } = props;
+
+    useEffect(() => {
+        const prefillFormData = () => {
+            const recipeItem = recipes.find(recipe => recipe.id === Number(id));
+            setFormData({
+                name: recipeItem.name,
+                description: recipeItem.description, 
+                kernel_type: recipeItem.kernel_type, 
+                yield: recipeItem.yield,
+                instructions: recipeItem.instructions,
+            })
+        }
+        prefillFormData()
+    }, [id])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,9 +40,9 @@ export default function RecipeEdit(props) {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            handleCreate(formData);
+            // handleEdit(formData);
         }}>
-            <h2>New Recipe</h2>
+            <h2>Edit Recipe</h2>
             <label>
             <input
                 type='text'
@@ -55,15 +72,14 @@ export default function RecipeEdit(props) {
                 type='text'
                 name='ingredients'
                 placeholder='Ingredients'
-                value={ingredients}
-                onChange={handleChange}
+                onChange={(e) => setIngredient({name:e.target.value})}
             />
             <br/>
             <input
                 type='number'
-                name='total_cups'
+                name='yield'
                 placeholder='Yield'
-                value={total_cups}
+                value={formData.yield}
                 onChange={handleChange}
             />
             <br/>
