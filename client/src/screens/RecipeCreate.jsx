@@ -58,6 +58,8 @@ export default function RecipeCreate(props) {
                 placeholder='Ingredients'
                 onChange={(e) => setIngredient({name:e.target.value})}
             />
+            <button>Add</button>
+            <button>Delete</button>
             <br/>
             <input
                 type='number'

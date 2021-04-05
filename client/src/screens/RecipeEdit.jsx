@@ -10,7 +10,7 @@ export default function RecipeEdit(props) {
         yield: '',
         instructions: '',
     })
-    const {name, description, kernel_type, instructions} = formData;
+    const {name, description, kernel_type, instructions, ingredients} = formData;
     const { id } = useParams();
     const { recipes, handleUpdate, setIngredient } = props;
 
@@ -74,6 +74,7 @@ export default function RecipeEdit(props) {
                 type='text'
                 name='ingredients'
                 placeholder='Ingredients'
+                value={ingredients}
                 onChange={(e) => setIngredient({name:e.target.value})}
             />
             <br/>

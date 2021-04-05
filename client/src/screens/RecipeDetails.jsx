@@ -20,6 +20,9 @@ export default function RecipeDetails() {
             {recipeItem?.ingredients.map(ingredient => (
                 <p key={ingredient.id}>{ingredient.name}</p>
             ))}
+            {recipeItem?.ingredients.map(ingredient => (
+                <p key={ingredient.id}>{ingredient.name}</p>
+            ))}
         </div>
     )
 }

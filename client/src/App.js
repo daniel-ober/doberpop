@@ -3,7 +3,6 @@ import Layout from './layouts/Layout'
 import Login from './screens/Login'
 import Register from './screens/Register'
 import Landing from './screens/Landing'
-import UserHome from './screens/UserHome'
 import MainContainer from './containers/MainContainer'
 import { Switch, Route, useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
@@ -48,9 +47,9 @@ function App() {
       handleLogout={handleLogout}
       >
         <Switch>
-          <Route exact path='/landing'>
+          {/* <Route exact path='/landing'>
             <Landing user={currentUser}/>
-          </Route>
+          </Route> */}
           <Route path='/login'>
             <Login
             handleLogin={handleLogin}
@@ -65,6 +64,7 @@ function App() {
             <MainContainer 
               currentUser={currentUser}
             />
+            <Landing user={currentUser}/>
           </Route>
         </Switch>
       </Layout>
