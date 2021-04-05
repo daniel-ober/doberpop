@@ -47,9 +47,6 @@ function App() {
       handleLogout={handleLogout}
       >
         <Switch>
-          {/* <Route exact path='/landing'>
-            <Landing user={currentUser}/>
-          </Route> */}
           <Route path='/login'>
             <Login
             handleLogin={handleLogin}
