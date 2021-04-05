@@ -7,6 +7,7 @@ import Ingredients from '../screens/Ingredients'
 import Recipes from '../screens/Recipes'
 import RecipeCreate from '../screens/RecipeCreate'
 import RecipeEdit from '../screens/RecipeEdit'
+import RecipeDetails from '../screens/RecipeDetails'
 
 export default function MainContainer(props) {
     const [ingredients, setIngredients] = useState([]);
@@ -69,6 +70,9 @@ export default function MainContainer(props) {
                 handleUpdate={handleUpdate}
                 setIngredient={setIngredient}
                 />
+            </Route>
+            <Route path='/recipes/:id'>
+                <RecipeDetails />
             </Route>
             <Route path='/recipes'>
                 <Recipes 

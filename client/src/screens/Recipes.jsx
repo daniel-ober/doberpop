@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Modal from '../components/Modal';
 
@@ -11,8 +11,8 @@ export default function Recipes(props) {
             <h2>Recipes</h2>
             {
                 recipes.map(recipe => (
-                <>
-                    <p key={recipe.id}>{recipe.name}</p>
+                <React.Fragment key={recipe.id}>
+                    <Link to={`/recipes/${recipe.id}`}><p>{recipe.name}</p></Link>
                     {
                         currentUser?.id === recipe.user_id &&
                         <>
@@ -21,7 +21,7 @@ export default function Recipes(props) {
                     <button onClick={() => handleOpen(recipe.id)}>DELETE RECIPE</button>
                         </>
                     }
-                </>
+                </React.Fragment>
                 ))
             }
             <br />
