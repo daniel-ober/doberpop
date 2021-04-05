@@ -1,7 +1,8 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 
 export default function RecipeEdit(props) {
+    const [ingredientFormData, setIngredientFormData] = useState('')
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -10,7 +11,7 @@ export default function RecipeEdit(props) {
         yield: '',
         instructions: '',
     })
-    const {name, description, kernel_type, instructions} = formData;
+    const {name, description, kernel_type, instructions, ingredients} = formData;
     const { id } = useParams();
     const { recipes, handleUpdate, setIngredient } = props;
 
@@ -36,6 +37,27 @@ export default function RecipeEdit(props) {
         setFormData(prevState => ({
             ...prevState,
             [name]: value,
+        }))
+    }
+
+    const handleAddIngredient = (e) => {
+        e.preventDefault();
+        setFormData(prevState => ({
+            ...prevState,
+            ingredients: [
+                ...prevState.ingredients,
+                {name:ingredientFormData}
+            ],
+        }))
+        setIngredientFormData('');
+    }
+
+    const handleDeleteIngredient = (name) => {
+        setFormData(prevState => ({
+            ...prevState,
+            ingredients: prevState.ingredients.filter(ingredient => {
+                return ingredient.name !== name
+            })
         }))
     }
 
@@ -69,14 +91,25 @@ export default function RecipeEdit(props) {
                 value={kernel_type}
                 onChange={handleChange}
             />
+            {ingredients.map((ingredient, index) => (
+                <React.Fragment key={index}>
+                    <p>{ingredient.name}</p>
+                    <button onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteIngredient(ingredient.name);
+                    }}>Delete</button>
+                </ React.Fragment>
+            ))}
+            <br/>
             <br/>
             <input
                 type='text'
                 name='ingredients'
+                value={ingredientFormData}
                 placeholder='Ingredients'
-                // value={ingredients}
-                onChange={(e) => setIngredient({name:e.target.value})}
+                onChange={(e) => setIngredientFormData(e.target.value)}
             />
+            <button onClick={handleAddIngredient}>Add</button>
             <br/>
             <input
                 type='number'

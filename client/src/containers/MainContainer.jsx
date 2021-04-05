@@ -39,7 +39,7 @@ export default function MainContainer(props) {
     }
 
     const handleCreate = async (recipeData) => {
-        const newRecipe = await postRecipe({...recipeData, ingredients:[ingredient]});
+        const newRecipe = await postRecipe(recipeData);
         setRecipes(prevState => [...prevState, newRecipe]);
         history.push('/recipes');
     }

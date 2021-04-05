@@ -28,14 +28,16 @@ export default function RecipeDetails() {
             <br/>
             <br/>
             Ingredients: 
-            <br/>{recipeItem?.ingredients.map(ingredient => (
-                <p key={ingredient.id}>{ingredient.name}</p>
-            ))}
+            <br/>
+            <p>
+                {recipeItem?.ingredients.reduce((acc, val, index) => {
+                return `${index===1?acc.name:acc}, ${val.name}`
+                })}
+            </p>
             <br/>
             <br/>
             Yield (cups): 
             <br/>{recipeItem?.yield}
-            <br/>
             <br/>
             Instructions:
             <br/>{recipeItem?.instructions}
