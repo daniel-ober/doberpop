@@ -16,8 +16,8 @@ export default function Layout(props) {
                 <br/>
                 <Link to='/recipes'>Recipes</Link>
                 <br/>
-                <Link to='/ingredients'>Ingredients</Link>
-                <br/>
+                {/* <Link to='/ingredients'>Ingredients</Link>
+                <br/> */}
                 <Link onClick={handleLogout}>Logout</Link>
                 <br/>
                 </div>

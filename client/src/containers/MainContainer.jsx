@@ -9,7 +9,6 @@ import RecipeCreate from '../screens/RecipeCreate'
 import RecipeEdit from '../screens/RecipeEdit'
 import RecipeDetails from '../screens/RecipeDetails'
 import UserHome from '../screens/UserHome'
-import Landing from '../screens/Landing'
 
 export default function MainContainer(props) {
     const [ingredients, setIngredients] = useState([]);
