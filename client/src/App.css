@@ -39,7 +39,10 @@ p {
 }
 
 .login-field,
-.register-field {
+.register-field,
+.create-field,
+.edit-field
+ {
   font-family: "Kumbh Sans", sans-serif;
   text-align: center;
   font-size: 25px;
@@ -191,6 +194,17 @@ a {
   position: sticky;
   bottom: 0vh;
   margin-bottom: 15vh;
+}
+
+.create-recipe-container {
+  font-family: "Kumbh Sans", sans-serif;
+  text-align: center;
+  font-size: 25px;
+  font-style: italic;
+  font-weight: bolder;
+  width: 550px;
+  height: 65px; 
+  margin: 20px;
 }
 
 .modal-container {

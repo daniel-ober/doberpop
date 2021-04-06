@@ -49,6 +49,7 @@ export default function RecipeCreate(props) {
 
   return (
     <form
+      className='create-recipe-container'
       onSubmit={(e) => {
         e.preventDefault();
         handleCreate(formData);
@@ -62,6 +63,7 @@ export default function RecipeCreate(props) {
           placeholder="Recipe Title"
           value={name}
           onChange={handleChange}
+          className="create-field"
         />
         <br />
         <input
@@ -70,6 +72,7 @@ export default function RecipeCreate(props) {
           placeholder="Description"
           value={description}
           onChange={handleChange}
+          className="create-field"
         />
         <br />
         <input
@@ -78,6 +81,7 @@ export default function RecipeCreate(props) {
           placeholder="Kernel Profile"
           value={kernel_type}
           onChange={handleChange}
+          className="create-field"
         />
         <br />
         {ingredients.map((ingredient, index) => (
@@ -99,6 +103,7 @@ export default function RecipeCreate(props) {
           name="ingredients"
           value={ingredientFormData}
           placeholder="Ingredients"
+          className="create-field"
           onChange={(e) => setIngredientFormData(e.target.value)}
         />
         <button onClick={handleAddIngredient}>Add</button>
@@ -109,6 +114,7 @@ export default function RecipeCreate(props) {
           placeholder="Yield"
           value={formData.yield}
           onChange={handleChange}
+          className="create-field"
         />
         <br />
         <input
@@ -117,12 +123,13 @@ export default function RecipeCreate(props) {
           placeholder="Instructions"
           value={instructions}
           onChange={handleChange}
+          className="create-field"
         />
       </label>
       <br />
       <button>Cancel</button>
       <br />
-      <button>Add</button>
+      <button clasName='create-recipe-button'>Add</button>
     </form>
   );
 }

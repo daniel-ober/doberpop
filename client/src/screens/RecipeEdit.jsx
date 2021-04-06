@@ -80,6 +80,7 @@ export default function RecipeEdit(props) {
           placeholder="Recipe Title"
           value={name}
           onChange={handleChange}
+          clasName="edit-field"
           required
         />
         <br />
@@ -89,6 +90,7 @@ export default function RecipeEdit(props) {
           placeholder="Description"
           value={description}
           onChange={handleChange}
+          clasName="edit-field"
           required
         />
         <br />
@@ -98,6 +100,7 @@ export default function RecipeEdit(props) {
           placeholder="Kernel Profile"
           value={kernel_type}
           onChange={handleChange}
+          clasName="edit-field"
           required
         />
         {ingredients.map((ingredient, index) => (
@@ -121,6 +124,7 @@ export default function RecipeEdit(props) {
           value={ingredientFormData}
           placeholder="Ingredients"
           onChange={(e) => setIngredientFormData(e.target.value)}
+          clasName="edit-field"
         />
         <button onClick={handleAddIngredient}>Add</button>
         <br />
@@ -130,6 +134,7 @@ export default function RecipeEdit(props) {
           placeholder="Yield"
           value={formData.yield}
           onChange={handleChange}
+          clasName="edit-field"
           required
         />
         <br />
@@ -139,6 +144,7 @@ export default function RecipeEdit(props) {
           placeholder="Instructions"
           value={instructions}
           onChange={handleChange}
+          clasName="edit-field"
           required
         />
       </label>
