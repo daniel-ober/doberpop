@@ -34,7 +34,7 @@ export default function RecipeDetails() {
         {recipeItem?.instructions}
       </div>
       <Link to="/recipes">
-        <img className="details-back" src="https://i.imgur.com/hz1TSDF.png" />
+        <img className="details-back" src="https://i.imgur.com/hz1TSDF.png" alt="back-button" />
       </Link>
     </div>
   );
