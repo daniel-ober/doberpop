@@ -73,6 +73,7 @@ p {
   font-size: 45px;
   color: #eeeedd;
   text-shadow: 5px 5px 100px #000000;
+  margin-bottom: 40vh;
 }
 
 .welcome-title {
@@ -89,7 +90,7 @@ p {
 .recipe-cards-container,
 a {
   color: #ce7b04;
-  font-size: 30px;
+  font-size: 27px;
   font-weight: bolder;
 }
 
