@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300&display=swap');
+
 .App {
+  font-family: 'Kumbh Sans', sans-serif;
   text-align: center;
 }
 
@@ -11,17 +14,16 @@ header {
 
 body {
   background-image: url('https://i.imgur.com/II8Rvqp.jpg');
-  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  color:whitesmoke;
-  font-size: larger;
+  color: #da9c2c;
+  font-size: 23px;
   font-weight: bold;
-  height: 100%;
+  width: 100%;
 }
 
-a {
-  color: rgb(255, 210, 49);
+a, p {
+  color:#fbdb5b;
   font-size: x-large;
   font-weight: bold;
   text-decoration: none;
@@ -50,6 +52,39 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.recipe-cards-container,
+a {
+  color: #ce7b04;
+  font-size: 25px;
+}
+
+.recipe-cards-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.recipe-cards {
+  background-color: #eeeedd;
+  color: #eeeedd;
+  margin: 0vh 35vh 0vh 35vh;
+  margin: 40px;
+  width: 50vh;
+  height: 10vh;
+}
+
+.recipe-card-button {
+  height: 30px;
+}
+
+.add-recipe-button {
+  height: 75px;
+  position: absolute;
+  bottom: 0px;
+  margin-bottom: 20vh;
 }
 
 @media only screen 

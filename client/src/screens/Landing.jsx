@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Landing() {
+export default function Landing(props) {
+
   return (
     <div>
       <img
@@ -14,3 +15,17 @@ export default function Landing() {
     </div>
   );
 }
+
+
+// {currentUser && (
+//   <>
+//     <h3>Hello, {currentUser.username}!</h3>
+//     <br />
+//     <p>
+//       Click the yellow avatar icon in the top right corner to navigate
+//       around the site
+//     </p>
+//   </>
+// )}
+// {props.children}
+// </div>

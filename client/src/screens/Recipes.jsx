@@ -9,24 +9,37 @@ export default function Recipes(props) {
   return (
     <div>
       <h2>Recipes</h2>
-      {recipes.map((recipe) => (
-        <React.Fragment key={recipe.id}>
-          <Link to={`/recipes/${recipe.id}`}>
-            <p>{recipe.name}</p>
-          </Link>
-          {currentUser?.id === recipe.user_id && (
-            <>
-              <Link to={`/recipes/${recipe.id}/edit`}>
-                <button>Edit</button>
+      <div className="recipe-cards-container">
+        {recipes.map((recipe) => (
+          <div className="recipe-cards">
+            <React.Fragment key={recipe.id}>
+              <Link to={`/recipes/${recipe.id}`}>
+                <div className="recipe-name">{recipe.name}</div>
               </Link>
-              <button onClick={() => handleOpen(recipe.id)}>
-                DELETE RECIPE
-              </button>
-            </>
-          )}
-        </React.Fragment>
-      ))}
-      <br />
+              {currentUser?.id === recipe.user_id && (
+                <>
+                  <div className="recipe-card-button-container">
+                    <Link to={`/recipes/${recipe.id}/edit`}>
+                      <img
+                        className="recipe-card-button"
+                        src="https://i.imgur.com/FFDaXm9.png"
+                        alt="edit-button"
+                      />
+                    </Link>
+                    <img
+                      onClick={() => handleOpen(recipe.id)}
+                      className="recipe-card-button"
+                      src="https://i.imgur.com/3yTHceK.png"
+                      alt="delete-button"
+                    />
+                  </div>
+                </>
+              )}
+            </React.Fragment>
+          </div>
+        ))}
+        <br />
+      </div>
       {open && (
         <Modal
           open={open}
@@ -36,7 +49,11 @@ export default function Recipes(props) {
       )}
       <br />
       <Link to="/recipes/new">
-        <button>Add New Recipe</button>
+        <img
+          className="add-recipe-button"
+          src="https://i.imgur.com/DEfpaHf.png"
+          alt="add-recipe"
+        />
       </Link>
     </div>
   );

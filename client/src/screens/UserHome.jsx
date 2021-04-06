@@ -7,7 +7,7 @@ export default function UserHome(props) {
     <div>
       {currentUser && (
         <>
-          <h3>Hello, {currentUser.username}!</h3>
+          <h2>Hello, {currentUser.username}!</h2>
           <br />
           <p>
             Click the yellow avatar icon in the top right corner to navigate
