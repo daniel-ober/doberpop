@@ -15,36 +15,22 @@ export default function RecipeDetails() {
   }, [id]);
 
   return (
-    <div>
+    <div className="recipe-container">
       <h2>{recipeItem?.name}</h2>
-      <br />
-      <br />
-      Description:
-      <br />
-      {recipeItem?.description}
-      <br />
-      <br />
-      Kernel Profile:
-      <br />
-      {recipeItem?.kernel_type}
-      <br />
-      <br />
-      Ingredients:
-      <br />
-      <p>
+      <div className="recipe-details">
+        <p className="details-label">Description:</p>
+        {recipeItem?.description}
+        <p className="details-label">Kernel Profile:</p>
+        {recipeItem?.kernel_type}
+        <p className="details-label">Ingredients:</p>
         {recipeItem?.ingredients.reduce((acc, val, index) => {
           return `${index === 1 ? acc.name : acc}, ${val.name}`;
         })}
-      </p>
-      <br />
-      <br />
-      Yield (cups):
-      <br />
-      {recipeItem?.yield}
-      <br />
-      Instructions:
-      <br />
-      {recipeItem?.instructions}
+        <p className="details-label">Yield (cups):</p>
+        {recipeItem?.yield}
+        <p className="details-label">Instructions:</p>
+        {recipeItem?.instructions}
+      </div>
     </div>
   );
 }

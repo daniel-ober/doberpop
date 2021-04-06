@@ -11,8 +11,8 @@ export default function Recipes(props) {
       <h2>Recipes</h2>
       <div className="recipe-cards-container">
         {recipes.map((recipe) => (
-          <div className="recipe-cards">
-            <React.Fragment key={recipe.id}>
+          <React.Fragment key={recipe.id}>
+              <div className="recipe-cards">
               <Link to={`/recipes/${recipe.id}`}>
                 <div className="recipe-name">{recipe.name}</div>
               </Link>
@@ -35,8 +35,8 @@ export default function Recipes(props) {
                   </div>
                 </>
               )}
-            </React.Fragment>
           </div>
+            </React.Fragment>
         ))}
         <br />
       </div>

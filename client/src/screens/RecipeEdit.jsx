@@ -66,6 +66,7 @@ export default function RecipeEdit(props) {
 
   return (
     <form
+      className='edit-form'
       onSubmit={(e) => {
         e.preventDefault();
         handleUpdate(id, formData);
@@ -79,6 +80,7 @@ export default function RecipeEdit(props) {
           placeholder="Recipe Title"
           value={name}
           onChange={handleChange}
+          required
         />
         <br />
         <input
@@ -87,6 +89,7 @@ export default function RecipeEdit(props) {
           placeholder="Description"
           value={description}
           onChange={handleChange}
+          required
         />
         <br />
         <input
@@ -95,6 +98,7 @@ export default function RecipeEdit(props) {
           placeholder="Kernel Profile"
           value={kernel_type}
           onChange={handleChange}
+          required
         />
         {ingredients.map((ingredient, index) => (
           <React.Fragment key={index}>
@@ -126,6 +130,7 @@ export default function RecipeEdit(props) {
           placeholder="Yield"
           value={formData.yield}
           onChange={handleChange}
+          required
         />
         <br />
         <input
@@ -134,6 +139,7 @@ export default function RecipeEdit(props) {
           placeholder="Instructions"
           value={instructions}
           onChange={handleChange}
+          required
         />
       </label>
       <br />

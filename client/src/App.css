@@ -13,16 +13,16 @@ header {
 }
 
 body {
-  color: #da9c2c;
+  background: url("https://i.imgur.com/II8Rvqp.jpg");
+  background-size:contain;
+  background-position:top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #fbdb5b;
   font-size: 23px;
   font-weight: bold;
 }
 
-.bg-img {
-  background-image: url('https://i.imgur.com/II8Rvqp.jpg');
-  background-repeat: no-repeat;
-  position:;
-}
 
 a, p {
   color:#fbdb5b;
@@ -42,7 +42,7 @@ a, p {
 }
 
 .header-logo {
-  width: 175px;
+  width: 180px;
 }
 
 .recipe-cards-container,
@@ -62,14 +62,15 @@ a {
 .recipe-cards {
   background-color: #eeeedd;
   color: #eeeedd;
-  margin: 40px;
-  height: 20vh;
+  margin: 30px;
+  padding: 2%;
+  /* height: 10vh; */
   width: 60vh;
 }
 
 .recipe-card-button {
-  height: 30px;
-  filter: grayscale(100%);
+  margin: 30px;
+  height: 35px;
 }
 
 .recipe-card-button:hover {
@@ -103,15 +104,15 @@ a {
 
 .add-recipe-button {
   height: 75px;
-  position:sticky;
+  position:static;
   bottom: 5vh;
   margin-bottom: 15vh;
 }
 
 .modal-container {
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   height: 100%;
   width: 100%;
   background-color: rgba(0,0,0,.6);
@@ -119,6 +120,22 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.recipe-container {
+  background-color: #eeeedd;
+  color: rgba(43, 40, 40, 0.687);
+  text-shadow: 2px 2px 60px #010200;
+  margin-left: 30vh;
+  margin-right: 30vh;
+  padding: 50px 75px 90px 75px;
+  letter-spacing: 1.5px;
+  border-radius: 3%;
+}
+
+.details-label {
+  color: #da9c2c;
+  text-shadow: -1px 1px 80px #010200;
 }
 
 @media only screen 
