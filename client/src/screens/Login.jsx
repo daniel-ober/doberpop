@@ -6,7 +6,7 @@ export default function Login(props) {
     username: "",
     password: "",
     isError: false,
-    errorMsg: "",
+    errorMsg: "Invalid Credentials: Your Username or Password is incorrect. Try Again",
   });
 
   const { username, password } = formData;
@@ -19,6 +19,8 @@ export default function Login(props) {
       [name]: value,
     }));
   };
+
+
 
   return (
     <form

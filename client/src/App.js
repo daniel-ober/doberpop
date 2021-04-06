@@ -41,6 +41,9 @@ function App() {
   }
 
   return (
+    <div style={{ 
+      backgroundImage: `url("https://i.imgur.com/II8Rvqp.jpg")` 
+    }}>
     <div className="App">
       <Layout 
       currentUser={currentUser}
@@ -65,6 +68,7 @@ function App() {
           </Route>
         </Switch>
       </Layout>
+    </div>
     </div>
   );
 }
