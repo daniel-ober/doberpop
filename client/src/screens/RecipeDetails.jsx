@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getOneRecipe } from "../services/recipes";
 
 export default function RecipeDetails() {
@@ -16,7 +16,9 @@ export default function RecipeDetails() {
 
   return (
     <div className="recipe-container">
-      <h2>{recipeItem?.name}</h2>
+      <div className="recipe-title">
+        {recipeItem?.name}
+      </div>
       <div className="recipe-details">
         <p className="details-label">Description:</p>
         {recipeItem?.description}
@@ -31,6 +33,9 @@ export default function RecipeDetails() {
         <p className="details-label">Instructions:</p>
         {recipeItem?.instructions}
       </div>
+      <Link to="/recipes">
+        <img className="details-back" src="https://i.imgur.com/hz1TSDF.png" />
+      </Link>
     </div>
   );
 }

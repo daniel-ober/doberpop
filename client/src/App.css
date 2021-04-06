@@ -10,6 +10,8 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 20px 60px 0px 50px;
+  position:relative;
+  top: 0;
 }
 
 body {
@@ -24,7 +26,8 @@ body {
 }
 
 
-a, p {
+a, 
+p {
   color:#fbdb5b;
   font-size: x-large;
   font-weight: bold;
@@ -43,6 +46,14 @@ a, p {
 
 .header-logo {
   width: 180px;
+}
+
+.welcome-message {
+  margin: 20vh;
+  font-size: 40px;
+  color: #eeeedd;
+  text-shadow: 5px 5px 100px #000000;
+  line-height: 60px;
 }
 
 .recipe-cards-container,
@@ -64,12 +75,12 @@ a {
   color: #eeeedd;
   margin: 30px;
   padding: 2%;
-  /* height: 10vh; */
   width: 60vh;
+  border-radius: 13px;
 }
 
 .recipe-card-button {
-  margin: 30px;
+  margin: 15px;
   height: 35px;
 }
 
@@ -79,33 +90,33 @@ a {
 }
 
 @keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  5% { transform: translate(-1px, -2px) rotate(-1deg); }
-  10% { transform: translate(-2px, 0px) rotate(1deg); }
-  15% { transform: translate(0px, 2px) rotate(0deg); }
-  20% { transform: translate(1px, -1px) rotate(1deg); }
-  25% { transform: translate(-1px, 2px) rotate(-1deg); }
-  30% { transform: translate(-3px, 1px) rotate(0deg); }
-  35% { transform: translate(0px, 1px) rotate(-1deg); }
-  40% { transform: translate(-1px, -1px) rotate(1deg); }
-  45% { transform: translate(1px, 2px) rotate(0deg); }
-  50% { transform: translate(1px, -2px) rotate(-1deg); }
-  55% { transform: translate(1px, 1px) rotate(0deg); }
-  60% { transform: translate(-1px, -2px) rotate(-1deg); }
-  65% { transform: translate(-2px, 0px) rotate(1deg); }
-  70% { transform: translate(0px, 2px) rotate(0deg); }
-  75% { transform: translate(1px, -1px) rotate(1deg); }
-  80% { transform: translate(-1px, 2px) rotate(-1deg); }
-  85% { transform: translate(-3px, 1px) rotate(0deg); }
-  90% { transform: translate(0px, 1px) rotate(-1deg); }
-  95% { transform: translate(-1px, -1px) rotate(1deg); }
-  100% { transform: translate(1px, 2px) rotate(0deg); }
+  0% { transform: translate(-1px, 0px) rotate(2deg); }
+  5% { transform: translate(0px, -1px) rotate(-2deg); }
+  10% { transform: translate(1px, 0px) rotate(1deg); }
+  15% { transform: translate(-1px, 1px) rotate(1deg); }
+  20% { transform: translate(0px, 0px) rotate(-2deg); }
+  25% { transform: translate(-1px, 0px) rotate(1deg); }
+  30% { transform: translate(0px, -1px) rotate(0deg); }
+  35% { transform: translate(0px, 0px) rotate(-1deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  45% { transform: translate(0px, 0px) rotate(0deg); }
+  50% { transform: translate(-1px, 1px) rotate(-1deg); }
+  55% { transform: translate(1px, -1px) rotate(0deg); }
+  60% { transform: translate(0px, 0px) rotate(-1deg); }
+  65% { transform: translate(1px, 1px) rotate(1deg); }
+  69% { transform: translate(0px, 0px) rotate(0deg); }
+  75% { transform: translate(0px, 1px) rotate(1deg); }
+  80% { transform: translate(-1px, 0px) rotate(-1deg); }
+  85% { transform: translate(0px, 0px) rotate(0deg); }
+  90% { transform: translate(1px, -1px) rotate(-1deg); }
+  95% { transform: translate(-1px, 0px) rotate(1deg); }
+  100% { transform: translate(0px, 1px) rotate(0deg); }
 }
 
 .add-recipe-button {
   height: 75px;
   position:static;
-  bottom: 5vh;
+  bottom: 0vh;
   margin-bottom: 15vh;
 }
 
@@ -128,14 +139,27 @@ a {
   text-shadow: 2px 2px 60px #010200;
   margin-left: 30vh;
   margin-right: 30vh;
-  padding: 50px 75px 90px 75px;
+  padding: 50px 75px 50px 75px;
   letter-spacing: 1.5px;
-  border-radius: 3%;
+  border-radius: 9%;
+}
+
+.recipe-title {
+  color:rgba(0, 0, 0, 0.666);
+  text-shadow: 2px 1px 15px #000000;
+  font-size: 30px;
+  padding-bottom: 20px;
 }
 
 .details-label {
   color: #da9c2c;
   text-shadow: -1px 1px 80px #010200;
+  margin-bottom: 7px;
+}
+
+.details-back {
+  margin-top: 5vh;
+  height: 40px;
 }
 
 @media only screen 

@@ -29,6 +29,9 @@ export default function Layout(props) {
       </header>
       {currentUser && <></>}
       {props.children}
+      <footer>
+
+      </footer>
     </div>
   );
 }

@@ -7,12 +7,14 @@ export default function UserHome(props) {
     <div>
       {currentUser && (
         <>
-          <h2>Hello, {currentUser.username}!</h2>
-          <br />
-          <p>
-            Click the yellow avatar icon in the top right corner to navigate
-            around the site
-          </p>
+          <div className="welcome-message">
+            <div className="welcome-title">Hello, {currentUser.username}!</div>
+            <div className="welcome-body">
+              Click the Recipes link in the top right corner to search for some
+              popcorn recipes. Click the '+' button at the bottom of the screen
+              to add your favorite recipe!
+            </div>
+          </div>
         </>
       )}
       {props.children}
