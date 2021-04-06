@@ -38,6 +38,7 @@ export default function Register(props) {
         placeholder="username"
         value={username}
         onChange={handleChange}
+        className="register-field"
       />
       <br />
       <input
@@ -46,6 +47,7 @@ export default function Register(props) {
         placeholder="email"
         value={email}
         onChange={handleChange}
+        className="register-field"
       />
       <br />
       <input
@@ -54,9 +56,10 @@ export default function Register(props) {
         placeholder="password"
         value={password}
         onChange={handleChange}
+        className="register-field"
       />
       <br />
-      <button>Create Account</button>
+      <button className="register-button">Create Account</button>
       <br />
       Already have an account?
       <br />

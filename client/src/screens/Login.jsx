@@ -42,6 +42,7 @@ export default function Login(props) {
           placeholder="username"
           value={username}
           onChange={handleChange}
+          className="login-field"
         />
         <br />
         <input
@@ -50,10 +51,11 @@ export default function Login(props) {
           placeholder="password"
           value={password}
           onChange={handleChange}
+          className="login-field"
         />
       </label>
       <br />
-      <button>Login</button>
+      <button className="login-button">Login</button>
       <br />
       Dont have an account?
       <br />

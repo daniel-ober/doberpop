@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 
 export default function UserHome(props) {
   const { currentUser } = props;
@@ -9,10 +10,13 @@ export default function UserHome(props) {
         <>
           <div className="welcome-message">
             <div className="welcome-title">Hello, {currentUser.username}!</div>
+            <br/>
             <div className="welcome-body">
               Click the Recipes link in the top right corner to search for some
-              popcorn recipes. Click the '+' button at the bottom of the screen
-              to add your favorite recipe!
+              popcorn recipes. 
+              <br/>
+              <br/>
+              Or contribute to the doberpop Community and click the '+' button at the bottom of the Recipes screen to add your favorite recipe!
             </div>
           </div>
         </>
