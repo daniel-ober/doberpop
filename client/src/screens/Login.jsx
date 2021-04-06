@@ -31,7 +31,7 @@ export default function Login(props) {
     >
       <img
         className="login-logo"
-        src="https://i.imgur.com/Hj8iyBo.png"
+        src="https://i.imgur.com/1nzGA9M.png"
         alt="logo"
       />
       <br />

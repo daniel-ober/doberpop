@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300&display=swap");
 
 .App {
-  font-family: 'Kumbh Sans', sans-serif;
+  font-family: "Kumbh Sans", sans-serif;
   text-align: center;
 }
 
@@ -10,14 +10,14 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 20px 60px 0px 50px;
-  position:relative;
+  position: relative;
   top: 0;
 }
 
 body {
   background: url("https://i.imgur.com/II8Rvqp.jpg");
-  background-size:contain;
-  background-position:top;
+  background-size: contain;
+  background-position: top;
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: #fbdb5b;
@@ -25,22 +25,16 @@ body {
   font-weight: bold;
 }
 
-
-a, 
+a,
 p {
-  color:#fbdb5b;
+  color: #fbdb5b;
   font-size: x-large;
   font-weight: bold;
   text-decoration: none;
 }
 
-.landing-logo {
-  width: 75vh;
-  margin-top: 19%;
-}
-
 .login-logo {
-  width: 65vh;
+  width: 500px;
   margin-top: 16%;
 }
 
@@ -90,32 +84,74 @@ a {
 }
 
 @keyframes shake {
-  0% { transform: translate(-1px, 0px) rotate(2deg); }
-  5% { transform: translate(0px, -1px) rotate(-2deg); }
-  10% { transform: translate(1px, 0px) rotate(1deg); }
-  15% { transform: translate(-1px, 1px) rotate(1deg); }
-  20% { transform: translate(0px, 0px) rotate(-2deg); }
-  25% { transform: translate(-1px, 0px) rotate(1deg); }
-  30% { transform: translate(0px, -1px) rotate(0deg); }
-  35% { transform: translate(0px, 0px) rotate(-1deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  45% { transform: translate(0px, 0px) rotate(0deg); }
-  50% { transform: translate(-1px, 1px) rotate(-1deg); }
-  55% { transform: translate(1px, -1px) rotate(0deg); }
-  60% { transform: translate(0px, 0px) rotate(-1deg); }
-  65% { transform: translate(1px, 1px) rotate(1deg); }
-  69% { transform: translate(0px, 0px) rotate(0deg); }
-  75% { transform: translate(0px, 1px) rotate(1deg); }
-  80% { transform: translate(-1px, 0px) rotate(-1deg); }
-  85% { transform: translate(0px, 0px) rotate(0deg); }
-  90% { transform: translate(1px, -1px) rotate(-1deg); }
-  95% { transform: translate(-1px, 0px) rotate(1deg); }
-  100% { transform: translate(0px, 1px) rotate(0deg); }
+  0% {
+    transform: translate(-1px, 0px) rotate(2deg);
+  }
+  5% {
+    transform: translate(0px, -1px) rotate(-2deg);
+  }
+  10% {
+    transform: translate(1px, 0px) rotate(1deg);
+  }
+  15% {
+    transform: translate(-1px, 1px) rotate(1deg);
+  }
+  20% {
+    transform: translate(0px, 0px) rotate(-2deg);
+  }
+  25% {
+    transform: translate(-1px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(0px, -1px) rotate(0deg);
+  }
+  35% {
+    transform: translate(0px, 0px) rotate(-1deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  45% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  50% {
+    transform: translate(-1px, 1px) rotate(-1deg);
+  }
+  55% {
+    transform: translate(1px, -1px) rotate(0deg);
+  }
+  60% {
+    transform: translate(0px, 0px) rotate(-1deg);
+  }
+  65% {
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  69% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  75% {
+    transform: translate(0px, 1px) rotate(1deg);
+  }
+  80% {
+    transform: translate(-1px, 0px) rotate(-1deg);
+  }
+  85% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  90% {
+    transform: translate(1px, -1px) rotate(-1deg);
+  }
+  95% {
+    transform: translate(-1px, 0px) rotate(1deg);
+  }
+  100% {
+    transform: translate(0px, 1px) rotate(0deg);
+  }
 }
 
 .add-recipe-button {
   height: 75px;
-  position:static;
+  position: sticky;
   bottom: 0vh;
   margin-bottom: 15vh;
 }
@@ -126,7 +162,7 @@ a {
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,.6);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
   display: flex;
   justify-content: center;
@@ -145,7 +181,7 @@ a {
 }
 
 .recipe-title {
-  color:rgba(0, 0, 0, 0.666);
+  color: rgba(0, 0, 0, 0.666);
   text-shadow: 2px 1px 15px #000000;
   font-size: 30px;
   padding-bottom: 20px;
@@ -162,41 +198,52 @@ a {
   height: 40px;
 }
 
-@media only screen 
-  and (min-device-width: 1024px) 
-  and (max-device-width: 1366px)
-  and (-webkit-min-device-pixel-ratio: 2) {
-    header {
-      padding: 20px 40px 10px 30px;
-    }
+@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+  body {
+    background-size: cover;
+    background-position: left;
+    background-attachment: fixed;
+  }
 
-    .landing-logo {
-      width: 600px;
-    }
-    
-    .login-logo {
-      width: 500px;
-    }
-    
-    .header-logo {
-      width: 150px;
-    }
+  .login-logo {
+    width: 550px;
+  }
+
+  .header-logo {
+    width: 200px;
+    text-align: center;
+  }
+
+  .recipe-container {
+    margin-left: 18vh;
+    margin-right: 18vh;
+    padding: 50px 55px 50px 55px;
+    letter-spacing: 1px;
+    border-radius: 5%;
+  }
+
+  .details-label {
+    margin-bottom: 10px;
+  }
+
+  .details-back {
+    margin-top: 4vh;
+    height: 30px;
+  }
 }
 
-@media only screen 
-  and (min-device-width: 375px) 
-  and (max-device-width: 812px) 
-  and (-webkit-min-device-pixel-ratio: 3) { 
-    .landing-logo {
-      width: 350px;
-    }
-    
-    .login-logo {
-      width: 300px;
-    }
-    
-    .header-logo {
-      width: 100px;
-    }
-}
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  body {
+    background-size: cover;
+    background-position: right;
+    background-attachment: fixed;
+  }
 
+  .login-logo {
+    width: 300px;
+  }
+
+  .header-logo {
+    width: 100px;
+  }
+}

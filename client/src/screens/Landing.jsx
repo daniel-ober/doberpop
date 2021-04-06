@@ -6,8 +6,8 @@ export default function Landing() {
   return (
     <div>
       <img
-        className="landing-logo"
-        src="https://i.imgur.com/518XICb.png"
+        className="login-logo"
+        src="https://i.imgur.com/1nzGA9M.png"
         alt="logo"
       />
       <br />
