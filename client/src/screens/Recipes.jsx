@@ -8,7 +8,7 @@ export default function Recipes(props) {
 
   return (
     <div>
-      <h2>Recipes</h2>
+      <div className='recipes-header'>Recipes</div>
       <div className="recipe-cards-container">
         {recipes.map((recipe) => (
           <React.Fragment key={recipe.id}>

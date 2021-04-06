@@ -214,6 +214,10 @@ a {
     text-align: center;
   }
 
+  .recipes-header {
+    font-size: 40px;
+  }
+
   .recipe-container {
     margin-left: 18vh;
     margin-right: 18vh;
@@ -246,4 +250,13 @@ a {
   .header-logo {
     width: 100px;
   }
+
+  .welcome-message {
+    margin: 5vh;
+    
+    font-size: 25px;
+    line-height: 30px;
+  }
+
+
 }
