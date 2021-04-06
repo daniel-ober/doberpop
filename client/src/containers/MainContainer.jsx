@@ -18,7 +18,7 @@ import UserHome from "../screens/UserHome";
 export default function MainContainer(props) {
   const [ingredients, setIngredients] = useState([]);
   const [recipes, setRecipes] = useState([]);
-  const [ingredient, setIngredient] = useState({ name: "" });
+  // const [ingredient, setIngredient] = useState({ name: "" });
   const { currentUser } = props;
   const history = useHistory();
 
@@ -67,14 +67,14 @@ export default function MainContainer(props) {
       <Route path="/recipes/new">
         <RecipeCreate
           handleCreate={handleCreate}
-          setIngredient={setIngredient}
+          // setIngredient={setIngredient}
         />
       </Route>
       <Route path="/recipes/:id/edit">
         <RecipeEdit
           recipes={recipes}
           handleUpdate={handleUpdate}
-          setIngredient={setIngredient}
+          // setIngredient={setIngredient}
         />
       </Route>
       <Route path="/recipes/:id">

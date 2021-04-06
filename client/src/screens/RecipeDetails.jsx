@@ -12,7 +12,7 @@ export default function RecipeDetails() {
       setRecipeItem(recipeData);
     };
     fetchRecipeItem();
-  }, []);
+  }, [id]);
 
   return (
     <div>

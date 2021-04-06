@@ -16,9 +16,6 @@ export default function Recipes(props) {
           </Link>
           {currentUser?.id === recipe.user_id && (
             <>
-              <Link to={`/recipes/${recipe.id}`}>
-                <button>Back</button>
-              </Link>
               <Link to={`/recipes/${recipe.id}/edit`}>
                 <button>Edit</button>
               </Link>
