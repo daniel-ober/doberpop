@@ -17,7 +17,7 @@ export default function Layout(props) {
         {currentUser ? (
           <>
             <div>
-              <Link to="/home">{currentUser.username}</Link>
+              <Link to="/home">Hello, {currentUser.username}!</Link>
               <br />
               <Link to="/recipes">Recipes</Link>
               <br />
