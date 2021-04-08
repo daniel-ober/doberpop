@@ -17,7 +17,7 @@ export default function Layout(props) {
         {currentUser ? (
           <>
             <div className="header-links">
-              <Link to="/home">Hello, {currentUser.username}!</Link>
+              Hello, {currentUser.username}!
               <br />
               <Link to="/recipes">Recipes</Link>
               <br />
