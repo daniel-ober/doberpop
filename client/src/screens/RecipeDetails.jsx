@@ -20,18 +20,15 @@ export default function RecipeDetails() {
         {recipeItem?.name}
       </div>
       <div className="recipe-details">
-        <p className="details-label">Recipe by:</p>
-        {recipeItem?.user}
+        <p className="details-label">Recipe by {recipeItem?.user}</p>
         <p className="details-label">Description:</p>
         {recipeItem?.description}
-        <p className="details-label">Kernel Profile:</p>
-        {recipeItem?.kernel_type}
+        <p className="details-label">Kernel Profile: {recipeItem?.kernel_type}</p>
         <p className="details-label">Ingredients:</p>
         {recipeItem?.ingredients.reduce((acc, val, index) => {
           return `${index === 1 ? acc.name : acc}, ${val.name}`;
         })}
-        <p className="details-label">Yield (cups):</p>
-        {recipeItem?.yield}
+        <p className="details-label">Yield (cups): {recipeItem?.yield}</p>
         <p className="details-label">Instructions:</p>
         {recipeItem?.instructions}
       </div>
