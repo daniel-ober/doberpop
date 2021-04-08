@@ -20,6 +20,9 @@ export default function RecipeDetails() {
         {recipeItem?.name}
       </div>
       <div className="recipe-details">
+        {recipeItem?.user}
+      </div>
+      <div className="recipe-details">
         <p className="details-label">Description:</p>
         {recipeItem?.description}
         <p className="details-label">Kernel Profile:</p>
