@@ -20,51 +20,48 @@ export default function Register(props) {
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleRegister(formData);
-      }}
-    >
-      <img
-        className="login-logo"
-        src="https://i.imgur.com/1nzGA9M.png"
-        alt="logo"
-      />
-      <br />
-      <input
-        type="text"
-        name="username"
-        placeholder="username"
-        value={username}
-        onChange={handleChange}
-        className="register-field"
-      />
-      <br />
-      <input
-        type="text"
-        name="email"
-        placeholder="email"
-        value={email}
-        onChange={handleChange}
-        className="register-field"
-      />
-      <br />
-      <input
-        type="password"
-        name="password"
-        placeholder="password"
-        value={password}
-        onChange={handleChange}
-        className="register-field"
-      />
-      <br />
-      <button className="register-button">Create Account</button>
-      <br />
-      Already have an account?
-      <br />
-      <Link to="/login">Sign In</Link>
-      <br />
-    </form>
+    <div className="register-container">
+      <form
+        className='register-form'
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleRegister(formData);
+        }}
+      >
+        <img
+          className="login-logo"
+          src="https://i.imgur.com/1nzGA9M.png"
+          alt="logo"
+        />
+        <input
+          type="text"
+          name="username"
+          placeholder="username"
+          value={username}
+          onChange={handleChange}
+          className="register-field"
+        />
+        <input
+          type="text"
+          name="email"
+          placeholder="email"
+          value={email}
+          onChange={handleChange}
+          className="register-field"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="password"
+          value={password}
+          onChange={handleChange}
+          className="register-field"
+        />
+        <button className="register-button">Create Account</button>
+        Already have an account?
+        <br />
+        <Link to="/login">Sign In</Link>
+      </form>
+    </div>
   );
 }

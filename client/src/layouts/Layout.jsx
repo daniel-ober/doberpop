@@ -16,7 +16,7 @@ export default function Layout(props) {
         </Link>
         {currentUser ? (
           <>
-            <div>
+            <div className="header-links">
               <Link to="/home">Hello, {currentUser.username}!</Link>
               <br />
               <Link to="/recipes">Recipes</Link>
@@ -29,9 +29,7 @@ export default function Layout(props) {
       </header>
       {currentUser && <></>}
       {props.children}
-      <footer>
-
-      </footer>
+      <footer></footer>
     </div>
   );
 }

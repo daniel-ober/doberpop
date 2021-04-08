@@ -48,88 +48,87 @@ export default function RecipeCreate(props) {
   };
 
   return (
-    <form
-      className='create-recipe-container'
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleCreate(formData);
-      }}
-    >
-      <h2>New Recipe</h2>
-      <label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Recipe Title"
-          value={name}
-          onChange={handleChange}
-          className="create-field"
-        />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreate(formData);
+        }}
+      >
+        <h2 className='new-recipe-header'>New Recipe</h2>
+        <label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Recipe Title"
+            value={name}
+            onChange={handleChange}
+            className="create-field"
+          />
+          <br />
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={description}
+            onChange={handleChange}
+            className="create-field"
+          />
+          <br />
+          <input
+            type="text"
+            name="kernel_type"
+            placeholder="Kernel Profile"
+            value={kernel_type}
+            onChange={handleChange}
+            className="create-field"
+          />
+          <br />
+          {ingredients.map((ingredient, index) => (
+            <React.Fragment key={index}>
+              <p>{ingredient.name}</p>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeleteIngredient(ingredient.name);
+                }}
+              >
+                Delete
+              </button>
+            </React.Fragment>
+          ))}
+          <br />
+          <input
+            type="text"
+            name="ingredients"
+            value={ingredientFormData}
+            placeholder="Ingredients"
+            className="create-field"
+            onChange={(e) => setIngredientFormData(e.target.value)}
+          />
+          <button onClick={handleAddIngredient}>Add</button>
+          <br />
+          <input
+            type="number"
+            name="yield"
+            placeholder="Yield"
+            value={formData.yield}
+            onChange={handleChange}
+            className="create-field"
+          />
+          <br />
+          <input
+            type="text"
+            name="instructions"
+            placeholder="Instructions"
+            value={instructions}
+            onChange={handleChange}
+            className="create-field"
+          />
+        </label>
         <br />
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={description}
-          onChange={handleChange}
-          className="create-field"
-        />
+        <button className="create-recipe-button">Cancel</button>
         <br />
-        <input
-          type="text"
-          name="kernel_type"
-          placeholder="Kernel Profile"
-          value={kernel_type}
-          onChange={handleChange}
-          className="create-field"
-        />
-        <br />
-        {ingredients.map((ingredient, index) => (
-          <React.Fragment key={index}>
-            <p>{ingredient.name}</p>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                handleDeleteIngredient(ingredient.name);
-              }}
-            >
-              Delete
-            </button>
-          </React.Fragment>
-        ))}
-        <br />
-        <input
-          type="text"
-          name="ingredients"
-          value={ingredientFormData}
-          placeholder="Ingredients"
-          className="create-field"
-          onChange={(e) => setIngredientFormData(e.target.value)}
-        />
-        <button onClick={handleAddIngredient}>Add</button>
-        <br />
-        <input
-          type="number"
-          name="yield"
-          placeholder="Yield"
-          value={formData.yield}
-          onChange={handleChange}
-          className="create-field"
-        />
-        <br />
-        <input
-          type="text"
-          name="instructions"
-          placeholder="Instructions"
-          value={instructions}
-          onChange={handleChange}
-          className="create-field"
-        />
-      </label>
-      <br />
-      <button>Cancel</button>
-      <br />
-      <button clasName='create-recipe-button'>Add</button>
-    </form>
+        <button className="create-recipe-button">Add</button>
+      </form>
   );
 }

@@ -6,7 +6,8 @@ export default function Login(props) {
     username: "",
     password: "",
     isError: false,
-    errorMsg: "Invalid Credentials: Your Username or Password is incorrect. Try Again",
+    errorMsg:
+      "Invalid Credentials: Your Username or Password is incorrect. Try Again",
   });
 
   const { username, password } = formData;
@@ -20,10 +21,9 @@ export default function Login(props) {
     }));
   };
 
-
-
   return (
     <form
+    className='login-form'
       onSubmit={(e) => {
         e.preventDefault();
         handleLogin(formData);
@@ -59,7 +59,9 @@ export default function Login(props) {
       <br />
       Dont have an account?
       <br />
-      <Link to="/register">Register</Link>
+      <Link to="/register" className="register-link">
+        Register
+      </Link>
       <br />
     </form>
   );

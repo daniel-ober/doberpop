@@ -51,7 +51,7 @@ export default function Recipes(props) {
       <Link to="/recipes/new">
         <img
           className="add-recipe-button"
-          src="https://i.imgur.com/DEfpaHf.png"
+          src="https://i.imgur.com/fHQ5ykw.png"
           alt="add-recipe"
         />
       </Link>

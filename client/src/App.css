@@ -35,21 +35,30 @@ p {
 
 .login-logo {
   width: 600px;
-  margin-top: 9%;
+}
+
+.landing-container {
+  margin-top: 14%;
+}
+
+.login-container {
+  margin-top: 6%;
+}
+
+.register-container {
+  margin-top: 0vh;
 }
 
 .login-field,
 .register-field,
 .create-field,
-.edit-field
- {
+.edit-field {
   font-family: "Kumbh Sans", sans-serif;
   text-align: center;
   font-size: 25px;
-  font-style: italic;
   font-weight: bolder;
   width: 550px;
-  height: 65px; 
+  height: 65px;
   margin: 20px;
 }
 
@@ -60,10 +69,21 @@ p {
   font-size: 25px;
   font-weight: bolder;
   width: 560px;
-  height: 70px; 
+  height: 70px;
   margin: 20px;
   margin-top: 6vh;
   margin-bottom: 3vh;
+  background-color: cornflowerblue;
+}
+
+.create-recipe-button {
+  font-family: "Kumbh Sans", sans-serif;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bolder;
+  width: 560px;
+  height: 70px;
+  margin: 20px;
   background-color: cornflowerblue;
 }
 
@@ -90,6 +110,10 @@ p {
   line-height: 60px;
 }
 
+.recipes-header {
+  font-size: 35px;
+}
+
 .recipe-cards-container,
 a {
   color: #ce7b04;
@@ -109,7 +133,7 @@ a {
   color: #eeeedd;
   margin: 30px;
   padding: 2%;
-  width: 60vh;
+  width: 80vh;
   border-radius: 13px;
 }
 
@@ -203,7 +227,7 @@ a {
   font-style: italic;
   font-weight: bolder;
   width: 550px;
-  height: 65px; 
+  height: 65px;
   margin: 20px;
 }
 
@@ -226,13 +250,14 @@ a {
   text-shadow: 2px 2px 60px #010200;
   margin-left: 30vh;
   margin-right: 30vh;
+  margin-top: 7vh;
   padding: 50px 75px 50px 75px;
   letter-spacing: 1.5px;
-  border-radius: 9%;
+  border-radius: 3%;
 }
 
 .recipe-title {
-  color: rgba(0, 0, 0, 0.666);
+  color: rgba(0, 0, 0, 0.6);
   text-shadow: 2px 1px 15px #000000;
   font-size: 30px;
   padding-bottom: 20px;
@@ -241,7 +266,8 @@ a {
 .details-label {
   color: #da9c2c;
   text-shadow: -1px 1px 80px #010200;
-  margin-bottom: 7px;
+  margin-bottom: 2vh;
+  padding: 10px;
 }
 
 .details-back {
@@ -257,7 +283,6 @@ a {
   }
 
   .login-logo {
-    margin-top: 12vh;
     width: 550px;
   }
 
@@ -266,37 +291,17 @@ a {
     text-align: center;
   }
 
-  .login-field {
-  font-family: "Kumbh Sans", sans-serif;
-  text-align: center;
-  font-size: 25px;
-  font-style: italic;
-  font-weight: bolder;
-  width: 550px;
-  height: 65px; 
-  margin: 20px;
-}
-
-.login-button {
-  font-family: "Kumbh Sans", sans-serif;
-  text-align: center;
-  font-size: 25px;
-  font-weight: bolder;
-  width: 560px;
-  height: 70px; 
-  margin: 20px;
-  margin-top: 6vh;
-  margin-bottom: 3vh;
-  background-color: cornflowerblue;
-}
-
   .recipes-header {
     font-size: 40px;
   }
 
+  .recipe-cards {
+    width: 50vh;
+  }
+
   .recipe-container {
-    margin-left: 18vh;
-    margin-right: 18vh;
+    margin-left: 10vh;
+    margin-right: 10vh;
     padding: 50px 55px 50px 55px;
     letter-spacing: 1px;
     border-radius: 5%;
@@ -319,42 +324,114 @@ a {
     background-attachment: fixed;
   }
 
+  .landing-container {
+    margin-top: 20vh;
+    font-size: 20px;
+  }
+
+  .login-container {
+    margin-top: 5vh;
+
+  }
+
+  .register-container {
+    margin-top: 1vh;
+  }
+
   .login-logo {
-    width: 280px;
-    margin-top: 8vh;
+    width: 300px;
+  }
+
+  .header-links, 
+  a {
+    font-size: 15px;
   }
 
   .header-logo {
     width: 100px;
   }
 
-  .login-field {
-    font-size: 20px;
-    font-style: italic;
+  .login-form {
+    margin-top: 10vh;
+  }
+
+  .register-form,
+  a {
+    margin-top: 4vh;
+    font-size: 22px;
     font-weight: bolder;
-    width: 280px;
-    height: 48px; 
+  }
+
+  .login-field,
+  .register-field {
+    font-size: 20px;
+    font-weight: bolder;
+    width: 300px;
+    height: 50px;
     margin: 12px;
   }
-  
-  .login-button {
-    font-family: "Kumbh Sans", sans-serif;
-    text-align: center;
+
+  .login-button,
+  .register-button {
+    width: 325px;
+    height: 60px;
     font-size: 20px;
-    font-weight: bolder;
-    width: 285px;
-    height: 57px; 
-    margin-top: 6vh;
-    margin-bottom: 5vh;
-    background-color: cornflowerblue;
+  }
+
+  .register-link,
+  .login-link {
+    padding-top: 100px;
   }
 
   .welcome-message {
-    margin: 5vh;
-
-    font-size: 25px;
-    line-height: 30px;
+    margin: 3vh;
+    padding-top: 5vh;
+    font-size: 20px;
+    line-height: 20px;
   }
 
+  .welcome-title {
+    font-size: 30px;
+    padding-bottom: 15px;
+  }
+
+  .recipes-header {
+    font-size: 25px;
+    margin-top: 5vh;
+  }
+
+  .recipe-cards {
+    width: 40vh;
+  }
+
+  .recipe-name {
+    font-size: 20px;
+  }
+
+  .recipe-container {
+    width: 35vh;
+    margin: 0 auto;
+    margin-top: 5vh;
+    padding: 20px;
+    font-size: 15px;
+    border-radius: 20px;
+  }
+
+  .recipe-title {
+    font-size: 25px;
+  }
+
+  .details-label {
+    font-size: 15px;
+  }
+
+  .details-back {
+    height: 30px;
+  }
+
+  .add-recipe-button {
+    height: 80px;
+    padding: 20px;
+  }
 
 }
