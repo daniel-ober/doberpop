@@ -425,7 +425,8 @@ a {
   }
 
   .recipe-title {
-    font-size: 25px;
+    font-size: 24px;
+    padding-top: 15px;
   }
 
   .details-label {
