@@ -28,7 +28,7 @@ const FLAVOR_HERO_MAP = (() => {
     const base = filename.replace(/\.(png|jpe?g|webp)$/i, "");
 
     const mod = flavorCtx(k);
-    const url = (mod && mod.default) ? mod.default : mod; // ✅ THIS is the fix
+    const url = mod && mod.default ? mod.default : mod;
 
     map[normalizeFlavorKey(base)] = url;
   });
@@ -39,6 +39,16 @@ export default function RecipeDetails() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
+
+  // Like state (simple/local-first; you can wire to API later)
+  const likeKey = useMemo(() => `doberpop_like_recipe_${id}`, [id]);
+  const [liked, setLiked] = useState(() => {
+    try {
+      return localStorage.getItem(likeKey) === "1";
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     let alive = true;
@@ -61,6 +71,12 @@ export default function RecipeDetails() {
     };
   }, [id]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(likeKey, liked ? "1" : "0");
+    } catch {}
+  }, [liked, likeKey]);
+
   const heroSrc = useMemo(() => {
     if (!recipe) return "";
 
@@ -76,6 +92,44 @@ export default function RecipeDetails() {
     return FLAVOR_HERO_MAP[key] || "";
   }, [recipe]);
 
+  const shareText = useMemo(() => {
+    if (!recipe) return "";
+    const bits = [];
+    if (recipe.name) bits.push(`🍿 ${recipe.name}`);
+    if (recipe.kernel_type) bits.push(`Kernel: ${recipe.kernel_type}`);
+    if (recipe.yield) bits.push(`Yield: ${recipe.yield} cups`);
+    if (recipe.description) bits.push(`\n${recipe.description}`);
+    bits.push(`\n${window.location.href}`);
+    return bits.join(" • ");
+  }, [recipe]);
+
+  const handleShare = async () => {
+    // Best available: native share sheet on mobile
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: recipe?.name || "Doberpop Recipe",
+          text: shareText,
+          url: window.location.href,
+        });
+        return;
+      } catch {
+        // user canceled -> ignore
+      }
+    }
+
+    // Fallback: open share chooser (FB), and copy link/text
+    try {
+      await navigator.clipboard.writeText(shareText);
+    } catch {}
+
+    // FB sharer supports URL only (text prefill is not reliably supported anymore)
+    const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      window.location.href
+    )}`;
+    window.open(fb, "_blank", "noopener,noreferrer,width=900,height=700");
+  };
+
   if (error) {
     return (
       <div className="page">
@@ -83,8 +137,8 @@ export default function RecipeDetails() {
           <div className="empty">
             <div className="empty__title">Something went wrong</div>
             <div className="empty__text">{error}</div>
-            <Link className="btn btn--ghost" to="/recipes">
-              Back to recipes
+            <Link className="detailsBack" to="/recipes">
+              ← Back to recipes
             </Link>
           </div>
         </div>
@@ -108,18 +162,44 @@ export default function RecipeDetails() {
   return (
     <div className="page">
       <div className="detailsPage">
-        <div className="detailsTop">
-          <div>
+        <div className="detailsHeader">
+          <div className="detailsHeaderLeft">
+            <Link className="detailsBack" to="/recipes">
+              ← Back to recipes
+            </Link>
+
             <h1 className="detailsTitle">{recipe?.name || "Untitled"}</h1>
-            <div className="detailsSub">
+
+            <div className="detailsMeta">
               {recipe?.kernel_type ? `Kernel: ${recipe.kernel_type}` : "—"}
               {recipe?.yield ? ` • Yield: ${recipe.yield} cups` : ""}
             </div>
           </div>
 
-          <Link className="btn btn--ghost" to="/recipes">
-            ← Back
-          </Link>
+          <div className="detailsHeaderRight">
+            <button
+              className={`detailsActionBtn ${liked ? "isLiked" : ""}`}
+              onClick={() => setLiked((v) => !v)}
+              type="button"
+              aria-pressed={liked}
+            >
+              <span className="detailsActionIcon" aria-hidden>
+                {liked ? "♥" : "♡"}
+              </span>
+              <span>{liked ? "Liked" : "Like"}</span>
+            </button>
+
+            <button
+              className="detailsActionBtn"
+              onClick={handleShare}
+              type="button"
+            >
+              <span className="detailsActionIcon" aria-hidden>
+                ↗
+              </span>
+              <span>Share</span>
+            </button>
+          </div>
         </div>
 
         {heroSrc ? (
@@ -128,7 +208,6 @@ export default function RecipeDetails() {
               src={heroSrc}
               alt={`${recipe?.name || "Recipe"} hero`}
               onError={(e) => {
-                // if it still fails, hide the broken image box
                 e.currentTarget.style.display = "none";
               }}
             />
@@ -154,10 +233,16 @@ export default function RecipeDetails() {
             )}
           </section>
 
-          <section className="detailsCard" style={{ gridColumn: "1 / -1" }}>
+          <section className="detailsCard detailsCardFull">
             <div className="detailsLabel">Instructions</div>
             <pre className="detailsPre">{recipe?.instructions || "—"}</pre>
           </section>
+        </div>
+
+        {/* Optional: tiny helper text after sharing when clipboard works */}
+        <div className="detailsFootnote">
+          Tip: Share opens Facebook + copies the full recipe text/link to your
+          clipboard (paste it into the post).
         </div>
       </div>
     </div>
