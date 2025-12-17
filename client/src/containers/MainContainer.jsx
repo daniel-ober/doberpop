@@ -1,94 +1,51 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
-import { getAllIngredients } from "../services/ingredients";
-import {
-  destroyRecipe,
-  getAllRecipes,
-  postRecipe,
-  putRecipe,
-} from "../services/recipes";
-import Ingredients from "../screens/Ingredients";
-import Recipes from "../screens/Recipes";
-import RecipeCreate from "../screens/RecipeCreate";
-import RecipeEdit from "../screens/RecipeEdit";
-import RecipeDetails from "../screens/RecipeDetails";
-import UserHome from "../screens/UserHome";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-export default function MainContainer(props) {
-  const [ingredients, setIngredients] = useState([]);
+import Recipes from "../pages/Recipes/Recipes";
+import RecipeDetails from "../pages/RecipeDetails/RecipeDetails";
+import RecipeCreate from "../pages/RecipeCreate/RecipeCreate";
+import RecipeEdit from "../pages/RecipeEdit/RecipeEdit";
+
+import { getRecipes, deleteRecipe } from "../services/recipes";
+
+export default function MainContainer({ currentUser }) {
+  const { path } = useRouteMatch(); // <-- IMPORTANT (nested router base)
   const [recipes, setRecipes] = useState([]);
-  // const [ingredient, setIngredient] = useState({ name: "" });
-  const { currentUser } = props;
-  const history = useHistory();
-
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      const ingredientData = await getAllIngredients();
-      setIngredients(ingredientData);
-    };
-    fetchIngredients();
-  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      const recipeData = await getAllRecipes();
-      setRecipes(recipeData);
+      const data = await getRecipes();
+      setRecipes(data);
     };
     fetchRecipes();
   }, []);
 
   const handleDelete = async (id) => {
-    await destroyRecipe(id);
-    setRecipes((prevState) => prevState.filter((recipe) => recipe.id !== id));
-  };
-
-  const handleCreate = async (recipeData) => {
-    const newRecipe = await postRecipe(recipeData);
-    setRecipes((prevState) => [...prevState, newRecipe]);
-    history.push("/recipes");
-  };
-
-  const handleUpdate = async (id, recipeData) => {
-    const updatedRecipe = await putRecipe(id, recipeData);
-    setRecipes((prevState) =>
-      prevState.map((recipe) => {
-        return recipe.id === Number(id) ? updatedRecipe : recipe;
-      })
-    );
-    history.push("/recipes");
+    await deleteRecipe(id);
+    setRecipes((prev) => prev.filter((r) => r.id !== id));
   };
 
   return (
     <Switch>
-      <Route path="/ingredients">
-        <Ingredients ingredients={ingredients} />
+      {/* IMPORTANT: put /new and /:id/edit BEFORE /:id */}
+      <Route exact path={`${path}/new`}>
+        <RecipeCreate />
       </Route>
-      <Route path="/recipes/new">
-        <RecipeCreate
-          handleCreate={handleCreate}
-          // setIngredient={setIngredient}
-        />
+
+      <Route exact path={`${path}/:id/edit`}>
+        <RecipeEdit />
       </Route>
-      <Route path="/recipes/:id/edit">
-        <RecipeEdit
-          recipes={recipes}
-          handleUpdate={handleUpdate}
-          // setIngredient={setIngredient}
-        />
-      </Route>
-      <Route path="/recipes/:id">
+
+      <Route exact path={`${path}/:id`}>
         <RecipeDetails />
       </Route>
-      <Route path="/recipes">
+
+      <Route exact path={path}>
         <Recipes
           recipes={recipes}
           handleDelete={handleDelete}
           currentUser={currentUser}
         />
-      </Route>
-      <Route path="/home">
-        <UserHome currentUser={currentUser} />
       </Route>
     </Switch>
   );

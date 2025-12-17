@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Modal from "../components/Modal";
+import Modal from "../../components/Modal/Modal";
 
 export default function Recipes(props) {
   const [open, setOpen] = useState(false);
@@ -18,7 +18,6 @@ export default function Recipes(props) {
       list = list.filter((r) => (r.name || "").toLowerCase().includes(q));
     }
 
-    // Many older APIs don’t return created_at consistently. Sort safely.
     const getTime = (r) => {
       const t = r.created_at || r.updated_at;
       const ms = t ? Date.parse(t) : NaN;
@@ -123,7 +122,11 @@ export default function Recipes(props) {
 
                 {isOwner && (
                   <div className="card__actions">
-                    <Link className="iconBtn" to={`/recipes/${recipe.id}/edit`} aria-label="Edit recipe">
+                    <Link
+                      className="iconBtn"
+                      to={`/recipes/${recipe.id}/edit`}
+                      aria-label="Edit recipe"
+                    >
                       <img
                         className="iconBtn__img"
                         src="https://i.imgur.com/FFDaXm9.png"
@@ -131,7 +134,11 @@ export default function Recipes(props) {
                       />
                     </Link>
 
-                    <button className="iconBtn" onClick={() => openDelete(recipe.id)} aria-label="Delete recipe">
+                    <button
+                      className="iconBtn"
+                      onClick={() => openDelete(recipe.id)}
+                      aria-label="Delete recipe"
+                    >
                       <img
                         className="iconBtn__img"
                         src="https://i.imgur.com/3yTHceK.png"
@@ -147,7 +154,11 @@ export default function Recipes(props) {
       )}
 
       {open && (
-        <Modal open={open} handleOpen={closeDelete} handleDelete={confirmDelete} />
+        <Modal
+          open={open}
+          handleOpen={closeDelete}
+          handleDelete={confirmDelete}
+        />
       )}
     </div>
   );

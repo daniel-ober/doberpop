@@ -1,9 +1,7 @@
-import axios from 'axios'
-
-const baseUrl = process.env.NODE_ENV === 'production' ? 'https://doberpop-api.herokuapp.com' : 'http://localhost:3000'
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: baseUrl  
+  baseURL: "http://localhost:3001",
 });
 
 export default api;

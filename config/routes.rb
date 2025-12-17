@@ -1,5 +1,17 @@
 Rails.application.routes.draw do
-  post '/auth/login', to: 'authentication#login'
+
+  scope '/api' do
+    resources :recipes
+    resources :ingredients
+  end
+
+  
+  scope :api do
+    resources :recipes
+    resources :ingredients
+  end
+
+post '/auth/login', to: 'authentication#login'
   get '/auth/verify', to: 'authentication#verify'
   resources :ingredients
   resources :recipes

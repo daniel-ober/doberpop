@@ -22,6 +22,7 @@ users = {
 @oil = Ingredient.create!(name: 'oil')
 @salt = Ingredient.create!(name: 'salt')
 @butter = Ingredient.create!(name: 'butter')
+@caramel = Ingredient.create!(name: 'caramel')
 @seasoning = Ingredient.create!(name: 'seasoning')
 
 recipes = [

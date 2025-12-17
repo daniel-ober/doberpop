@@ -1,35 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import TopNav from "../components/TopNav";
 
-export default function Layout(props) {
-  const { currentUser, handleLogout } = props;
-
+export default function Layout({ children }) {
   return (
-    <div className="main-container">
-      <header>
-        <Link to="/home">
-          <img
-            className="header-logo"
-            src="https://i.imgur.com/1nzGA9M.png"
-            alt="logo"
-          />
-        </Link>
-        {currentUser ? (
-          <>
-            <div className="header-links">
-              Hello, {currentUser.username}!
-              <br />
-              <Link to="/recipes">Recipes</Link>
-              <br />
-              <Link onClick={handleLogout}>Logout</Link>
-              <br />
-            </div>
-          </>
-        ) : null}
-      </header>
-      {currentUser && <></>}
-      {props.children}
-      <footer></footer>
+    <div className="app-root">
+      <TopNav />
+      <main className="app-content">{children}</main>
     </div>
   );
 }

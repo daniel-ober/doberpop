@@ -1,0 +1,73 @@
+/* Card base */
+.recipeCard {
+  padding: 18px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Header */
+.recipeCard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recipeCard__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #f5d98b; /* warm gold accent */
+  margin: 0;
+}
+
+/* Kernel badge */
+.recipeCard__kernel {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  color: #444;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* Description */
+.recipeCard__description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: center;
+  color: #444;
+  margin: 4px 0 0;
+}
+
+/* Yield */
+.recipeCard__yield {
+  font-size: 0.75rem;
+  text-align: center;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Ingredients */
+.recipeCard__ingredients {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* Ingredient chip */
+.ingredientChip {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #555;
+}
+
+.recipeCardLink {
+  cursor: pointer;
+}
