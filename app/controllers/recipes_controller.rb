@@ -8,7 +8,7 @@ class RecipesController < ApplicationController
     render json: @recipes, include: :ingredients
   end
 
-  # GET /recipes/1
+  # GET /recipes/:id
   def show
     @recipe = Recipe.find(params[:id])
     render json: @recipe, include: :ingredients
@@ -16,14 +16,15 @@ class RecipesController < ApplicationController
 
   # POST /recipes
   def create
-
-    # @user = User.find(params[:user_id])
     @recipe = Recipe.new(recipe_params.except(:ingredients))
     @recipe.user = @current_user
-    @ingredients = recipe_params[:ingredients].map do |ingredient|
+
+    ingredients_param = recipe_params[:ingredients] || []
+    @ingredients = ingredients_param.map do |ingredient|
       Ingredient.find_or_create_by(ingredient)
     end
     @recipe.ingredients = @ingredients
+
     if @recipe.save
       render json: @recipe, include: :ingredients
     else
@@ -31,12 +32,14 @@ class RecipesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /recipes/1
+  # PATCH/PUT /recipes/:id
   def update
-    @ingredients = recipe_params[:ingredients].map do |ingredient|
+    ingredients_param = recipe_params[:ingredients] || []
+    @ingredients = ingredients_param.map do |ingredient|
       Ingredient.find_or_create_by(ingredient)
     end
     @recipe.ingredients = @ingredients
+
     if @recipe.update(recipe_params.except(:ingredients))
       render json: @recipe, include: :ingredients
     else
@@ -44,19 +47,28 @@ class RecipesController < ApplicationController
     end
   end
 
-  # DELETE /recipes/1
+  # DELETE /recipes/:id
   def destroy
     @recipe.destroy
+    head :no_content
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_recipe
-      @recipe = @current_user.recipes.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def recipe_params
-      params.require(:recipe).permit(:name, :description, :kernel_type, :instructions, :yield, ingredients: [:name])
-    end
+  def set_recipe
+    @recipe = @current_user.recipes.find(params[:id])
+  end
+
+  def recipe_params
+    params.require(:recipe).permit(
+      :name,
+      :description,
+      :kernel_type,
+      :instructions,
+      :yield,
+      :hero_image_url,
+      additional_photo_urls: [],
+      ingredients: [:name]
+    )
+  end
 end

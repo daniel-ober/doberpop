@@ -1,0 +1,79 @@
+.detailsPage {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 22px 64px;
+}
+.detailsTop {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.detailsTitle {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.95);
+}
+.detailsSub {
+  margin: 0.35rem 0 0;
+  color: rgba(245, 230, 179, 0.78);
+}
+.detailsHero {
+  margin: 18px 0 22px;
+  /* border-radius: 18px; */
+  overflow: hidden;
+  border: 1px solid rgba(245, 230, 179, 0.14);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
+}
+.detailsHero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 16px;
+}
+@media (max-width: 920px) {
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.detailsCard {
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  background: rgba(20, 18, 14, 0.55);
+  border: 1px solid rgba(245, 230, 179, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+.detailsLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 230, 179, 0.7);
+  margin: 0 0 8px;
+}
+.detailsText {
+  color: rgba(255, 245, 210, 0.9);
+  line-height: 1.55;
+}
+.detailsPre {
+  white-space: pre-wrap;
+  margin: 0;
+  color: rgba(255, 245, 210, 0.9);
+  line-height: 1.6;
+}
+.detailsList {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255, 245, 210, 0.9);
+}
+.detailsList li {
+  margin: 6px 0;
+}

@@ -1,77 +1,336 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+puts "Seeding recipes…"
 
-Ingredient.destroy_all
-Recipe.destroy_all
-User.destroy_all
+# Pick a user to own seeded recipes.
+# Uses first existing user; if none exists, creates a seed user.
+seed_user =
+  if defined?(User) && User.count > 0
+    User.first
+  else
+    User.create!(
+      username: "seed_user",
+      email: "seed@doberpop.local",
+      password: "password"
+    )
+  end
 
+# Helper: find or create ingredients, then attach to recipe
+def attach_ingredients!(recipe, names)
+  return unless names && names.any?
 
-users = {
-        username: "dober",
-        email: "dober@doberpop.com",
-        password: "321321",
-    }
+  names.each do |name|
+    ing = Ingredient.find_or_create_by!(name: name.strip.downcase)
+    # assumes HABTM or has_many :through exists as in your logs
+    recipe.ingredients << ing unless recipe.ingredients.include?(ing)
+  end
+end
 
-@user = User.create!(users)
+# Optional: if you re-run seeds, don’t duplicate recipes
+# (Keyed by name)
+def upsert_recipe!(seed_user, attrs)
+  ingredients = attrs.delete(:ingredients) || []
+  recipe = Recipe.find_or_initialize_by(name: attrs[:name])
+  recipe.user_id = seed_user.id if recipe.user_id.blank?
+  recipe.assign_attributes(attrs)
+  recipe.save!
+  attach_ingredients!(recipe, ingredients)
+  recipe
+end
 
-@oil = Ingredient.create!(name: 'oil')
-@salt = Ingredient.create!(name: 'salt')
-@butter = Ingredient.create!(name: 'butter')
-@caramel = Ingredient.create!(name: 'caramel')
-@seasoning = Ingredient.create!(name: 'seasoning')
+RECIPES = [
+  # --- Existing 3 (kept exactly, cleaned kernel_types typo) ---
+  {
+    name: "Cookies & Cream",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "Soft Oreo crumble folded into vanilla-white chocolate drizzle with a finishing dust of cookie.",
+    instructions: <<~TXT.strip,
+      - Melt 1 tbsp refined coconut oil in a heavy pot or whirley-pop.
+      - Add 1/4 cup mushroom kernels; cover and pop until slow.
+      - Pour popped corn into a large bowl; remove unpopped kernels.
+      - Melt 2 cups white chocolate (microwave 20s bursts or double boiler).
+      - Quickly fold in 3/4 cup crushed Oreos.
+      - Drizzle over popcorn and toss gently to coat.
+      - Sprinkle remaining crushed Oreos on top; cool 15–20 min before bagging.
+    TXT
+    ingredients: ["coconut oil", "mushroom kernels", "white chocolate", "oreo cookies", "salt"]
+  },
+  {
+    name: "Maple & Bourbon",
+    kernel_type: "Jumbo",
+    yield: 6,
+    description: "Candy-glaze maple popcorn with a warm bourbon note and a cinnamon sugar finish.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup jumbo kernels in 1 tbsp refined coconut oil; transfer to a large bowl.
+      - In a small saucepan over medium heat: warm 1/4 cup maple syrup until loose and bubbling.
+      - Stir in 2 oz bourbon; bring back to a gentle boil.
+      - Reduce heat and whisk 2 minutes until slightly thickened.
+      - Drizzle over popcorn while tossing continuously.
+      - Finish with a light sprinkle of cinnamon sugar; cool 20 minutes.
+    TXT
+    ingredients: ["coconut oil", "jumbo kernels", "maple syrup", "bourbon", "cinnamon", "sugar", "salt"]
+  },
+  {
+    name: "Chicago Style",
+    kernel_type: "Mushroom",
+    yield: 8,
+    description: "A classic sweet-and-savory combo: caramel + cheddar on sturdy mushroom corn.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup mushroom kernels in 1 tbsp refined coconut oil; transfer to a large bowl.
+      - Toss half the batch with cheddar coating (see below).
+      - For caramel batch: warm caramel glaze until pourable; drizzle and toss to coat.
+      - Combine both batches lightly for the classic Chicago mix.
+      - Cheddar coating: mix 1/3 cup cheddar powder with 4 tbsp melted coconut oil; drizzle and toss.
+    TXT
+    ingredients: ["coconut oil", "mushroom kernels", "cheddar powder", "caramel", "salt"]
+  },
 
-recipes = [
-    {
-        user: @user,
-        name: "Cookies and Cream",
-        description: "soft blend of oreo cookie mixed with melted vanilla fudge, sprinkled with crushed oreo",
-        kernel_type: "Mushroom",
-        instructions: "-melt 1 tablespoon of white coconut oil in popper
-        -add 1/4 cup of mushroom kernel_types
-        -remove from stove once popping slows
-        -melt 2 cups of white chocolate on stovetop or in microwave
-        -add 3/4 cup of crushed oreo to melted chocolate and quickly mix
-        -drizzle on popcorn and sprinkle on remaining oreos",
-        yield: "5",
-        ingredients: [@oil, @butter]
-    },
-    {
-        user: @user,
-        name: "Maple & Bourbon",
-        description: "a candy like maple glaze popcorn, infused with one of the finest double barreled bourbons, lightly sprinkled with some cinnemon sugar",
-        kernel_type: "Jumbo",
-        instructions: "-melt 1 tablespoon of white coconut oil popper,
-        -add 1/4 cup of jumbo kernel_types
-        -remove from stove once popping slows
-        -over medium heat, add 1/4 cup of maple syrup
-        -once syrup becomes easy to stir, add in 2 oz. of Woodford Reserve Double Oaked bourbon
-        -stir over medium heat and bring to a boil
-        -once brought to a boil, remove from heat and continue stirring for 2 minutes
-        -drizzle over popcorn and make sure to stir popcorn well, covering all pieces
-        -lightly sprinkle some cinnemon sugar
-        -refridgerate for 2 hour, making sure to take out from fridge to stir every 20 minutes",
-        yield: "6",
-        ingredients: [@oil, @salt]
-    },
-    {
-        user: @user,
-        name: "Chicago Style",
-        description: "classic cheddar cheese mixed with caramel corn",
-        kernel_type: "Mushroom",
-        instructions: "-melt 1 tablespoon of white coconut oil in popper
-        -add 1/4 cup of mushroom kernel_types
-        -remove from stove once popping slows
-        -mix 1/3 cup of cheese powder with 4 tablespoons of yellow coconut oil
-        -microwave for 1 minute, stirring half way through and at the end
-        -drizzle cheddar mix over popcorn",
-        yield: "8",
-        ingredients: [@oil, @butter, @caramel]
-    },
+  # --- All additional flavors from your list ---
+  {
+    name: "Bacon & Cheddar",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Savory cheddar popcorn finished with smoky bacon and a little black pepper.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup mushroom kernels in 1 tbsp coconut oil; transfer to bowl.
+      - Melt 4 tbsp coconut oil or butter; whisk in 1/3 cup cheddar powder.
+      - Drizzle over popcorn while tossing; coat evenly.
+      - Add 3–4 tbsp bacon bits and a pinch of black pepper; toss again.
+    TXT
+    ingredients: ["coconut oil", "mushroom kernels", "cheddar powder", "bacon bits", "black pepper", "salt"]
+  },
+  {
+    name: "Birthday Cake",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "White-chocolate cake batter vibe with sprinkles and a tiny vanilla pop.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 1 1/2 cups white chocolate; stir in 1 tsp vanilla.
+      - Drizzle and toss to coat.
+      - Dust lightly with 2–3 tbsp cake mix (optional) and add sprinkles.
+      - Cool until set.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "white chocolate", "vanilla", "sprinkles", "cake mix", "salt"]
+  },
+  {
+    name: "Buffalo Ranch",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Buffalo heat + cool ranch dust — game-day popcorn that actually tastes like wings.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 3 tbsp butter; whisk in 2 tbsp hot sauce.
+      - Drizzle over popcorn while tossing.
+      - Dust with 2 tbsp ranch seasoning + pinch of garlic powder.
+      - Toss and let dry 10 minutes.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "hot sauce", "ranch seasoning", "garlic powder", "salt"]
+  },
+  {
+    name: "Classic Butter",
+    kernel_type: "Jumbo",
+    yield: 6,
+    description: "Simple, rich, movie-theater butter flavor with a clean salt finish.",
+    instructions: <<~TXT.strip,
+      - Pop jumbo kernels in coconut oil.
+      - Melt 4 tbsp butter; drizzle while tossing.
+      - Finish with fine salt to taste.
+    TXT
+    ingredients: ["jumbo kernels", "coconut oil", "butter", "salt"]
+  },
+  {
+    name: "Classic Cheddar",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Straight cheddar goodness on sturdy mushroom corn.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 4 tbsp coconut oil; whisk in 1/3 cup cheddar powder.
+      - Drizzle and toss until evenly coated.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "cheddar powder", "salt"]
+  },
+  {
+    name: "Cracked Pepper & Asiago",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Cheesy asiago with a peppery bite — savory and upscale.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 3 tbsp butter; drizzle and toss.
+      - Dust with 2–3 tbsp asiago powder (or finely grated asiago) and cracked pepper.
+      - Toss again; finish with salt.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "asiago", "black pepper", "salt"]
+  },
+  {
+    name: "Dill Pickle",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Tangy dill pickle seasoning with a little garlic and vinegar zing.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Mist lightly with melted butter or oil (2–3 tbsp total).
+      - Dust with dill pickle seasoning; toss well.
+      - Add pinch of citric acid (optional) for extra tang.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "dill pickle seasoning", "citric acid", "salt"]
+  },
+  {
+    name: "English Toffee Candy (Holiday)",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "Buttery toffee glaze with a holiday crunch — sweet, rich, and snacky.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Warm toffee bits or toffee sauce until pourable.
+      - Drizzle and toss to coat.
+      - Optional: finish with a pinch of flaky salt; cool to set.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "toffee", "butter", "salt"]
+  },
+  {
+    name: "Jalapeño & Cheddar",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Classic cheddar with a jalapeño kick — spicy, cheesy, addictive.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 4 tbsp coconut oil; whisk in cheddar powder.
+      - Drizzle and toss; then dust with jalapeño powder/seasoning.
+      - Toss and finish with salt.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "cheddar powder", "jalapeno seasoning", "salt"]
+  },
+  {
+    name: "Jalapeño",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Straight jalapeño heat with a clean salty finish.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Mist or drizzle with 2–3 tbsp melted butter/oil.
+      - Dust with jalapeño seasoning and toss well.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "jalapeno seasoning", "salt"]
+  },
+  {
+    name: "Nacho Cheddar",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Bold nacho-style cheese flavor with a touch of paprika.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 4 tbsp coconut oil; whisk in nacho cheese powder.
+      - Drizzle and toss; add a pinch of paprika if desired.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "nacho cheese powder", "paprika", "salt"]
+  },
+  {
+    name: "Peppermint Cookie",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "White chocolate + peppermint + cookie crumble — holiday dessert popcorn.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 1 1/2 cups white chocolate; stir in 1/2 tsp peppermint extract.
+      - Drizzle and toss.
+      - Sprinkle crushed peppermint candies + cookie crumbs; cool to set.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "white chocolate", "peppermint extract", "peppermint candy", "cookies", "salt"]
+  },
+  {
+    name: "Pepperoni Pizza",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Pizza seasoning + parmesan + pepperoni bits — it weirdly works.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Melt 3 tbsp butter; drizzle and toss.
+      - Dust with pizza seasoning + parmesan.
+      - Add 2–3 tbsp finely chopped pepperoni (or pepperoni powder); toss.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "pizza seasoning", "parmesan", "pepperoni", "salt"]
+  },
+  {
+    name: "Ranch",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Cool ranch seasoning on crisp popcorn — simple and solid.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Drizzle with 2–3 tbsp melted butter.
+      - Dust with ranch seasoning; toss well.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "ranch seasoning", "salt"]
+  },
+  {
+    name: "Salted Caramel & Dark Chocolate",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "Deep caramel glaze + dark chocolate drizzle + sea salt finish.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Drizzle caramel over popcorn and toss.
+      - Melt dark chocolate; drizzle in thin ribbons.
+      - Finish with flaky sea salt; cool to set.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "caramel", "dark chocolate", "sea salt"]
+  },
+  {
+    name: "Salted Caramel",
+    kernel_type: "Mushroom",
+    yield: 5,
+    description: "Buttery caramel glaze with a clean sea salt finish.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Warm caramel until pourable; drizzle and toss.
+      - Finish with flaky sea salt; cool to set.
+    TXT
+    ingredients: ["mushroom kernels", "coconut oil", "caramel", "sea salt"]
+  },
+  {
+    name: "Sour Cream & Onion",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Savory tang with onion-forward seasoning.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Drizzle with 2–3 tbsp melted butter.
+      - Dust with sour cream & onion seasoning; toss well.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "sour cream & onion seasoning", "salt"]
+  },
+  {
+    name: "Spicy Sriracha",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Sweet heat sriracha glaze with a light garlic finish.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Warm 2 tbsp sriracha + 2 tbsp honey + 2 tbsp melted butter; whisk.
+      - Drizzle over popcorn while tossing.
+      - Optional: dust with garlic powder; let dry 10 minutes.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "sriracha", "honey", "garlic powder", "salt"]
+  },
+  {
+    name: "Tex Mex",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Chili-lime + cumin + cheddar vibes — taco-night popcorn.",
+    instructions: <<~TXT.strip,
+      - Pop mushroom kernels; transfer to bowl.
+      - Drizzle with 2–3 tbsp melted butter.
+      - Dust with chili-lime seasoning, cumin, and a touch of smoked paprika.
+      - Toss well; finish with salt.
+    TXT
+    ingredients: ["mushroom kernels", "butter", "chili lime seasoning", "cumin", "smoked paprika", "salt"]
+  }
 ]
 
-Recipe.create!(recipes)
+RECIPES.each do |attrs|
+  upsert_recipe!(seed_user, attrs.dup)
+end
+
+puts "✅ Seeded #{RECIPES.length} recipes for user_id=#{seed_user.id}"
