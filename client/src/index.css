@@ -14,7 +14,9 @@
   --goldBorder: rgba(255, 215, 120, 0.35);
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -56,7 +58,7 @@ a:hover {
   text-align: center;
 }
 
-/* ===== Header (legacy) ===== */
+/* ===== Header (legacy layout) ===== */
 header {
   display: flex;
   align-items: center;
@@ -147,7 +149,7 @@ header {
   color: var(--muted);
 }
 
-/* ===== Landing ===== */
+/* ===== Landing (if still used) ===== */
 .landing {
   min-height: calc(100vh - 40px);
   display: grid;
@@ -386,76 +388,6 @@ header {
   width: 100%;
 }
 
-/* ===== Legacy screens support (Login/Register/Create/Edit) ===== */
-.login-logo {
-  width: 600px;
-}
-
-.landing-container,
-.login-container,
-.register-container {
-  text-align: center;
-}
-
-.landing-container {
-  margin-top: 14%;
-}
-
-.login-container {
-  margin-top: 6%;
-}
-
-.register-container {
-  margin-top: 0vh;
-}
-
-.register-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.login-field,
-.register-field,
-.create-field,
-.edit-field {
-  font-family: "Kumbh Sans", sans-serif;
-  text-align: center;
-  font-size: 20px;
-  font-weight: 800;
-  width: min(550px, 92vw);
-  height: 56px;
-  margin: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.25);
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.login-button,
-.register-button,
-.create-recipe-button {
-  font-family: "Kumbh Sans", sans-serif;
-  text-align: center;
-  font-size: 20px;
-  font-weight: 900;
-  width: min(560px, 92vw);
-  height: 60px;
-  margin: 12px;
-  margin-top: 18px;
-  background: cornflowerblue;
-  border: 0;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.login-button:hover,
-.register-button:hover,
-.create-recipe-button:hover {
-  filter: brightness(1.06);
-}
-
 /* Modal overlay (legacy) */
 .modal-container {
   position: fixed;
@@ -479,10 +411,16 @@ header {
   }
 
   .header-logo {
-    width: 120px
-  }
-
-  .login-logo {
-    width: 320px;
+    width: 120px;
   }
 }
+
+/* =========================================================
+   IMPORTANT:
+   We REMOVED the legacy auth styles that were blowing up
+   login/register sizing:
+   - .login-logo
+   - .login-field / .register-field
+   - .login-button / .register-button
+   - .login-container / .register-container
+   ========================================================= */
