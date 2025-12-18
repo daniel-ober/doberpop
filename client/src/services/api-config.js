@@ -1,26 +1,46 @@
 import axios from "axios";
 
+/**
+ * Centralized API client
+ * - Rails API runs on :3000
+ * - React client runs on :3001
+ * - Base URL comes from env, with safe fallback
+ */
 const api = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:3000",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
 });
 
 /**
- * Attach token automatically on refresh / reload
+ * Attach JWT token (if present) to every request
  */
-const token = localStorage.getItem("authToken");
-if (token) {
-  api.defaults.headers.common.authorization = `Bearer ${token}`;
-}
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 /**
- * Optional: catch auth failures globally
- * (does NOT log out automatically — just prevents silent failures)
+ * Global response handling
+ * - Warn on unauthorized (expired / invalid token)
+ * - Let calling code handle the error
  */
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error?.response?.status === 401) {
       console.warn("Unauthorized API response (401)");
+      // optional future hook:
+      // localStorage.removeItem("authToken");
+      // window.location.href = "/login";
     }
     return Promise.reject(error);
   }
