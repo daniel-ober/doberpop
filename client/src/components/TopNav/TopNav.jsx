@@ -2,7 +2,7 @@ import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
 import logo from "../../assets/images/logo.png";
 
-export default function TopNav() {
+export default function TopNav({ currentUser, handleLogout }) {
   return (
     <header className="topnav" role="banner">
       <div className="topnav__inner">
@@ -20,23 +20,36 @@ export default function TopNav() {
             Browse
           </NavLink>
 
-          <NavLink
-            exact
-            to="/login"
-            className="topnav__link"
-            activeClassName="is-active"
-          >
-            Sign In
-          </NavLink>
+          {currentUser ? (
+            <button
+              type="button"
+              className="topnav__link topnav__logout"
+              onClick={handleLogout}
+              aria-label="Log out"
+            >
+              Log out
+            </button>
+          ) : (
+            <>
+              <NavLink
+                exact
+                to="/login"
+                className="topnav__link"
+                activeClassName="is-active"
+              >
+                Sign In
+              </NavLink>
 
-          <NavLink
-            exact
-            to="/register"
-            className="topnav__link topnav__cta"
-            activeClassName="is-active"
-          >
-            Register
-          </NavLink>
+              <NavLink
+                exact
+                to="/register"
+                className="topnav__link topnav__cta"
+                activeClassName="is-active"
+              >
+                Register
+              </NavLink>
+            </>
+          )}
         </nav>
       </div>
     </header>
