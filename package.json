@@ -1,0 +1,18 @@
+{
+  "name": "doberpop",
+  "version": "1.0.0",
+  "description": "**doberpop** is an upcoming Homemade Gourmet Popcorn shop located in Nashville, TN. What makes doberpop so unique is the variety of flavors it has to offer, featuring over 40 flavors! doberpop's 'Tastemaster' app is a tool designed for popcorn lovers to share their very own popcorn recipes and their wildest flavor ideas with the rest of the doberpop community. A simple signup process is required for viewing, adding, editing, and removing recipes and new flavors. Want to become part of the doberpop community today? Pop on over to doberpop to share your favorite popcorn recipe or your wildest idea for a popcorn flavor!",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "concurrently \"bundle exec rails s -p 3000\" \"cd client && npm start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

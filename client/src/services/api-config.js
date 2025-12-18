@@ -1,3 +1,4 @@
+// client/src/services/api-config.js
 import axios from "axios";
 
 /**
@@ -21,7 +22,8 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // use lowercase 'authorization' (axios normalizes but this keeps it consistent everywhere)
+      config.headers.authorization = `Bearer ${token}`;
     }
     return config;
   },

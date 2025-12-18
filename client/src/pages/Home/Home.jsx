@@ -1,4 +1,3 @@
-// client/src/pages/Home/Home.jsx
 import React from "react";
 import "./Home.css";
 
@@ -27,7 +26,7 @@ export default function Home() {
             <div className="dpKicker">Create</div>
             <div className="dpHomeTitle">Build your own</div>
             <div className="dpHomeText">
-              Sign in to create recipes, refine instructions, and iterate.
+              Create recipes, refine instructions, and iterate.
             </div>
           </div>
 
@@ -41,7 +40,7 @@ export default function Home() {
         </div>
 
         <p className="dpHint dpHintTight">
-          Tip: Use the top navigation to browse recipes, sign in, or register.
+          Use the top navigation to explore recipes or begin a new build.
         </p>
       </div>
     </div>
