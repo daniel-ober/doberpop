@@ -3,15 +3,23 @@
 
 :root {
   --text: rgba(255, 238, 180, 0.95);
-  --muted: rgba(255, 238, 180, 0.78);
+  --muted: rgba(255, 238, 180, 0.72);
   --link: #fbdb5b;
 
-  --panel: rgba(0, 0, 0, 0.28);
-  --panel2: rgba(0, 0, 0, 0.24);
-  --border: rgba(255, 255, 255, 0.12);
+  /* surfaces */
+  --panel: rgba(16, 14, 10, 0.62);
+  --panel2: rgba(16, 14, 10, 0.46);
+  --border: rgba(255, 255, 255, 0.10);
 
-  --gold: rgba(255, 215, 120, 0.18);
-  --goldBorder: rgba(255, 215, 120, 0.35);
+  /* gold */
+  --gold: rgba(255, 215, 120, 0.16);
+  --goldBorder: rgba(255, 215, 120, 0.32);
+
+  /* “pro” shadows + radius */
+  --r-lg: 18px;
+  --r-xl: 22px;
+  --shadow-lg: 0 22px 70px rgba(0,0,0,0.55);
+  --shadow-md: 0 14px 34px rgba(0,0,0,0.45);
 }
 
 *,
@@ -28,14 +36,17 @@ body {
 body {
   margin: 0;
   font-family: "Kumbh Sans", sans-serif;
-
-  background: url("https://i.imgur.com/II8Rvqp.jpg");
-  background-size: contain;
-  background-position: top;
-  background-repeat: repeat;
-  background-attachment: fixed;
-
   color: var(--text);
+
+  /* Base image */
+  background-image:
+    radial-gradient(1200px 700px at 50% 15%, rgba(255, 215, 120, 0.16), transparent 55%),
+    linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.72)),
+    url("https://i.imgur.com/II8Rvqp.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Global type (safe defaults) */
@@ -82,50 +93,61 @@ header {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
 
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
 
-  text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.92);
 
   font-weight: 700;
   letter-spacing: 0.02em;
+  line-height: 1;
+  transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
 }
 
 .btn:hover {
   text-decoration: none;
-  filter: brightness(1.07);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .btn--primary {
-  background: var(--gold);
-  border-color: var(--goldBorder);
-}
-
-.btn--ghost {
-  background: transparent;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 226, 150, 0.95),
+    rgba(216, 186, 120, 0.92)
+  );
+  color: rgba(18, 14, 10, 0.92);
+  border-color: rgba(255, 215, 120, 0.35);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.35);
 }
 
 .input,
 .select {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
+  padding: 11px 12px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.30);
   color: rgba(255, 255, 255, 0.92);
   outline: none;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.input:focus,
+.select:focus {
+  border-color: rgba(255, 215, 120, 0.45);
+  box-shadow: 0 0 0 4px rgba(255, 215, 120, 0.12);
 }
 
 /* ===== Page Shell ===== */
 .page {
-  max-width: 980px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 28px 18px 60px;
+  padding: 40px 22px 80px;
 }
 
 .page__header {
@@ -138,14 +160,14 @@ header {
 
 .page__title {
   margin: 0;
-  font-size: 28px;
-  letter-spacing: 0.01em;
+  font-size: 34px;
+  letter-spacing: -0.02em;
   color: var(--text);
 }
 
 .page__subtitle {
-  margin: 6px 0 0;
-  opacity: 0.8;
+  margin: 8px 0 0;
+  opacity: 0.82;
   color: var(--muted);
 }
 
@@ -232,15 +254,25 @@ header {
 
 /* ===== Cards ===== */
 .card {
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: var(--panel2);
-  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(16, 14, 10, 0.48);
+  padding: 14px 14px;
 
   display: flex;
   gap: 10px;
   justify-content: space-between;
   align-items: flex-start;
+
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 215, 120, 0.22);
+  box-shadow: var(--shadow-lg);
 }
 
 .card__link {
@@ -412,6 +444,18 @@ header {
 
   .header-logo {
     width: 120px;
+  }
+}
+
+/* =========================================================
+   Accessibility: Respect reduced motion preference
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
   }
 }
 

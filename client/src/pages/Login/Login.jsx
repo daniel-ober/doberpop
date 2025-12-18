@@ -1,3 +1,4 @@
+// client/src/pages/Login/Login.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/auth.css";
@@ -25,13 +26,13 @@ export default function Login(props) {
     <div className="auth auth--login">
       <div className="auth__card">
         <div className="auth__top">
-          <img className="auth__logo login-logo" src={logo} alt="Doberpop" />
+          <img className="auth__logo" src={logo} alt="Doberpop" />
           <h1 className="auth__title">Sign in</h1>
           <p className="auth__subtitle">Welcome back — let’s get you into your cookbook.</p>
         </div>
 
         <form
-          className="auth__form login-form"
+          className="auth__form"
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin(formData);
@@ -45,7 +46,7 @@ export default function Login(props) {
               placeholder="your username"
               value={username}
               onChange={handleChange}
-              className="auth__input login-field"
+              className="auth__input"
               autoComplete="username"
             />
           </label>
@@ -58,20 +59,22 @@ export default function Login(props) {
               placeholder="your password"
               value={password}
               onChange={handleChange}
-              className="auth__input login-field"
+              className="auth__input"
               autoComplete="current-password"
             />
           </label>
 
           <div className="auth__actions">
-            <button className="auth__btn auth__btn--primary login-button">Sign in</button>
+            <button className="auth__btn auth__btn--primary" type="submit">
+              Sign in
+            </button>
           </div>
 
           {isError ? <div className="auth__error">{errorMsg}</div> : null}
 
           <div className="auth__fineprint">
             Don’t have an account?{" "}
-            <Link to="/register" className="auth__link register-link">
+            <Link to="/register" className="auth__link">
               Register
             </Link>
           </div>

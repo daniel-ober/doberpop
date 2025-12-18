@@ -1,3 +1,4 @@
+// client/src/pages/Register/Register.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/auth.css";
@@ -24,13 +25,13 @@ export default function Register(props) {
     <div className="auth auth--register">
       <div className="auth__card">
         <div className="auth__top">
-          <img className="auth__logo login-logo" src={logo} alt="Doberpop" />
+          <img className="auth__logo" src={logo} alt="Doberpop" />
           <h1 className="auth__title">Create account</h1>
           <p className="auth__subtitle">Save your recipes and build your own cookbook.</p>
         </div>
 
         <form
-          className="auth__form register-form"
+          className="auth__form"
           onSubmit={(e) => {
             e.preventDefault();
             handleRegister(formData);
@@ -44,7 +45,7 @@ export default function Register(props) {
               placeholder="choose a username"
               value={username}
               onChange={handleChange}
-              className="auth__input register-field"
+              className="auth__input"
               autoComplete="username"
             />
           </label>
@@ -57,7 +58,7 @@ export default function Register(props) {
               placeholder="you@example.com"
               value={email}
               onChange={handleChange}
-              className="auth__input register-field"
+              className="auth__input"
               autoComplete="email"
             />
           </label>
@@ -70,13 +71,13 @@ export default function Register(props) {
               placeholder="create a password"
               value={password}
               onChange={handleChange}
-              className="auth__input register-field"
+              className="auth__input"
               autoComplete="new-password"
             />
           </label>
 
           <div className="auth__actions">
-            <button className="auth__btn auth__btn--primary register-button">
+            <button className="auth__btn auth__btn--primary" type="submit">
               Create account
             </button>
           </div>

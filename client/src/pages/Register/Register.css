@@ -1,10 +1,6 @@
 /* client/src/pages/Register/Register.css */
 
-.register-button {
-  letter-spacing: 0.01em;
-}
-
-/* keep register from feeling taller than login */
-.register-form {
-  margin-top: 10px;
+.auth.auth--register .auth__card {
+  /* register can be a touch wider since it has 3 fields */
+  width: min(520px, 100%);
 }
