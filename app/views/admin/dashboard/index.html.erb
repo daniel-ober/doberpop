@@ -1,0 +1,18 @@
+<h1>Admin</h1>
+
+<p>
+  <a href="/admin/users">Manage Users</a> |
+  <a href="/admin/recipes">Manage Recipes</a>
+</p>
+
+<p style="margin-top:12px;">
+  <button id="logoutBtn">Log out (clear token)</button>
+</p>
+
+<script>
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    alert("Token cleared.");
+    window.location.href = "/";
+  });
+</script>

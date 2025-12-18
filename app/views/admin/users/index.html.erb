@@ -1,0 +1,88 @@
+<h1>Admin: Users</h1>
+<p><a href="/admin">← Back</a></p>
+
+<div id="status" style="margin: 10px 0; color: #b00;"></div>
+
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Admin?</th>
+      <th>Created</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="usersBody"></tbody>
+</table>
+
+<script>
+  const statusEl = document.getElementById("status");
+  const tbody = document.getElementById("usersBody");
+
+  function token() {
+    return localStorage.getItem("token");
+  }
+
+  async function api(path, opts = {}) {
+    const t = token();
+    if (!t) {
+      statusEl.textContent = "No token found. Log in first (you need a JWT in localStorage).";
+      throw new Error("Missing token");
+    }
+    const res = await fetch(path, {
+      ...opts,
+      headers: {
+        ...(opts.headers || {}),
+        Authorization: `Bearer ${t}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    // If unauthorized, show message and stop
+    if (res.status === 401 || res.status === 403) {
+      const data = await res.json().catch(() => ({}));
+      statusEl.textContent = data.errors || "Unauthorized/Forbidden. Token invalid/expired or not admin.";
+      throw new Error(statusEl.textContent);
+    }
+
+    return res;
+  }
+
+  function render(users) {
+    tbody.innerHTML = "";
+    users.forEach(u => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${u.id}</td>
+        <td>${u.username || ""}</td>
+        <td>${u.email || ""}</td>
+        <td>${u.admin ? "✅" : "—"}</td>
+        <td>${u.created_at ? new Date(u.created_at).toLocaleString() : ""}</td>
+        <td>
+          <button data-id="${u.id}" class="delBtn">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll(".delBtn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        if (!confirm(`Delete user #${id}? This cannot be undone.`)) return;
+        await api(`/api/admin/users/${id}`, { method: "DELETE" });
+        await load();
+      });
+    });
+  }
+
+  async function load() {
+    statusEl.textContent = "";
+    const res = await api("/api/admin/users");
+    const users = await res.json();
+    render(users);
+  }
+
+  load().catch(() => {});
+</script>

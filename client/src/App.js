@@ -1,3 +1,4 @@
+// client/src/App.js
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -8,12 +9,18 @@ import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 
 // App container
 import MainContainer from "./containers/MainContainer";
 
 // Auth
-import { loginUser, registerUser, removeToken, verifyUser } from "./services/auth";
+import {
+  loginUser,
+  registerUser,
+  removeToken,
+  verifyUser,
+} from "./services/auth";
 
 import "./App.css";
 
@@ -34,35 +41,64 @@ function App() {
     verify();
   }, []);
 
-  const handleLogin = async (formData) => {
-    try {
-      const user = await loginUser(formData); // should set token inside service
-      setCurrentUser(user);
-      history.push("/home");
-    } catch (err) {
-      // Let the Login component display its existing error UI
-      throw err;
-    }
+  const isAdminUser = (user) => {
+    return Boolean(
+      user?.is_admin ||
+        user?.isAdmin ||
+        user?.admin ||
+        user?.role === "admin" ||
+        user?.userType === "admin"
+    );
   };
 
+  /**
+   * LOGIN
+   * Login form will pass:
+   * - identifier (preferred)
+   * or legacy:
+   * - username
+   */
+  const handleLogin = async (formData) => {
+    // Normalize to identifier so users can login via username OR email
+    const payload = {
+      identifier: (formData.identifier || formData.username || "").trim(),
+      password: formData.password,
+    };
+
+    const user = await loginUser(payload); // sets token inside service
+    setCurrentUser(user);
+
+    // ✅ Admins go to /admin, everyone else goes to /home
+    history.push(isAdminUser(user) ? "/admin" : "/home");
+  };
+
+  /**
+   * REGISTER
+   * 1) Create the user
+   * 2) Auto-login using identifier (email is best)
+   */
   const handleRegister = async (formData) => {
-    try {
-      // 1) Create user (often returns user record, but NOT a token)
-      await registerUser(formData);
+    // 1) Create user
+    await registerUser({
+      username: formData.username?.trim(),
+      email: formData.email?.trim(),
+      password: formData.password,
+    });
 
-      // 2) Immediately log them in to establish token/session
-      const user = await loginUser({
-        username: formData.username,
-        password: formData.password,
-      });
+    // 2) Auto-login to create token/session
+    // Prefer email as identifier, fallback to username
+    const identifier =
+      (formData.email || "").trim() || (formData.username || "").trim();
 
-      setCurrentUser(user);
-      history.push("/home");
-    } catch (err) {
-      // If register/login fails, do not land on /home
-      setCurrentUser(null);
-      throw err;
-    }
+    const user = await loginUser({
+      identifier,
+      password: formData.password,
+    });
+
+    setCurrentUser(user);
+
+    // ✅ Admins go to /admin, everyone else goes to /home
+    history.push(isAdminUser(user) ? "/admin" : "/home");
   };
 
   const handleLogout = () => {
@@ -78,24 +114,40 @@ function App() {
         <Route exact path="/" component={Landing} />
 
         <Route path="/login">
-          {currentUser ? <Redirect to="/home" /> : <Login handleLogin={handleLogin} />}
+          {currentUser ? (
+            <Redirect to={isAdminUser(currentUser) ? "/admin" : "/home"} />
+          ) : (
+            <Login handleLogin={handleLogin} />
+          )}
         </Route>
 
         <Route path="/register">
           {currentUser ? (
-            <Redirect to="/home" />
+            <Redirect to={isAdminUser(currentUser) ? "/admin" : "/home"} />
           ) : (
             <Register handleRegister={handleRegister} />
           )}
         </Route>
 
         {/* Authenticated */}
+        <Route path="/admin">
+          {currentUser && isAdminUser(currentUser) ? (
+            <AdminDashboard />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </Route>
+
         <Route path="/home">
           {currentUser ? <Home /> : <Redirect to="/login" />}
         </Route>
 
         <Route path="/recipes">
-          {currentUser ? <MainContainer currentUser={currentUser} /> : <Redirect to="/login" />}
+          {currentUser ? (
+            <MainContainer currentUser={currentUser} />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </Route>
 
         {/* Fallback */}

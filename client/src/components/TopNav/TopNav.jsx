@@ -1,8 +1,21 @@
+// client/src/components/TopNav/TopNav.jsx
 import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
 import logo from "../../assets/images/logo.png";
 
+function isAdminUser(user) {
+  return Boolean(
+    user?.is_admin ||
+      user?.isAdmin ||
+      user?.admin ||
+      user?.role === "admin" ||
+      user?.userType === "admin"
+  );
+}
+
 export default function TopNav({ currentUser, handleLogout }) {
+  const admin = isAdminUser(currentUser);
+
   return (
     <header className="topnav" role="banner">
       <div className="topnav__inner">
@@ -11,14 +24,25 @@ export default function TopNav({ currentUser, handleLogout }) {
         </Link>
 
         <nav className="topnav__right" aria-label="Primary navigation">
-          <NavLink
-            exact
-            to="/recipes"
-            className="topnav__link"
-            activeClassName="is-active"
-          >
-            Browse
-          </NavLink>
+<NavLink
+  exact
+  to="/recipes"
+  className="topnav__link"
+  activeClassName="is-active"
+>
+  Recipes
+</NavLink>
+
+          {admin && (
+            <NavLink
+              exact
+              to="/admin"
+              className="topnav__link"
+              activeClassName="is-active"
+            >
+              Admin
+            </NavLink>
+          )}
 
           {currentUser ? (
             <button

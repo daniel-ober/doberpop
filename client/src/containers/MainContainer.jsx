@@ -9,15 +9,39 @@ import RecipeEdit from "../pages/RecipeEdit/RecipeEdit";
 import { getRecipes, deleteRecipe } from "../services/recipes";
 
 export default function MainContainer({ currentUser }) {
-  const { path } = useRouteMatch(); // <-- IMPORTANT (nested router base)
+  const { path } = useRouteMatch();
   const [recipes, setRecipes] = useState([]);
+  const [recipesError, setRecipesError] = useState("");
+  const [loadingRecipes, setLoadingRecipes] = useState(true);
 
   useEffect(() => {
-    const fetchRecipes = async () => {
-      const data = await getRecipes();
-      setRecipes(data);
+    let alive = true;
+
+    (async () => {
+      try {
+        setRecipesError("");
+        setLoadingRecipes(true);
+
+        const data = await getRecipes();
+
+        if (!alive) return;
+
+        // ✅ handle both: [ ... ] OR { recipes: [ ... ] }
+        const list = Array.isArray(data) ? data : data?.recipes || [];
+        setRecipes(list);
+      } catch (e) {
+        if (!alive) return;
+        setRecipes([]);
+        setRecipesError(e?.message || "Failed to load recipes");
+      } finally {
+        if (!alive) return;
+        setLoadingRecipes(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
     };
-    fetchRecipes();
   }, []);
 
   const handleDelete = async (id) => {
@@ -27,7 +51,6 @@ export default function MainContainer({ currentUser }) {
 
   return (
     <Switch>
-      {/* IMPORTANT: put /new and /:id/edit BEFORE /:id */}
       <Route exact path={`${path}/new`}>
         <RecipeCreate />
       </Route>
@@ -41,11 +64,17 @@ export default function MainContainer({ currentUser }) {
       </Route>
 
       <Route exact path={path}>
-        <Recipes
-          recipes={recipes}
-          handleDelete={handleDelete}
-          currentUser={currentUser}
-        />
+        {loadingRecipes ? (
+          <div style={{ padding: 24, opacity: 0.85 }}>Loading recipes…</div>
+        ) : recipesError ? (
+          <div style={{ padding: 24, color: "salmon" }}>{recipesError}</div>
+        ) : (
+          <Recipes
+            recipes={recipes}
+            handleDelete={handleDelete}
+            currentUser={currentUser}
+          />
+        )}
       </Route>
     </Switch>
   );
