@@ -1,41 +1,55 @@
 /* client/src/styles/auth.css */
 
+@import url("https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;600;800&display=swap");
+
+:root {
+  --auth-text: rgba(255, 245, 210, 0.92);
+  --auth-muted: rgba(245, 230, 179, 0.76);
+
+  --auth-card: rgba(18, 16, 12, 0.58);
+  --auth-border: rgba(245, 230, 179, 0.14);
+
+  --auth-input-bg: rgba(255, 255, 255, 0.94);
+  --auth-input-border: rgba(245, 230, 179, 0.18);
+
+  --auth-focus: rgba(245, 230, 179, 0.42);
+  --auth-focusRing: rgba(245, 230, 179, 0.12);
+
+  --auth-btn-bg: rgba(245, 230, 179, 0.95);
+  --auth-btn-text: rgba(20, 18, 14, 0.95);
+
+  --auth-danger-border: rgba(255, 140, 140, 0.25);
+  --auth-danger-bg: rgba(120, 20, 20, 0.28);
+  --auth-danger-text: rgba(255, 225, 225, 0.95);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .auth {
   min-height: calc(100vh - 72px);
   display: grid;
   place-items: center;
-  padding: 44px 18px 64px;
-  position: relative;
-  isolation: isolate;
-}
-
-/* cinematic overlay so the card always reads cleanly */
-.auth::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(1200px 520px at 50% 42%, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.72)),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.65));
-  z-index: -1;
+  padding: 44px 18px 56px;
 }
 
 .auth__card {
   width: min(520px, 100%);
   border-radius: 18px;
-  padding: 28px 26px 22px;
+  padding: 22px 22px 20px;
 
-  background: rgba(20, 18, 14, 0.58);
-  border: 1px solid rgba(245, 230, 179, 0.16);
+  background: var(--auth-card);
+  border: 1px solid var(--auth-border);
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 
   box-shadow:
     0 30px 70px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
-  color: rgba(255, 245, 210, 0.92);
+  color: var(--auth-text);
 }
 
 .auth__top {
@@ -43,19 +57,19 @@
   gap: 10px;
   justify-items: center;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .auth__logo {
-  max-width: 260px;
-  width: 100%;
-  height: auto;
-  opacity: 0.96;
+  height: 44px;
+  width: auto;
+  max-width: 220px;
+  opacity: 0.95;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.6));
 }
 
 .auth__title {
-  font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+  font-size: clamp(1.55rem, 2.3vw, 2.05rem);
   font-weight: 850;
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.95);
@@ -64,81 +78,86 @@
 
 .auth__subtitle {
   margin: 0;
-  max-width: 46ch;
-  font-size: 0.98rem;
-  line-height: 1.5;
-  color: rgba(245, 230, 179, 0.78);
+  max-width: 48ch;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--auth-muted);
 }
 
 .auth__form {
   display: grid;
-  gap: 14px;
-  margin-top: 14px;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .auth__label {
   display: grid;
-  gap: 8px;
+  gap: 7px;
 }
 
 .auth__labelText {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(245, 230, 179, 0.74);
+  color: rgba(245, 230, 179, 0.70);
 }
 
 .auth__input {
   width: 100%;
-  border-radius: 14px;
-  padding: 14px 14px;
-  border: 1px solid rgba(245, 230, 179, 0.16);
-  background: rgba(255, 255, 255, 0.94);
-  color: rgba(20, 18, 14, 0.96);
+  border-radius: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--auth-input-border);
+  background: var(--auth-input-bg);
+  color: rgba(20, 18, 14, 0.95);
   outline: none;
+  font-size: 0.98rem;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
 
-  transition: transform 120ms ease, box-shadow 140ms ease, border-color 140ms ease;
+.auth__input::placeholder {
+  color: rgba(20, 18, 14, 0.45);
 }
 
 .auth__input:focus {
-  border-color: rgba(245, 230, 179, 0.45);
-  box-shadow: 0 0 0 4px rgba(245, 230, 179, 0.14);
+  border-color: var(--auth-focus);
+  box-shadow: 0 0 0 4px var(--auth-focusRing);
 }
 
 .auth__actions {
   display: grid;
   gap: 10px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .auth__btn {
   width: 100%;
-  border-radius: 14px;
-  padding: 14px 14px;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-weight: 850;
-  font-size: 1rem;
-  border: 1px solid rgba(245, 230, 179, 0.22);
+  font-size: 0.98rem;
+  border: 1px solid rgba(245, 230, 179, 0.18);
   cursor: pointer;
-  transition: transform 120ms ease, filter 120ms ease, background 140ms ease;
+  transition: transform 120ms ease, filter 120ms ease, background 120ms ease;
 }
 
 .auth__btn--primary {
-  background: rgba(245, 230, 179, 0.95);
-  color: rgba(20, 18, 14, 0.95);
+  background: var(--auth-btn-bg);
+  color: var(--auth-btn-text);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
 }
 
 .auth__btn--primary:hover {
   transform: translateY(-1px);
-  filter: brightness(1.02);
+  filter: brightness(1.03);
 }
 
-.auth__btn:active {
+.auth__btn--primary:active {
   transform: translateY(0px);
+  filter: brightness(0.98);
 }
 
 .auth__fineprint {
-  margin-top: 12px;
+  margin-top: 10px;
   text-align: center;
   color: rgba(255, 245, 210, 0.72);
   font-size: 0.92rem;
@@ -155,63 +174,61 @@
 }
 
 .auth__error {
-  margin-top: 6px;
+  margin-top: 8px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 140, 140, 0.25);
-  background: rgba(120, 20, 20, 0.28);
-  color: rgba(255, 225, 225, 0.95);
+  border: 1px solid var(--auth-danger-border);
+  background: var(--auth-danger-bg);
+  color: var(--auth-danger-text);
   font-size: 0.92rem;
 }
 
-/* --- Backwards-compat hooks (so nothing else breaks) --- */
+/* --- Backwards-compat hooks (keep old classnames working) --- */
 .login-form,
 .register-form {
   width: 100%;
 }
 
 .login-logo {
-  /* keep old classnames working */
-  max-width: 260px;
-  width: 100%;
-  height: auto;
+  height: 44px; /* keep compatibility */
 }
 
 .login-field,
 .register-field {
   width: 100%;
-  border-radius: 14px;
-  padding: 14px 14px;
-  border: 1px solid rgba(245, 230, 179, 0.16);
-  background: rgba(255, 255, 255, 0.94);
-  color: rgba(20, 18, 14, 0.96);
+  border-radius: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--auth-input-border);
+  background: var(--auth-input-bg);
+  color: rgba(20, 18, 14, 0.95);
   outline: none;
+  font-size: 0.98rem;
 }
 
 .login-button,
 .register-button {
   width: 100%;
-  border-radius: 14px;
-  padding: 14px 14px;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-weight: 850;
-  font-size: 1rem;
-  border: 1px solid rgba(245, 230, 179, 0.22);
+  font-size: 0.98rem;
+  border: 1px solid rgba(245, 230, 179, 0.18);
   cursor: pointer;
-  background: rgba(245, 230, 179, 0.95);
-  color: rgba(20, 18, 14, 0.95);
+  background: var(--auth-btn-bg);
+  color: var(--auth-btn-text);
 }
 
+/* Mobile */
 @media (max-width: 430px) {
   .auth {
-    padding: 34px 14px 54px;
+    padding: 34px 14px 46px;
   }
-
   .auth__card {
-    padding: 22px 18px 18px;
+    padding: 18px 16px 16px;
   }
-
   .auth__logo,
   .login-logo {
-    max-width: 230px;
+    height: 40px;
+    max-width: 200px;
   }
 }
