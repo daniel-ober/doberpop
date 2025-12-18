@@ -1,5 +1,41 @@
-/* client/src/pages/Login/Login.css */
+/* src/pages/Login/Login.css */
 
-.login-form .auth__actions {
-  margin-top: 8px;
+/* Make the card feel a touch more “hero”, and prevent any weird overflows */
+.auth--login .auth__card {
+  overflow: hidden;
+}
+
+/* Let the big brand logo breathe */
+.auth--login .auth__logo {
+  height: 64px;
+  width: auto;
+}
+
+/* --- Hard reset legacy sizing that’s causing the input/button overflow --- */
+/* If anything older is still setting min(550px,92vw) or margins, this stomps it. */
+.auth--login .login-field,
+.auth--login .login-button {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Slightly bigger primary action on desktop, but still clean */
+@media (min-width: 900px) {
+  .auth--login .auth__btn--primary {
+    padding: 13px 16px;
+    font-size: 1.02rem;
+  }
+}
+
+/* Keep label alignment clean */
+.auth--login .auth__labelText {
+  text-align: left;
+}
+
+/* Optional: make typed text feel a bit more “premium” */
+.auth--login .auth__input {
+  font-weight: 700;
 }

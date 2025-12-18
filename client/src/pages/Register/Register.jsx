@@ -21,7 +21,7 @@ export default function Register(props) {
   };
 
   return (
-    <div className="auth">
+    <div className="auth auth--register">
       <div className="auth__card">
         <div className="auth__top">
           <img className="auth__logo login-logo" src={logo} alt="Doberpop" />

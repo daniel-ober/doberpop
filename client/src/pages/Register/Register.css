@@ -1,5 +1,33 @@
-/* client/src/pages/Register/Register.css */
+/* src/pages/Register/Register.css */
 
-.register-form .auth__actions {
-  margin-top: 8px;
+/* Keep it consistent and contained */
+.auth--register .auth__card {
+  overflow: hidden;
+}
+
+.auth--register .auth__logo {
+  height: 64px;
+  width: auto;
+}
+
+/* Stomp any legacy rules that are making inputs dark/transparent or mis-sized */
+.auth--register .register-field,
+.auth--register .register-button {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Make sure register inputs look identical to login inputs */
+.auth--register .auth__input {
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(20, 18, 14, 0.95);
+  font-weight: 700;
+}
+
+/* Keep label alignment clean */
+.auth--register .auth__labelText {
+  text-align: left;
 }

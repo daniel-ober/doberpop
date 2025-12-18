@@ -22,7 +22,7 @@ export default function Login(props) {
   };
 
   return (
-    <div className="auth">
+    <div className="auth auth--login">
       <div className="auth__card">
         <div className="auth__top">
           <img className="auth__logo login-logo" src={logo} alt="Doberpop" />
