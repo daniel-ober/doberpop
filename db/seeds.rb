@@ -13,26 +13,40 @@ seed_user =
     )
   end
 
-# Helper: find or create ingredients, then attach to recipe
+# Helper: store ingredients as a newline-separated text field
 def attach_ingredients!(recipe, names)
   return unless names && names.any?
 
-  names.each do |name|
-    ing = Ingredient.find_or_create_by!(name: name.strip.downcase)
-    # assumes HABTM or has_many :through exists as in your logs
-    recipe.ingredients << ing unless recipe.ingredients.include?(ing)
-  end
+  list = names.map(&:to_s).map(&:strip).reject(&:empty?).join("\n")
+  recipe.ingredients = list
+  recipe.save!
 end
 
-# Optional: if you re-run seeds, don’t duplicate recipes
-# (Keyed by name)
+# ===============================
+# SAFE UPSERT — NEVER OVERWRITE
+# ===============================
 def upsert_recipe!(seed_user, attrs)
   ingredients = attrs.delete(:ingredients) || []
+
   recipe = Recipe.find_or_initialize_by(name: attrs[:name])
-  recipe.user_id = seed_user.id if recipe.user_id.blank?
-  recipe.assign_attributes(attrs)
-  recipe.save!
-  attach_ingredients!(recipe, ingredients)
+
+  if recipe.new_record?
+    # Create brand-new recipe only
+    recipe.user_id ||= seed_user.id
+    recipe.assign_attributes(attrs)
+    recipe.save!
+    puts "➕ Created recipe #{recipe.name}"
+  else
+    
+    # DO NOT TOUCH EXISTING RECIPES
+    if recipe.user_id.blank?
+      recipe.update!(user_id: seed_user.id)
+      puts "✔ Linked #{recipe.name} to #{seed_user.username}"
+    else
+      puts "• Skipped existing recipe #{recipe.name} (NO CHANGES)"
+    end
+  end
+
   recipe
 end
 
@@ -326,6 +340,73 @@ RECIPES = [
       - Toss well; finish with salt.
     TXT
     ingredients: ["mushroom kernels", "butter", "chili lime seasoning", "cumin", "smoked paprika", "salt"]
+  },
+  {
+    name: "Blast-Off Chedda n Ranch",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Softer-crunch mushroom popcorn totally dominated by cheddar with extra blasts of cheddar and ranch. Loud, snacky, and ridiculous in the best way.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup mushroom kernels in 1 tbsp refined coconut oil; transfer to a large bowl and remove unpopped kernels.
+      - In a small bowl, melt 4 tbsp butter (or coconut oil).
+      - Whisk in 1/3 cup cheddar powder and 2–3 tbsp ranch seasoning until smooth.
+      - Drizzle over the warm popcorn while tossing constantly for even coverage.
+      - Finish with a pinch of black pepper and a tiny pinch of cayenne (optional) for extra “blast-off.”
+      - Spread on a parchment-lined sheet to dry 10–15 minutes before bagging.
+    TXT
+    ingredients: [
+      "mushroom kernels",
+      "coconut oil",
+      "butter",
+      "cheddar powder",
+      "ranch seasoning",
+      "black pepper",
+      "cayenne",
+      "salt"
+    ]
+  },
+  {
+    name: "Peanut Butter CupCorn",
+    kernel_type: "Mushroom",
+    yield: 6,
+    description: "Milk chocolate infused with peanut butter poured thick over mushroom popcorn. Melts in your mouth (and hands) with classic peanut butter cup vibes.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup mushroom kernels in 1 tbsp refined coconut oil; transfer to a large bowl and remove unpopped kernels.
+      - In a microwave-safe bowl, combine 1 1/2 cups milk chocolate chips and 1/2 cup creamy peanut butter.
+      - Microwave in 20–30 second bursts, stirring between each, until fully melted and smooth.
+      - Pour the warm peanut butter chocolate over the popcorn while tossing gently with a spatula.
+      - Keep folding until the popcorn is evenly coated and glossy.
+      - Spread onto a parchment-lined baking sheet and let set 20–30 minutes (or chill briefly) before breaking into clusters.
+    TXT
+    ingredients: [
+      "mushroom kernels",
+      "coconut oil",
+      "milk chocolate chips",
+      "peanut butter",
+      "salt"
+    ]
+  },
+  {
+    name: "Breakfast of Champions",
+    kernel_type: "Wisconsin Birch",
+    yield: 6,
+    description: "Fruity Pebbles folded into a creamy white chocolate coating. Smooth, balanced, fun, fruity — basically cereal milk popcorn.",
+    instructions: <<~TXT.strip,
+      - Pop 1/4 cup Wisconsin Birch (or similar hearty) kernels in 1 tbsp refined coconut oil; transfer to a large bowl and pull out unpopped kernels.
+      - In a microwave-safe bowl, melt 1 1/2 cups white chocolate chips in 20–30 second bursts, stirring until smooth.
+      - Stir in 1–2 tsp vanilla or marshmallow flavoring (optional) for that cereal-milk note.
+      - Gently fold in 1 to 1 1/2 cups Fruity Pebbles cereal until evenly suspended in the chocolate.
+      - Quickly drizzle and fold the cereal–chocolate mixture through the warm popcorn until coated.
+      - Spread on a parchment-lined sheet and let set completely before breaking into clusters.
+    TXT
+    ingredients: [
+      "wisconsin birch kernels",
+      "coconut oil",
+      "white chocolate chips",
+      "vanilla extract",
+      "fruity pebbles cereal",
+      "salt"
+    ]
   }
 ]
 

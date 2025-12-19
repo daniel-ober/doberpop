@@ -1,13 +1,21 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  # For API-style JSON endpoints, don't blow up on CSRF – just use a null session
-  protect_from_forgery with: :null_session
+  # Turn OFF CSRF checks for JSON/API requests (we use JWT instead).
+  # HTML (admin) requests still get normal CSRF protection.
+  skip_forgery_protection if: -> { request.format.json? }
+
+  # Expose current_user for controllers & views
+  attr_reader :current_user
+  helper_method :current_user
 
   private
 
   def encode_token(payload)
-    # You can swap this back to whatever you originally used – this is a sane default
-    JWT.encode(payload, Rails.application.secret_key_base, "HS256")
+    JWT.encode(
+      payload,
+      Rails.application.secret_key_base,
+      "HS256"
+    )
   end
 
   def auth_header
@@ -20,7 +28,12 @@ class ApplicationController < ActionController::Base
     token = auth_header.split(" ")[1]
 
     begin
-      JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")
+      JWT.decode(
+        token,
+        Rails.application.secret_key_base,
+        true,
+        algorithm: "HS256"
+      )
     rescue JWT::DecodeError, JWT::ExpiredSignature
       nil
     end

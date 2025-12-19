@@ -92,6 +92,16 @@ const TOOLS_MAP = {
     ...CANDY_COATED_TOOLS,
     "Piping bag or spoon for drizzling dark chocolate",
   ],
+  "Peanut Butter CupCorn": [
+    ...CANDY_COATED_TOOLS,
+    "Microwave-safe bowl (for melting chocolate and peanut butter)",
+    "Heatproof spatula or wooden spoon",
+  ],
+  "Breakfast of Champions": [
+    ...CANDY_COATED_TOOLS,
+    "Microwave-safe bowl (for melting white chocolate)",
+    "Heatproof spatula or wooden spoon",
+  ],
 
   // Savory / butter / seasoning–style
   "Classic Butter": [...SAVORY_TOOLS],
@@ -109,7 +119,10 @@ const TOOLS_MAP = {
     ...SAVORY_TOOLS,
     "Fine grater or microplane (for asiago)",
   ],
-  "Dill Pickle": [...SAVORY_TOOLS, "Spray bottle or small spoon (for light oil mist)"],
+  "Dill Pickle": [
+    ...SAVORY_TOOLS,
+    "Spray bottle or small spoon (for light oil mist)",
+  ],
   "Jalapeño": [...SAVORY_TOOLS],
   "Jalapeño & Cheddar": [
     ...SAVORY_TOOLS,
@@ -129,6 +142,10 @@ const TOOLS_MAP = {
   "Spicy Sriracha": [
     ...SAVORY_TOOLS,
     "Small whisk (for sriracha–honey butter)",
+  ],
+  "Blast-Off Chedda n Ranch": [
+    ...SAVORY_TOOLS,
+    "Small whisk (for cheddar–ranch butter)",
   ],
 };
 
