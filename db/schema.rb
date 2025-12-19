@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_18_121629) do
+ActiveRecord::Schema.define(version: 2025_12_18_122516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "favorites", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "recipe_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["recipe_id"], name: "index_favorites_on_recipe_id"
+    t.index ["user_id", "recipe_id"], name: "index_favorites_on_user_id_and_recipe_id", unique: true
+    t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
 
   create_table "ingredients", force: :cascade do |t|
     t.string "name"
@@ -38,6 +48,10 @@ ActiveRecord::Schema.define(version: 2025_12_18_121629) do
     t.string "hero_image_url"
     t.json "additional_photo_urls"
     t.text "ingredients"
+    t.string "source", default: "user", null: false
+    t.boolean "published", default: false, null: false
+    t.index ["published"], name: "index_recipes_on_published"
+    t.index ["source"], name: "index_recipes_on_source"
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
@@ -50,5 +64,7 @@ ActiveRecord::Schema.define(version: 2025_12_18_121629) do
     t.boolean "admin"
   end
 
+  add_foreign_key "favorites", "recipes"
+  add_foreign_key "favorites", "users"
   add_foreign_key "recipes", "users"
 end

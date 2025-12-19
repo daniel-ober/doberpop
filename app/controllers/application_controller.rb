@@ -1,47 +1,42 @@
 # app/controllers/application_controller.rb
-class ApplicationController < ActionController::API
-  SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
+class ApplicationController < ActionController::Base
+  # For API-style JSON endpoints, don't blow up on CSRF – just use a null session
+  protect_from_forgery with: :null_session
 
-  def encode(payload, exp = 24.hours.from_now)
-    payload[:exp] = exp.to_i
-    JWT.encode(payload, SECRET_KEY)
+  private
+
+  def encode_token(payload)
+    # You can swap this back to whatever you originally used – this is a sane default
+    JWT.encode(payload, Rails.application.secret_key_base, "HS256")
   end
 
-  def decode(token)
-    decoded = JWT.decode(token, SECRET_KEY)[0]
-    HashWithIndifferentAccess.new(decoded)
+  def auth_header
+    request.headers["Authorization"]
   end
 
-  def authorize_request
-    header = request.headers["Authorization"]
-    token = header.split(" ").last if header
+  def decoded_token
+    return nil unless auth_header&.start_with?("Bearer ")
+
+    token = auth_header.split(" ")[1]
 
     begin
-      @decoded = decode(token)
-      @current_user = User.find(@decoded[:id])
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { errors: e.message }, status: :unauthorized
-    rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+      JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")
+    rescue JWT::DecodeError, JWT::ExpiredSignature
+      nil
     end
   end
 
-  # For admin-only routes
-  # Admin is allowed if:
-  # - user.admin? returns true (if you have that)
-  # OR
-  # - email/username matches your explicit admin allowlist
-  def authorize_admin!
-    authorize_request
-    return if performed?
+  def authorize_request
+    decoded = decoded_token
+    unless decoded
+      render json: { error: "Missing token" }, status: :unauthorized and return
+    end
 
-    is_admin =
-      (@current_user.respond_to?(:admin?) && @current_user.admin?) ||
-      @current_user&.email == "danober.dev@gmail.com" ||
-      @current_user&.username == "ober31"
+    user_id = decoded[0]["user_id"]
+    @current_user = User.find_by(id: user_id)
 
-    unless is_admin
-      render json: { errors: "Forbidden" }, status: :forbidden
+    unless @current_user
+      render json: { error: "User not found" }, status: :unauthorized and return
     end
   end
 end

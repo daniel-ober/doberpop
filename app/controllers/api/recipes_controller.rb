@@ -1,40 +1,62 @@
+# app/controllers/api/recipes_controller.rb
 module Api
   class RecipesController < ApplicationController
     before_action :authorize_request
 
+    # GET /api/recipes
     def index
-      recipes = Recipe.order(created_at: :desc)
-      render json: recipes
+      recipes = Recipe.includes(:user).order(created_at: :desc)
+
+      render json: recipes.as_json(
+        only: [
+          :id,
+          :name,
+          :kernel_type,
+          :instructions,
+          :yield,
+          :description,
+          :hero_image_url,
+          :additional_photo_urls,
+          :ingredients,
+          :source,
+          :published,
+          :created_at,
+          :updated_at
+        ],
+        include: {
+          user: {
+            only: [:id, :username, :email]
+          }
+        }
+      )
     end
 
+    # GET /api/recipes/:id
     def show
-      recipe = Recipe.find(params[:id])
-      render json: recipe
-    end
+      recipe = Recipe.includes(:user).find(params[:id])
 
-    def create
-      recipe = Recipe.new(recipe_params)
-      recipe.user_id = @current_user.id if recipe.respond_to?(:user_id=) && @current_user
-      recipe.save!
-      render json: recipe, status: :created
-    end
-
-    def update
-      recipe = Recipe.find(params[:id])
-      recipe.update!(recipe_params)
-      render json: recipe
-    end
-
-    def destroy
-      recipe = Recipe.find(params[:id])
-      recipe.destroy!
-      head :no_content
-    end
-
-    private
-
-    def recipe_params
-      params.require(:recipe).permit(:title, :name, :content, :description, :instructions, :ingredients)
+      render json: recipe.as_json(
+        only: [
+          :id,
+          :name,
+          :kernel_type,
+          :instructions,
+          :yield,
+          :description,
+          :hero_image_url,
+          :additional_photo_urls,
+          :ingredients,
+          :source,
+          :published,
+          :created_at,
+          :updated_at
+        ],
+        include: {
+          user: {
+            only: [:id, :username, :email]
+          }
+        }
+      )
     end
   end
 end

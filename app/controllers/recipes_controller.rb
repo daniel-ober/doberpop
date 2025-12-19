@@ -1,54 +1,57 @@
 class RecipesController < ApplicationController
-  before_action :authorize_request, only: [:create, :update, :destroy]
-  before_action :set_recipe, only: [:update, :destroy]
+  before_action :authorize_request
+  before_action :set_recipe, only: [:show, :update, :destroy]
 
-  # GET /recipes
-  def index
-    @recipes = Recipe.all
-    render json: @recipes, include: :ingredients
-  end
-
-  # GET /recipes/:id
-  def show
-    @recipe = Recipe.find(params[:id])
-    render json: @recipe, include: :ingredients
-  end
-
-  # POST /recipes
   def create
-    @recipe = Recipe.new(recipe_params.except(:ingredients))
-    @recipe.user = @current_user
+    if creating_official?
+      return render json: { error: "Forbidden" }, status: :forbidden unless current_user.is_admin
 
-    ingredients_param = recipe_params[:ingredients] || []
-    @ingredients = ingredients_param.map do |ingredient|
-      Ingredient.find_or_create_by(ingredient)
+      @recipe = Recipe.new(recipe_params)
+      @recipe.source = "doberpop"
+      @recipe.published = true
+      @recipe.user_id = current_user.id
+    else
+      @recipe = Recipe.new(recipe_params)
+      @recipe.source = "user"
+      @recipe.user_id = current_user.id
+      @recipe.published = ActiveModel::Type::Boolean.new.cast(params.dig(:recipe, :published))
     end
-    @recipe.ingredients = @ingredients
 
     if @recipe.save
-      render json: @recipe, include: :ingredients
+      render json: @recipe, status: :created
     else
-      render json: @recipe.errors, status: :unprocessable_entity
+      render json: { errors: @recipe.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /recipes/:id
   def update
-    ingredients_param = recipe_params[:ingredients] || []
-    @ingredients = ingredients_param.map do |ingredient|
-      Ingredient.find_or_create_by(ingredient)
-    end
-    @recipe.ingredients = @ingredients
-
-    if @recipe.update(recipe_params.except(:ingredients))
-      render json: @recipe, include: :ingredients
+    if @recipe.source == "doberpop"
+      return render json: { error: "Forbidden" }, status: :forbidden unless current_user.is_admin
+      updates = recipe_params
+      updates[:published] = true
+      updates[:source] = "doberpop"
+      updates[:user_id] = @recipe.user_id
     else
-      render json: @recipe.errors, status: :unprocessable_entity
+      return render json: { error: "Forbidden" }, status: :forbidden unless @recipe.user_id == current_user.id
+      updates = recipe_params
+      updates[:source] = "user"
+      updates[:user_id] = current_user.id
+    end
+
+    if @recipe.update(updates)
+      render json: @recipe
+    else
+      render json: { errors: @recipe.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # DELETE /recipes/:id
   def destroy
+    if @recipe.source == "doberpop"
+      return render json: { error: "Forbidden" }, status: :forbidden unless current_user.is_admin
+    else
+      return render json: { error: "Forbidden" }, status: :forbidden unless @recipe.user_id == current_user.id
+    end
+
     @recipe.destroy
     head :no_content
   end
@@ -56,19 +59,21 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe
-    @recipe = @current_user.recipes.find(params[:id])
+    @recipe = Recipe.find(params[:id])
+  end
+
+  def creating_official?
+    params.dig(:recipe, :source).to_s == "doberpop"
   end
 
   def recipe_params
     params.require(:recipe).permit(
       :name,
       :description,
-      :kernel_type,
       :instructions,
-      :yield,
+      :kernel_type,
       :hero_image_url,
-      additional_photo_urls: [],
-      ingredients: [:name]
+      :published
     )
   end
 end

@@ -1,41 +1,44 @@
+# app/controllers/api/admin/recipes_controller.rb
 module Api
   module Admin
-    class RecipesController < BaseController
+    class RecipesController < ApplicationController
+      before_action :authorize_request
+      before_action :require_admin!
+
+      # GET /api/admin/recipes
       def index
-        recipes = Recipe.order(created_at: :desc)
-        render json: recipes
+        recipes = Recipe.includes(:user).order(created_at: :desc)
+
+        render json: recipes.as_json(
+          only: [
+            :id,
+            :name,
+            :source,
+            :published,
+            :created_at,
+            :updated_at
+          ],
+          include: {
+            user: {
+              only: [:id, :username, :email]
+            }
+          }
+        )
       end
 
-      def show
-        recipe = Recipe.find(params[:id])
-        render json: recipe
-      end
-
-      def create
-        recipe = Recipe.new(recipe_params)
-        recipe.user_id = @current_user.id if recipe.respond_to?(:user_id=) && @current_user
-        recipe.save!
-        render json: recipe, status: :created
-      end
-
-      def update
-        recipe = Recipe.find(params[:id])
-        recipe.update!(recipe_params)
-        render json: recipe
-      end
-
+      # DELETE /api/admin/recipes/:id
       def destroy
         recipe = Recipe.find(params[:id])
-        recipe.destroy!
+        recipe.destroy
         head :no_content
       end
 
       private
 
-      def recipe_params
-        params.require(:recipe).permit(
-          :title, :name, :content, :description, :instructions, :ingredients
-        )
+      def require_admin!
+        unless @current_user&.admin?
+          render json: { error: "Forbidden" }, status: :forbidden
+        end
       end
     end
   end

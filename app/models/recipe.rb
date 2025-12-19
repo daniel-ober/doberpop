@@ -1,6 +1,13 @@
 class Recipe < ApplicationRecord
-  # existing associations...
-
+  belongs_to :user
   has_many :favorites, dependent: :destroy
-  has_many :favorited_by_users, through: :favorites, source: :user
+
+  # expose computed select aliases when present
+  def favorites_count
+    self[:favorites_count].to_i
+  end
+
+  def owner_username
+    self[:owner_username]
+  end
 end

@@ -1,58 +1,107 @@
 // client/src/services/auth.js
-import api from "./api-config";
 
-/**
- * Login
- * - Supports username OR email (identifier)
- * - Rails expects: { authentication: { identifier, password } }
- */
-export const loginUser = async (loginData) => {
-  const resp = await api.post("/auth/login", {
-    authentication: {
-      identifier: loginData.identifier,
-      password: loginData.password,
-    },
-  });
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
-  const { token, user } = resp.data;
+const TOKEN_KEY = "authToken";
 
-  localStorage.setItem("authToken", token);
-  api.defaults.headers.common.authorization = `Bearer ${token}`;
-
-  return user;
-};
-
-export const registerUser = async (registerData) => {
-  const resp = await api.post("/users/", {
-    user: registerData,
-  });
-
-  const { token, user } = resp.data;
-
-  localStorage.setItem("authToken", token);
-  api.defaults.headers.common.authorization = `Bearer ${token}`;
-
-  return user;
-};
-
-export const verifyUser = async () => {
-  const token = localStorage.getItem("authToken");
-
-  if (!token) return null;
-
-  api.defaults.headers.common.authorization = `Bearer ${token}`;
-
-  try {
-    const resp = await api.get("/auth/verify");
-    return resp.data;
-  } catch (err) {
-    localStorage.removeItem("authToken");
-    api.defaults.headers.common.authorization = null;
-    return null;
+export const setToken = (token) => {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token);
   }
 };
 
+export const getToken = () => {
+  return localStorage.getItem(TOKEN_KEY);
+};
+
 export const removeToken = () => {
-  localStorage.removeItem("authToken");
-  api.defaults.headers.common.authorization = null;
+  localStorage.removeItem(TOKEN_KEY);
+};
+
+// helper to shape errors so Login.jsx's extractAuthError() can read status
+async function buildError(res) {
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    data = null;
+  }
+
+  const err = new Error(data?.error || "Request failed");
+  err.response = {
+    status: res.status,
+    data,
+  };
+  return err;
+}
+
+/**
+ * LOGIN
+ * POST /auth/login
+ * body: { identifier, password }
+ * response: { user: {...}, token: "..." }
+ */
+export const loginUser = async ({ identifier, password }) => {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ identifier, password }),
+  });
+
+  if (!res.ok) {
+    throw await buildError(res);
+  }
+
+  const data = await res.json();
+  setToken(data.token);
+  return data.user; // App.js expects `user`
+};
+
+/**
+ * REGISTER
+ * POST /auth/register
+ * body: { user: { username, email, password } }
+ */
+export const registerUser = async ({ username, email, password }) => {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user: { username, email, password },
+    }),
+  });
+
+  if (!res.ok) {
+    throw await buildError(res);
+  }
+
+  const data = await res.json();
+  // We don't store the token here because App.js logs in again via loginUser
+  return data.user;
+};
+
+/**
+ * VERIFY
+ * GET /auth/verify
+ * headers: Authorization: Bearer <token>
+ */
+export const verifyUser = async () => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("No token");
+  }
+
+  const res = await fetch(`${API_BASE_URL}/auth/verify`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw await buildError(res);
+  }
+
+  const data = await res.json();
+  return data.user;
 };

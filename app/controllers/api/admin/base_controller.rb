@@ -3,14 +3,14 @@ module Api
   module Admin
     class BaseController < ApplicationController
       before_action :authorize_request
-      before_action :authorize_admin!
+      before_action :require_admin!
 
       private
 
-      def authorize_admin!
-        return if @current_user&.admin?
-
-        render json: { error: "Forbidden" }, status: :forbidden
+      def require_admin!
+        unless @current_user&.admin?
+          render json: { error: "Forbidden" }, status: :forbidden
+        end
       end
     end
   end
