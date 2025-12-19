@@ -21,6 +21,40 @@
   color: #e6d3a3;
 }
 
+/* ---------- RECIPES HEADER / SORT ---------- */
+
+.adminRecipesHeaderRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.adminSortRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.adminSortLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.adminSortSelect {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #f5f5f5;
+  outline: none;
+  cursor: pointer;
+}
+
 /* ---------- TABLE ---------- */
 
 .adminTable {
@@ -30,6 +64,7 @@
   backdrop-filter: blur(6px);
   border-radius: 10px;
   overflow: hidden;
+  margin-top: 10px;
 }
 
 .adminTable thead {
@@ -68,15 +103,29 @@
   text-align: right;
 }
 
+/* favorites column */
+
+.adminFavoritesCol {
+  width: 110px;
+  text-align: center;
+}
+
+.adminFavoritesCell {
+  text-align: center;
+}
+
 /* ---------- BADGES ---------- */
 
 .adminBadge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 3px 8px;
   font-size: 11px;
   border-radius: 999px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  border: 1px solid transparent;
 }
 
 .adminBadge--yes {
@@ -87,6 +136,25 @@
 .adminBadge--no {
   background: rgba(255, 255, 255, 0.12);
   color: #bbb;
+}
+
+.adminBadge--favorite {
+  background: rgba(255, 215, 128, 0.12);
+  color: #ffd780;
+  border-color: rgba(255, 215, 128, 0.45);
+  min-width: 32px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.adminBadge--favorite:hover {
+  background: rgba(255, 215, 128, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 215, 128, 0.3);
+}
+
+.adminBadge--favorite:active {
+  transform: translateY(1px);
 }
 
 /* ---------- BUTTONS ---------- */
@@ -185,11 +253,45 @@
   margin-top: 18px;
 }
 
+/* favorites list inside modal */
+
+.adminModalList {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+
+.adminModalList li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.adminModalList__bullet {
+  color: #ffd780;
+  font-size: 11px;
+}
+
 /* ---------- RESPONSIVE ---------- */
 
 @media (max-width: 768px) {
   .adminDashboard {
     padding: 20px;
+  }
+
+  .adminRecipesHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .adminSortRow {
+    font-size: 12px;
+  }
+
+  .adminSortLabel {
+    font-size: 10px;
   }
 
   .adminTable th,
