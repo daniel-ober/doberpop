@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 40px 22px 64px;
 }
+
 .detailsTop {
   display: flex;
   align-items: flex-end;
@@ -10,39 +11,45 @@
   gap: 18px;
   margin-bottom: 18px;
 }
+
 .detailsTitle {
   margin: 0;
   font-size: 2.2rem;
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.95);
 }
+
 .detailsSub {
   margin: 0.35rem 0 0;
   color: rgba(245, 230, 179, 0.78);
 }
+
 .detailsHero {
   margin: 18px 0 22px;
-  /* border-radius: 18px; */
   overflow: hidden;
   border: 1px solid rgba(245, 230, 179, 0.14);
   background: rgba(0, 0, 0, 0.25);
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
 }
+
 .detailsHero img {
   display: block;
   width: 100%;
   height: auto;
 }
+
 .detailsGrid {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   gap: 16px;
 }
+
 @media (max-width: 920px) {
   .detailsGrid {
     grid-template-columns: 1fr;
   }
 }
+
 .detailsCard {
   border-radius: 18px;
   padding: 18px 18px 16px;
@@ -52,6 +59,11 @@
   -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
+
+.detailsCardFull {
+  grid-column: 1 / -1;
+}
+
 .detailsLabel {
   font-size: 0.72rem;
   letter-spacing: 0.22em;
@@ -59,23 +71,76 @@
   color: rgba(245, 230, 179, 0.7);
   margin: 0 0 8px;
 }
+
 .detailsText {
   color: rgba(255, 245, 210, 0.9);
   line-height: 1.55;
 }
-.detailsPre {
-  white-space: pre-wrap;
-  margin: 0;
-  color: rgba(255, 245, 210, 0.9);
-  line-height: 1.6;
+
+/* Description meta (kernel profile + yield) */
+.detailsDescriptionMeta {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: rgba(255, 245, 210, 0.8);
 }
+
+.detailsDescriptionMeta > div + div {
+  margin-top: 2px;
+}
+
+.detailsMetaLabel {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: rgba(245, 230, 179, 0.86);
+}
+
+/* Tools block */
+.detailsToolsBlock {
+  margin-top: 14px;
+}
+
+.detailsToolsList {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  list-style: disc;
+  font-size: 0.86rem;
+  color: rgba(255, 245, 210, 0.88);
+}
+
+.detailsToolsList li {
+  margin: 4px 0;
+}
+
+/* Ingredients list */
 .detailsList {
   margin: 0;
   padding-left: 18px;
   color: rgba(255, 245, 210, 0.9);
 }
+
 .detailsList li {
   margin: 6px 0;
+}
+
+/* Instructions list: nice hanging indent, clean wrapping */
+.detailsSteps {
+  margin: 0;
+  padding-left: 1.4rem; /* space for numbers */
+  color: rgba(255, 245, 210, 0.9);
+  line-height: 1.6;
+}
+
+.detailsSteps li {
+  margin: 0.35rem 0;
+  padding-left: 0.25rem;
+}
+
+@media (max-width: 600px) {
+  .detailsSteps {
+    padding-left: 1.2rem;
+  }
 }
 
 .detailsTopRight {
@@ -140,3 +205,9 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* Footer */
+.detailsFootnote {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  color: rgba(245, 230, 179, 0.7);
+}
