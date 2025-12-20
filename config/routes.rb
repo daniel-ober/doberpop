@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get  "/auth/verify",   to: "authentication#verify"
 
   # ============================
-  # ADMIN HTML (Frontend App)
+  # ADMIN HTML (Doberpop admin panel)
   # ============================
   namespace :admin do
     root to: "dashboard#index"
@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   # ============================
   namespace :api, path: "/api" do
     # ----------------------------
-    # RECIPES API  (used by /recipes page)
+    # RECIPES API  (used by React /recipes)
     # ----------------------------
     resources :recipes
 
@@ -39,9 +39,9 @@ Rails.application.routes.draw do
     # ----------------------------
     # FAVORITES
     # ----------------------------
-    get    "/favorites",                    to: "favorites#index"
-    post   "/recipes/:recipe_id/favorite",  to: "favorites#create"
-    delete "/recipes/:recipe_id/favorite",  to: "favorites#destroy"
+    get    "/favorites",                   to: "favorites#index"
+    post   "/recipes/:recipe_id/favorite", to: "favorites#create"
+    delete "/recipes/:recipe_id/favorite", to: "favorites#destroy"
 
     # ----------------------------
     # ADMIN API (JWT protected)
