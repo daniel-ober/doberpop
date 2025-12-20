@@ -1,157 +1,267 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+// client/src/pages/RecipeEdit/RecipeEdit.jsx
+import React, { useEffect, useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import "./RecipeEdit.css";
+import api from "../../services/api-config";
 
-export default function RecipeEdit(props) {
-  const [ingredientFormData, setIngredientFormData] = useState("");
-  const [formData, setFormData] = useState({
+const KERNEL_OPTIONS = ["Butterfly", "Mushroom", "Mixed"];
+
+export default function RecipeEdit() {
+  const { id } = useParams();
+  const history = useHistory();
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const [form, setForm] = useState({
     name: "",
     description: "",
-    kernel_type: "",
-    ingredients: [],
-    yield: "",
+    kernel_type: "Butterfly",
+    yield: "1",
+    ingredients: "",
     instructions: "",
+    published: false,
   });
-  const {
-    name,
-    description,
-    kernel_type,
-    instructions,
-    ingredients,
-  } = formData;
-  const { id } = useParams();
-  const { recipes, handleUpdate } = props;
 
+  // Prefill from API
   useEffect(() => {
-    const prefillFormData = () => {
-      const recipeItem = recipes.find((recipe) => recipe.id === Number(id));
-      setFormData({
-        name: recipeItem.name,
-        description: recipeItem.description,
-        kernel_type: recipeItem.kernel_type,
-        ingredients: recipeItem.ingredients,
-        yield: recipeItem.yield,
-        instructions: recipeItem.instructions,
-      });
+    let alive = true;
+
+    const load = async () => {
+      try {
+        setError("");
+        setLoading(true);
+        const res = await api.get(`/api/recipes/${id}`);
+        if (!alive) return;
+
+        const r = res.data || {};
+        setForm({
+          name: r.name || "",
+          description: r.description || "",
+          kernel_type: r.kernel_type || "Butterfly",
+          yield: String(r.yield || "1"),
+          ingredients: r.ingredients || "",
+          instructions: r.instructions || "",
+          published: !!r.published,
+        });
+      } catch (e) {
+        if (!alive) return;
+        console.error("Error loading recipe", e);
+        setError("Unable to load recipe for editing.");
+      } finally {
+        if (!alive) return;
+        setLoading(false);
+      }
     };
-    if (recipes.length) {
-      prefillFormData();
-    }
-  }, [recipes, id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    load();
+
+    return () => {
+      alive = false;
+    };
+  }, [id]);
+
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddIngredient = (e) => {
+  const handleTogglePublished = () => {
+    setForm((prev) => ({ ...prev, published: !prev.published }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormData((prevState) => ({
-      ...prevState,
-      ingredients: [...prevState.ingredients, { name: ingredientFormData }],
-    }));
-    setIngredientFormData("");
+    setError("");
+
+    if (!form.name.trim()) {
+      setError("Recipe title is required.");
+      return;
+    }
+    if (!form.ingredients.trim()) {
+      setError("Please add at least one ingredient.");
+      return;
+    }
+    if (!form.instructions.trim()) {
+      setError("Please add at least one instruction step.");
+      return;
+    }
+
+    const payload = {
+      name: form.name.trim(),
+      description: form.description.trim(),
+      kernel_type: form.kernel_type,
+      yield: form.yield || "1",
+      ingredients: form.ingredients,
+      instructions: form.instructions,
+      // 🔑 only send published; NO visibility key
+      published: form.published,
+    };
+
+    try {
+      setSaving(true);
+      await api.put(`/api/recipes/${id}`, payload);
+      history.push(`/recipes/${id}`);
+    } catch (e) {
+      console.error("Error updating recipe", e);
+      const msg =
+        e?.response?.data?.error ||
+        e?.message ||
+        "Unable to update recipe.";
+      setError(msg);
+      setSaving(false);
+    }
   };
 
-  const handleDeleteIngredient = (name) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      ingredients: prevState.ingredients.filter((ingredient) => {
-        return ingredient.name !== name;
-      }),
-    }));
+  const handleCancel = (e) => {
+    e.preventDefault();
+    history.push(`/recipes/${id}`);
   };
+
+  if (loading) {
+    return (
+      <div className="recipeEditPage">
+        <div className="recipeEditCard">Loading recipe…</div>
+      </div>
+    );
+  }
 
   return (
-    <form
-      className='edit-form'
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleUpdate(id, formData);
-      }}
-    >
-      <h2>Edit Recipe</h2>
-      <label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Recipe Title"
-          value={name}
-          onChange={handleChange}
-          clasName="edit-field"
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={description}
-          onChange={handleChange}
-          clasName="edit-field"
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="kernel_type"
-          placeholder="Kernel Profile"
-          value={kernel_type}
-          onChange={handleChange}
-          clasName="edit-field"
-          required
-        />
-        {ingredients.map((ingredient, index) => (
-          <React.Fragment key={index}>
-            <p>{ingredient.name}</p>
+    <div className="recipeEditPage">
+      <form className="recipeEditCard" onSubmit={handleSubmit}>
+        {/* HEADER */}
+        <header className="recipeEditHeader">
+          <div>
+            <h1 className="recipeEditTitle">Edit Recipe</h1>
+            <p className="recipeEditSubtitle">
+              Update details or change whether it&apos;s shared with the Doberpop
+              community.
+            </p>
+          </div>
+
+          <div className="recipeEditToggleRow">
+            <span className="recipeEditToggleLabel">
+              Visible to Doberpop community
+            </span>
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                handleDeleteIngredient(ingredient.name);
-              }}
+              type="button"
+              className={
+                "rcToggle" + (form.published ? " rcToggle--on" : "")
+              }
+              onClick={handleTogglePublished}
             >
-              Delete
+              <span className="rcToggleThumb" />
             </button>
-          </React.Fragment>
-        ))}
-        <br />
-        <br />
-        <input
-          type="text"
-          name="ingredients"
-          value={ingredientFormData}
-          placeholder="Ingredients"
-          onChange={(e) => setIngredientFormData(e.target.value)}
-          clasName="edit-field"
-        />
-        <button onClick={handleAddIngredient}>Add</button>
-        <br />
-        <input
-          type="number"
-          name="yield"
-          placeholder="Yield"
-          value={formData.yield}
-          onChange={handleChange}
-          clasName="edit-field"
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="instructions"
-          placeholder="Instructions"
-          value={instructions}
-          onChange={handleChange}
-          clasName="edit-field"
-          required
-        />
-      </label>
-      <br />
-      <button>Cancel</button>
-      <br />
-      <button>Save</button>
-    </form>
+          </div>
+        </header>
+
+        {error && <div className="recipeEditError">{error}</div>}
+
+        {/* BASICS */}
+        <section className="recipeEditSection">
+          <h2 className="recipeEditSectionTitle">Basics</h2>
+          <div className="recipeEditGrid">
+            <div className="rcFieldGroup">
+              <label className="rcLabel">Recipe title</label>
+              <input
+                className="rcInput"
+                type="text"
+                value={form.name}
+                onChange={handleChange("name")}
+                placeholder="e.g. Buffalo Ranch Crunch"
+              />
+            </div>
+
+            <div className="rcFieldGroup">
+              <label className="rcLabel">Description</label>
+              <textarea
+                className="rcTextarea"
+                rows={3}
+                value={form.description}
+                onChange={handleChange("description")}
+                placeholder="Short description of this recipe…"
+              />
+            </div>
+
+            <div className="rcFieldRow">
+              <div className="rcFieldGroup">
+                <label className="rcLabel">Kernel profile</label>
+                <select
+                  className="rcSelect"
+                  value={form.kernel_type}
+                  onChange={handleChange("kernel_type")}
+                >
+                  {KERNEL_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="rcFieldGroup rcFieldGroup--sm">
+                <label className="rcLabel">Yield (cups)</label>
+                <input
+                  className="rcInput rcInput--inline rcInput--mini"
+                  type="number"
+                  min="1"
+                  value={form.yield}
+                  onChange={handleChange("yield")}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* INGREDIENTS */}
+        <section className="recipeEditSection">
+          <h2 className="recipeEditSectionTitle">Ingredients</h2>
+          <p className="recipeEditHint">
+            For now this is a freeform field. Use any format that&apos;s easy
+            for you (one per line, bullet-style, etc.).
+          </p>
+          <textarea
+            className="rcTextarea rcTextarea--large"
+            rows={5}
+            value={form.ingredients}
+            onChange={handleChange("ingredients")}
+          />
+        </section>
+
+        {/* INSTRUCTIONS */}
+        <section className="recipeEditSection">
+          <h2 className="recipeEditSectionTitle">Instructions</h2>
+          <textarea
+            className="rcTextarea rcTextarea--large"
+            rows={6}
+            value={form.instructions}
+            onChange={handleChange("instructions")}
+            placeholder={
+              "Step 1: …\nStep 2: …\n\nUse any style you like – numbered, bullet, etc."
+            }
+          />
+        </section>
+
+        {/* FOOTER */}
+        <footer className="recipeEditFooter">
+          <button
+            type="button"
+            className="rcBtn rcBtn--ghost"
+            onClick={handleCancel}
+            disabled={saving}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="rcBtn rcBtn--primary"
+            disabled={saving}
+          >
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </footer>
+      </form>
+    </div>
   );
 }

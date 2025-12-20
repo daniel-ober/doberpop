@@ -1,0 +1,293 @@
+/* client/src/pages/RecipeEdit/RecipeEdit.css */
+
+.recipeEditPage {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 56px 28px 80px;
+}
+
+.recipeEditCard {
+  background: radial-gradient(circle at top left,
+      rgba(255, 255, 255, 0.08),
+      rgba(0, 0, 0, 0.9));
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 26px 26px 22px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(14px);
+}
+
+.recipeEditCard--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  font-size: 0.95rem;
+  opacity: 0.86;
+}
+
+/* Header */
+
+.recipeEditHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.recipeEditTitle {
+  margin: 0;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: rgba(255, 235, 178, 0.96);
+  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.recipeEditSubtitle {
+  margin: 8px 0 0;
+  opacity: 0.76;
+  max-width: 520px;
+  font-size: 0.96rem;
+}
+
+.recipeEditToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.recipeEditToggleLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.74;
+}
+
+/* Reuse toggle visuals from create page */
+
+.rcToggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.rcToggleThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  margin-left: 3px;
+  transition: transform 160ms ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+
+.rcToggle.rcToggle--on {
+  background: rgba(245, 217, 139, 0.35);
+  border-color: rgba(245, 217, 139, 0.9);
+}
+
+.rcToggle.rcToggle--on .rcToggleThumb {
+  transform: translateX(18px);
+}
+
+/* Error */
+
+.recipeEditError {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(248, 113, 113, 0.6);
+  background: rgba(127, 29, 29, 0.85);
+  color: #fee2e2;
+  font-size: 0.9rem;
+}
+
+/* Sections */
+
+.recipeEditSection {
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  margin-top: 12px;
+}
+
+.recipeEditSection:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.recipeEditSectionTitle {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.recipeEditGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr);
+  gap: 16px;
+}
+
+/* Shared rc* controls (mirroring create file so edit is self-contained) */
+
+.rcFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rcFieldGroup--sm {
+  max-width: 160px;
+}
+
+.rcFieldRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.rcLabel {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.rcInput,
+.rcTextarea,
+.rcSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: rgba(15, 23, 42, 0.85);
+  color: rgba(248, 250, 252, 0.96);
+  font-size: 0.94rem;
+  outline: none;
+}
+
+.rcInput::placeholder,
+.rcTextarea::placeholder {
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.rcInput:focus,
+.rcTextarea:focus,
+.rcSelect:focus {
+  border-color: rgba(245, 217, 139, 0.9);
+  box-shadow: 0 0 0 1px rgba(245, 217, 139, 0.5);
+}
+
+.rcInput--inline {
+  max-width: 100%;
+}
+
+.rcInput--mini {
+  max-width: 110px;
+}
+
+.rcTextarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.rcTextarea--tall {
+  min-height: 140px;
+}
+
+/* Small helper text */
+
+.recipeEditHint {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+
+/* Footer buttons */
+
+.recipeEditFooter {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.rcBtn {
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.rcBtn--primary {
+  background: linear-gradient(
+    120deg,
+    rgba(245, 217, 139, 0.95),
+    rgba(251, 191, 36, 0.98)
+  );
+  color: #0b0b0b;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+}
+
+.rcBtn--primary:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.rcBtn--ghost {
+  border-color: rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.rcBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 820px) {
+  .recipeEditPage {
+    padding: 44px 16px 70px;
+  }
+
+  .recipeEditHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recipeEditTitle {
+    font-size: 30px;
+  }
+
+  .recipeEditGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recipeEditFooter {
+    flex-direction: row-reverse;
+  }
+}

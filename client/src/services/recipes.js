@@ -1,3 +1,4 @@
+// client/src/services/recipes.js
 import api from "./api-config";
 
 /**
@@ -17,5 +18,10 @@ export const getOneRecipe = async (id) => {
 
 export const deleteRecipe = async (id) => {
   const res = await api.delete(`/api/recipes/${id}`);
+  return res.data;
+};
+
+export const updateRecipe = async (id, payload) => {
+  const res = await api.put(`/api/recipes/${id}`, payload);
   return res.data;
 };

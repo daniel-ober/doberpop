@@ -97,17 +97,17 @@ class Api::RecipesController < ApplicationController
 
   private
 
-  def recipe_params
-    params.permit(
-      :name,
-      :description,
-      :kernel_type,
-      :yield,
-      :instructions,
-      :published,
-      :visibility,
-      :source,
-      :ingredients
-    )
-  end
+def recipe_params
+  params.permit(
+    :name,
+    :description,
+    :kernel_type,
+    :yield,
+    :instructions,
+    :published,
+    :source,
+    :ingredients,
+    :user_id
+  )
+end
 end
