@@ -140,7 +140,7 @@ export default function RecipeEdit() {
             </p>
           </div>
 
-          <div className="recipeEditToggleRow">
+          {/* <div className="recipeEditToggleRow">
             <span className="recipeEditToggleLabel">
               Visible to Doberpop community
             </span>
@@ -153,7 +153,7 @@ export default function RecipeEdit() {
             >
               <span className="rcToggleThumb" />
             </button>
-          </div>
+          </div> */}
         </header>
 
         {error && <div className="recipeEditError">{error}</div>}

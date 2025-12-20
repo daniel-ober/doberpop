@@ -11,10 +11,10 @@ import {
 } from "../../services/favorites";
 
 const TABS = [
-  { key: "doberpop", label: "Doberpop" },
-  { key: "mine", label: "My Recipes" },
-  { key: "community", label: "Community" },
-  { key: "favorites", label: "Favorites" },
+  { key: "doberpop", label: "Signature Batches" },
+  { key: "mine", label: "My Batch Ideas" },
+  // { key: "community", label: "Community" },
+  { key: "favorites", label: "Batch Favorites" },
 ];
 
 export default function Recipes(props) {
@@ -205,7 +205,7 @@ export default function Recipes(props) {
     <div className="page recipes">
       <div className="page__header">
         <div>
-          <h1 className="page__title">Recipes</h1>
+          <h1 className="page__title">Batch Library</h1>
           <p className="page__subtitle">
             Browse the catalog
             {normalizedUserId != null ? " — edit yours anytime." : "."}
@@ -213,7 +213,7 @@ export default function Recipes(props) {
         </div>
 
         <Link className="btn btn--primary" to="/recipes/new">
-          + New Recipe
+          Log Your Batch Idea
         </Link>
       </div>
 

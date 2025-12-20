@@ -202,7 +202,7 @@ export default function RecipeCreate() {
             </p>
           </div>
 
-          <div className="recipeCreateToggleRow">
+          {/* <div className="recipeCreateToggleRow">
             <span className="recipeCreateToggleLabel">
               Visible to Doberpop community
             </span>
@@ -215,7 +215,7 @@ export default function RecipeCreate() {
             >
               <span className="rcToggleThumb" />
             </button>
-          </div>
+          </div> */}
         </header>
 
         {error && <div className="recipeCreateError">{error}</div>}
