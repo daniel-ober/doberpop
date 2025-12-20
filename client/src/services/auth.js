@@ -116,3 +116,4 @@ export const verifyUser = async () => {
   const data = await res.json();
   return data.user;
 };
+
