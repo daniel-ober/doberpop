@@ -1,4 +1,5 @@
 # config/initializers/cors.rb
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins(
@@ -9,13 +10,13 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       "https://www.doberpop.com"
     )
 
-    # Auth routes (login / register)
+    # Auth endpoints (login/register) – use cookies
     resource "/auth/*",
              headers: :any,
              methods: %i[post options],
              credentials: true
 
-    # All API routes (including /api/admin/*)
+    # All API endpoints (including /api/admin/users, /api/admin/recipes)
     resource "/api/*",
              headers: :any,
              methods: %i[get post put patch delete options head],
