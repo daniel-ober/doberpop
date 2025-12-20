@@ -1,7 +1,7 @@
-// client/src/services/auth.js
-
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://doberpop.com"
+    : "http://localhost:3000";
 
 const TOKEN_KEY = "authToken";
 
@@ -43,7 +43,7 @@ async function buildError(res) {
  * response: { user: {...}, token: "..." }
  */
 export const loginUser = async ({ identifier, password }) => {
-  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+  const res = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, password }),
@@ -64,7 +64,7 @@ export const loginUser = async ({ identifier, password }) => {
  * body: { user: { username, email, password } }
  */
 export const registerUser = async ({ username, email, password }) => {
-  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+  const res = await fetch(`${API_BASE}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -91,7 +91,7 @@ export const verifyUser = async () => {
     throw new Error("No token");
   }
 
-  const res = await fetch(`${API_BASE_URL}/auth/verify`, {
+  const res = await fetch(`${API_BASE}/auth/verify`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
