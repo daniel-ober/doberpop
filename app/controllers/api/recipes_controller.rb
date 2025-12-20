@@ -10,22 +10,15 @@ class Api::RecipesController < ApplicationController
   # GET /api/recipes
   # =========================
   #
-  # Returns:
-  # - All published recipes (official Doberpop + community)
-  # - PLUS the current user's own recipes (even if not published)
+  # Immediate-safe version: return all recipes and let the
+  # front-end do the tab filtering (Doberpop / Mine / Community)
   #
   def index
-    public_scope = Recipe.where(published: true)
-
-    if current_user
-      mine = Recipe.where(user_id: current_user.id)
-      scope = public_scope.or(mine)
-    else
-      scope = public_scope
-    end
-
-    recipes = scope.distinct.order(:id)
+    recipes = Recipe.order(:id)
     render json: recipes
+  rescue => e
+    Rails.logger.error("[Api::RecipesController#index] #{e.class}: #{e.message}")
+    render json: { status: 500, error: "Internal Server Error" }, status: :internal_server_error
   end
 
   # =========================
