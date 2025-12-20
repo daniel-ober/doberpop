@@ -1,6 +1,7 @@
 // client/src/services/auth.js
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
 
 const TOKEN_KEY = "authToken";
 
@@ -54,7 +55,7 @@ export const loginUser = async ({ identifier, password }) => {
 
   const data = await res.json();
   setToken(data.token);
-  return data.user; // App.js expects `user`
+  return data.user;
 };
 
 /**
@@ -76,7 +77,6 @@ export const registerUser = async ({ username, email, password }) => {
   }
 
   const data = await res.json();
-  // We don't store the token here because App.js logs in again via loginUser
   return data.user;
 };
 

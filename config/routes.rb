@@ -1,14 +1,11 @@
+# config/routes.rb
 Rails.application.routes.draw do
   # ============================
   # AUTH (JWT)
   # ============================
-  post "/auth/login",  to: "authentication#login"
-  get  "/auth/verify", to: "authentication#verify"
-
-  # ============================
-  # PUBLIC USER REGISTRATION
-  # ============================
-  resources :users, only: [:create]
+  post "/auth/login",    to: "authentication#login"
+  post "/auth/register", to: "authentication#register"
+  get  "/auth/verify",   to: "authentication#verify"
 
   # ============================
   # ADMIN HTML (Frontend App)
@@ -24,7 +21,7 @@ Rails.application.routes.draw do
   # ============================
   namespace :api, path: "/api" do
     # ----------------------------
-    # RECIPES API  (🔥 Needed for /recipes page)
+    # RECIPES API  (used by /recipes page)
     # ----------------------------
     resources :recipes
 
@@ -42,9 +39,9 @@ Rails.application.routes.draw do
     # ----------------------------
     # FAVORITES
     # ----------------------------
-    get    "/favorites",                 to: "favorites#index"
-    post   "/recipes/:recipe_id/favorite", to: "favorites#create"
-    delete "/recipes/:recipe_id/favorite", to: "favorites#destroy"
+    get    "/favorites",                    to: "favorites#index"
+    post   "/recipes/:recipe_id/favorite",  to: "favorites#create"
+    delete "/recipes/:recipe_id/favorite",  to: "favorites#destroy"
 
     # ----------------------------
     # ADMIN API (JWT protected)

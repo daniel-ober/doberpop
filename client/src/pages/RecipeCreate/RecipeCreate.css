@@ -1,0 +1,413 @@
+/* client/src/pages/RecipeCreate/RecipeCreate.css */
+
+.recipeCreatePage {
+  padding: 32px;
+  max-width: 920px;
+  margin: 0 auto;
+  color: #f5f5f5;
+}
+
+.recipeCreateCard {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+  padding: 24px 24px 20px;
+  backdrop-filter: blur(10px);
+}
+
+/* ---------- HEADER ---------- */
+
+.recipeCreateHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.recipeCreateTitle {
+  font-size: 24px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+
+.recipeCreateSubtitle {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.recipeCreateToggleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.recipeCreateToggleLabel {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* Toggle */
+
+.rcToggle {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(10, 10, 10, 0.9);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.rcToggleThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #f5f5f5;
+  transform: translateX(3px);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.rcToggle.rcToggle--on {
+  background: linear-gradient(135deg, #facc6b, #f97316);
+  border-color: transparent;
+}
+
+.rcToggle.rcToggle--on .rcToggleThumb {
+  transform: translateX(23px);
+  background: #111827;
+}
+
+/* ---------- ERROR ---------- */
+
+.recipeCreateError {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.6);
+  font-size: 13px;
+}
+
+/* ---------- SECTIONS ---------- */
+
+.recipeCreateSection {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.recipeCreateSectionTitle {
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e6d3a3;
+  margin: 0 0 14px;
+}
+
+.recipeCreateGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rcFieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+/* ---------- FIELDS ---------- */
+
+.rcFieldGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rcFieldGroup--sm {
+  max-width: 140px;
+}
+
+.rcLabel {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.rcInput,
+.rcTextarea,
+.rcSelect {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.85);
+  color: #f9fafb;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.rcInput::placeholder,
+.rcTextarea::placeholder {
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.rcInput:focus,
+.rcTextarea:focus,
+.rcSelect:focus {
+  border-color: #facc6b;
+  box-shadow: 0 0 0 1px rgba(250, 204, 107, 0.7);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.rcTextarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+/* ---------- INLINE / MINI ---------- */
+
+.rcInput--inline {
+  padding: 6px 8px;
+}
+
+.rcInput--mini {
+  max-width: 70px;
+  text-align: center;
+}
+
+.rcSelect--mini {
+  max-width: 90px;
+}
+
+/* ---------- SUBSECTIONS ---------- */
+
+.recipeCreateSubsection {
+  margin-top: 10px;
+}
+
+.rcSubheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.rcHint {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.rcInlineControls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- LISTS ---------- */
+
+.rcList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.rcList--ingredients {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rcIngredientRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.rcIngredientNameBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rcPill {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.08);
+  color: #e5e7eb;
+}
+
+.rcIngredientName {
+  font-size: 14px;
+}
+
+.rcIngredientName--locked {
+  opacity: 0.9;
+}
+
+.rcIngredientInputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- STEPS ---------- */
+
+.rcList--steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rcStepRow {
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  cursor: grab;
+}
+
+.rcStepRow:active {
+  cursor: grabbing;
+}
+
+.rcStepHandle {
+  font-size: 16px;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+}
+
+.rcStepContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rcStepHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rcStepIndex {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.rcStepActions {
+  display: flex;
+  gap: 6px;
+}
+
+.rcTextarea--step {
+  min-height: 60px;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.rcBtn {
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(30, 64, 175, 0.3);
+  color: #f9fafb;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    transform 0.05s ease;
+}
+
+.rcBtn:hover {
+  background: rgba(59, 130, 246, 0.5);
+  border-color: rgba(191, 219, 254, 0.9);
+}
+
+.rcBtn:active {
+  transform: translateY(1px);
+}
+
+.rcBtn--ghost {
+  background: transparent;
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
+.rcBtn--ghost:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.rcBtn--primary {
+  background: linear-gradient(135deg, #facc6b, #f97316);
+  border-color: transparent;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* ---------- FOOTER ---------- */
+
+.recipeCreateFooter {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 768px) {
+  .recipeCreatePage {
+    padding: 20px;
+  }
+
+  .recipeCreateHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recipeCreateToggleRow {
+    align-items: flex-start;
+  }
+
+  .rcFieldRow {
+    flex-direction: column;
+  }
+
+  .recipeCreateCard {
+    padding: 18px 16px 16px;
+  }
+}

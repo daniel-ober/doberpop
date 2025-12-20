@@ -5,7 +5,6 @@ class AuthenticationController < ApplicationController
 
   # POST /auth/login
   def login
-    # Allow either {identifier, password} or {authentication: {identifier, password}}
     auth = params[:authentication] || params
 
     identifier = auth[:identifier].to_s.strip.downcase
@@ -36,7 +35,7 @@ class AuthenticationController < ApplicationController
 
   # GET /auth/verify
   def verify
-    render json: { user: safe_user_json(@current_user) }, status: :ok
+    render json: { user: safe_user_json(current_user) }, status: :ok
   end
 
   private
@@ -46,6 +45,8 @@ class AuthenticationController < ApplicationController
   end
 
   def safe_user_json(user)
+    return nil unless user
+
     user.as_json(only: [:id, :username, :email, :admin, :created_at, :updated_at])
   end
 end

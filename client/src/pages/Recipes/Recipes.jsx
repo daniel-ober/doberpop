@@ -1,3 +1,4 @@
+// client/src/pages/Recipes/Recipes.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../components/Modal/Modal";
@@ -27,6 +28,10 @@ export default function Recipes(props) {
   const [favoriteIds, setFavoriteIds] = useState(() => new Set());
   const [favBusy, setFavBusy] = useState(() => new Set());
 
+  // mini-filter just for "My Recipes" tab
+  // all | private | community
+  const [mineFilter, setMineFilter] = useState("all");
+
   const { recipes = [], handleDelete, currentUser } = props;
 
   useEffect(() => {
@@ -37,14 +42,16 @@ export default function Recipes(props) {
         const data = await getFavorites();
         const ids = Array.isArray(data?.recipe_ids) ? data.recipe_ids : [];
         if (alive) setFavoriteIds(new Set(ids));
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     };
 
-    if (currentUser?.id) load();
+    if (currentUser?.id || currentUser?.user_id) load();
     return () => {
       alive = false;
     };
-  }, [currentUser?.id]);
+  }, [currentUser?.id, currentUser?.user_id]);
 
   const openDelete = (id) => {
     setSelectedId(id);
@@ -65,12 +72,12 @@ export default function Recipes(props) {
   const isFav = (recipeId) => favoriteIds.has(recipeId);
 
   const toggleFavorite = async (recipeId, nextState) => {
-    if (!currentUser?.id) return;
+    if (!(currentUser?.id || currentUser?.user_id)) return;
     if (favBusy.has(recipeId)) return;
 
     setFavBusy((prev) => new Set(prev).add(recipeId));
 
-    // optimistic
+    // optimistic update
     setFavoriteIds((prev) => {
       const next = new Set(prev);
       if (nextState) next.add(recipeId);
@@ -99,26 +106,51 @@ export default function Recipes(props) {
   };
 
   const byTab = useMemo(() => {
-    const uid = currentUser?.id;
+    // 🔹 Robustly derive the current user ID regardless of shape
+    const uid =
+      currentUser?.id ?? currentUser?.user_id ?? null;
 
+    // All official Doberpop recipes (public only)
     const doberpop = recipes.filter(
       (r) => r.source === "doberpop" && r.published === true
     );
 
-    const mine = recipes.filter((r) => r.user_id === uid);
+    // ALL recipes created by the signed-in user (private + shared)
+    const mineAll = uid == null ? [] : recipes.filter((r) => {
+      // user_id may be number or string; normalize
+      if (r.user_id == null) return false;
+      return String(r.user_id) === String(uid);
+    });
 
+    // Community = user-created + shared
     const community = recipes.filter(
       (r) => r.source === "user" && r.published === true
     );
 
     const favorites = recipes.filter((r) => favoriteIds.has(r.id));
 
-    return { doberpop, mine, community, favorites };
-  }, [recipes, currentUser?.id, favoriteIds]);
+    return { doberpop, mineAll, community, favorites };
+  }, [recipes, currentUser, favoriteIds]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let list = [...(byTab[tab] || [])];
+    let baseList;
+
+    if (tab === "mine") {
+      const mineAll = byTab.mineAll || [];
+
+      if (mineFilter === "private") {
+        baseList = mineAll.filter((r) => !r.published);
+      } else if (mineFilter === "community") {
+        baseList = mineAll.filter((r) => r.published);
+      } else {
+        baseList = mineAll;
+      }
+    } else {
+      baseList = [...(byTab[tab === "mine" ? "mineAll" : tab] || [])];
+    }
+
+    let list = [...baseList];
 
     if (q) {
       list = list.filter((r) => (r.name || "").toLowerCase().includes(q));
@@ -147,7 +179,7 @@ export default function Recipes(props) {
     }
 
     return list;
-  }, [byTab, tab, query, sort]);
+  }, [byTab, tab, query, sort, mineFilter]);
 
   const emptyTitle =
     tab === "doberpop"
@@ -169,7 +201,10 @@ export default function Recipes(props) {
         <div>
           <h1 className="page__title">Recipes</h1>
           <p className="page__subtitle">
-            Browse the catalog{currentUser?.id ? " — edit yours anytime." : "."}
+            Browse the catalog
+            {currentUser?.id || currentUser?.user_id
+              ? " — edit yours anytime."
+              : "."}
           </p>
         </div>
 
@@ -178,6 +213,7 @@ export default function Recipes(props) {
         </Link>
       </div>
 
+      {/* Main tabs */}
       <div className="recipesTabs">
         {TABS.map((t) => (
           <button
@@ -188,11 +224,42 @@ export default function Recipes(props) {
           >
             {t.label}{" "}
             <span className="recipesTab__count">
-              {(byTab[t.key] || []).length}
+              {(t.key === "mine" ? byTab.mineAll : byTab[t.key] || []).length}
             </span>
           </button>
         ))}
       </div>
+
+      {/* Mini filters inside "My Recipes" */}
+      {tab === "mine" && (
+        <div className="recipesTabs" style={{ marginTop: 4, marginBottom: 10 }}>
+          <button
+            type="button"
+            className={`recipesTab ${mineFilter === "all" ? "isActive" : ""}`}
+            onClick={() => setMineFilter("all")}
+          >
+            All
+          </button>
+          <button
+            type="button"
+            className={`recipesTab ${
+              mineFilter === "private" ? "isActive" : ""
+            }`}
+            onClick={() => setMineFilter("private")}
+          >
+            Private
+          </button>
+          <button
+            type="button"
+            className={`recipesTab ${
+              mineFilter === "community" ? "isActive" : ""
+            }`}
+            onClick={() => setMineFilter("community")}
+          >
+            Shared to community
+          </button>
+        </div>
+      )}
 
       <div className="toolbar">
         <input
@@ -229,7 +296,14 @@ export default function Recipes(props) {
       ) : (
         <div className="grid">
           {filtered.map((recipe) => {
-            const isOwner = currentUser?.id === recipe.user_id;
+            const uid =
+              currentUser?.id ?? currentUser?.user_id ?? null;
+
+            const isOwner =
+              uid != null &&
+              recipe.user_id != null &&
+              String(recipe.user_id) === String(uid);
+
             const favorited = isFav(recipe.id);
             const busy = favBusy.has(recipe.id);
 

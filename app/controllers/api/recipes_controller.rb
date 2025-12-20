@@ -1,62 +1,113 @@
 # app/controllers/api/recipes_controller.rb
-module Api
-  class RecipesController < ApplicationController
-    before_action :authorize_request
+class Api::RecipesController < ApplicationController
+  protect_from_forgery with: :null_session
+  skip_before_action :verify_authenticity_token
 
-    # GET /api/recipes
-    def index
-      recipes = Recipe.includes(:user).order(created_at: :desc)
+  # Require login for mutating actions
+  before_action :authorize_request, only: [:create, :update, :destroy]
 
-      render json: recipes.as_json(
-        only: [
-          :id,
-          :name,
-          :kernel_type,
-          :instructions,
-          :yield,
-          :description,
-          :hero_image_url,
-          :additional_photo_urls,
-          :ingredients,
-          :source,
-          :published,
-          :created_at,
-          :updated_at
-        ],
-        include: {
-          user: {
-            only: [:id, :username, :email]
-          }
-        }
-      )
+  # =========================
+  # GET /api/recipes
+  # =========================
+  def index
+    recipes =
+      if current_user
+        # Logged in: all published + your own (published or private)
+        Recipe
+          .where("published = ? OR user_id = ?", true, current_user.id)
+          .order(created_at: :desc)
+      else
+        # Anonymous: only published
+        Recipe.where(published: true).order(created_at: :desc)
+      end
+
+    render json: recipes
+  end
+
+  # =========================
+  # GET /api/recipes/:id
+  # =========================
+  def show
+    recipe = Recipe.find(params[:id])
+
+    # If NOT published, only the owner or an admin may see it.
+    if !recipe.published?
+      unless current_user && (current_user.id == recipe.user_id || current_user.admin?)
+        return render json: { error: "Recipe not found" }, status: :not_found
+      end
     end
 
-    # GET /api/recipes/:id
-    def show
-      recipe = Recipe.includes(:user).find(params[:id])
+    render json: recipe
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Recipe not found" }, status: :not_found
+  end
 
-      render json: recipe.as_json(
-        only: [
-          :id,
-          :name,
-          :kernel_type,
-          :instructions,
-          :yield,
-          :description,
-          :hero_image_url,
-          :additional_photo_urls,
-          :ingredients,
-          :source,
-          :published,
-          :created_at,
-          :updated_at
-        ],
-        include: {
-          user: {
-            only: [:id, :username, :email]
-          }
-        }
-      )
+  # =========================
+  # POST /api/recipes
+  # =========================
+  def create
+    recipe = Recipe.new(recipe_params)
+    recipe.user_id = current_user.id
+    recipe.source ||= "user"
+
+    if recipe.save
+      render json: recipe, status: :created
+    else
+      render json: { error: recipe.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  # =========================
+  # PUT/PATCH /api/recipes/:id
+  # =========================
+  def update
+    recipe = Recipe.find(params[:id])
+
+    unless current_user && (current_user.admin? || recipe.user_id == current_user.id)
+      return render json: { error: "Forbidden" }, status: :forbidden
+    end
+
+    if recipe.update(recipe_params)
+      render json: recipe
+    else
+      render json: {
+        error: "Validation failed",
+        messages: recipe.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Recipe not found" }, status: :not_found
+  end
+
+  # =========================
+  # DELETE /api/recipes/:id
+  # =========================
+  def destroy
+    recipe = Recipe.find(params[:id])
+
+    unless current_user && (current_user.admin? || recipe.user_id == current_user.id)
+      return render json: { error: "Forbidden" }, status: :forbidden
+    end
+
+    recipe.destroy
+    head :no_content
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Recipe not found" }, status: :not_found
+  end
+
+  private
+
+  def recipe_params
+    params.permit(
+      :name,
+      :description,
+      :kernel_type,
+      :yield,
+      :instructions,
+      :published,
+      :visibility,
+      :source,
+      :ingredients
+    )
   end
 end

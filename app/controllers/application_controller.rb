@@ -1,55 +1,50 @@
-# app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  # Turn OFF CSRF checks for JSON/API requests (we use JWT instead).
-  # HTML (admin) requests still get normal CSRF protection.
-  skip_forgery_protection if: -> { request.format.json? }
-
-  # Expose current_user for controllers & views
-  attr_reader :current_user
-  helper_method :current_user
+  protect_from_forgery with: :null_session
 
   private
 
+  # Encode a JWT with our secret
   def encode_token(payload)
-    JWT.encode(
-      payload,
-      Rails.application.secret_key_base,
-      "HS256"
-    )
+    JWT.encode(payload, Rails.application.secret_key_base, "HS256")
   end
 
+  # Read Authorization header (case-insensitive)
   def auth_header
-    request.headers["Authorization"]
+    request.headers["Authorization"] || request.headers["authorization"]
   end
 
+  # Decode the JWT payload (or nil if invalid/missing)
   def decoded_token
-    return nil unless auth_header&.start_with?("Bearer ")
+    return nil unless auth_header.present?
 
-    token = auth_header.split(" ")[1]
-
-    begin
-      JWT.decode(
-        token,
-        Rails.application.secret_key_base,
-        true,
-        algorithm: "HS256"
-      )
-    rescue JWT::DecodeError, JWT::ExpiredSignature
-      nil
-    end
+    token = auth_header.split(" ").last
+    JWT.decode(
+      token,
+      Rails.application.secret_key_base,
+      true,
+      algorithm: "HS256"
+    ).first
+  rescue JWT::DecodeError, JWT::VerificationError
+    nil
   end
 
+  # Current user derived from JWT
+  def current_user
+    return @current_user if defined?(@current_user)
+
+    @current_user =
+      begin
+        payload = decoded_token
+        payload && User.find_by(id: payload["user_id"])
+      rescue
+        nil
+      end
+  end
+
+  # Before_action for endpoints that REQUIRE login
   def authorize_request
-    decoded = decoded_token
-    unless decoded
-      render json: { error: "Missing token" }, status: :unauthorized and return
-    end
-
-    user_id = decoded[0]["user_id"]
-    @current_user = User.find_by(id: user_id)
-
-    unless @current_user
-      render json: { error: "User not found" }, status: :unauthorized and return
+    unless current_user
+      render json: { error: "Unauthorized" }, status: :unauthorized
     end
   end
 end
