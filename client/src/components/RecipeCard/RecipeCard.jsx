@@ -73,7 +73,7 @@ export default function RecipeCard({
   rightActions = null,
 }) {
   const history = useHistory();
-  const { id, name, kernel_type } = recipe || {};
+  const { id, name } = recipe || {};
 
   const canToggle = typeof onToggleFavorite === "function";
   const isClickable = Boolean(to);
