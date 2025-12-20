@@ -1,3 +1,4 @@
+// client/src/pages/Landing/Landing.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Landing.css";
@@ -11,22 +12,28 @@ export default function Landing() {
         <section className="landing__card" aria-label="Doberpop landing">
           <div className="landing__top">
             <img className="landing__logo" src={logo} alt="Doberpop" />
-            <div className="landing__kicker">A recipe book for popcorn people</div>
 
-            <h1 className="landing__title">Build, save, and share recipes.</h1>
+            <div className="landing__kicker">Your personal popcorn workshop</div>
+
+            <h1 className="landing__title">
+              Build, refine, and manage your popcorn batches.
+            </h1>
 
             <p className="landing__subtitle">
-              Browse the catalog, then sign in to create and manage your own flavor lineup.
+              Browse flavors, then sign in to create your own batches, dial in your process, 
+              and keep everything organized in one place.
             </p>
           </div>
 
           <div className="landing__actions" role="group" aria-label="Primary actions">
             <Link className="landing__btn landing__btn--primary" to="/recipes">
-              Browse Recipes
+              Browse Batches
             </Link>
+
             <Link className="landing__btn landing__btn--ghost" to="/login">
               Sign In
             </Link>
+
             <Link className="landing__btn landing__btn--ghost" to="/register">
               Register
             </Link>
@@ -36,14 +43,14 @@ export default function Landing() {
 
           <div className="landing__bottom">
             <p className="landing__tip">
-              Tip: Sign in to create recipes, edit them anytime, and keep your personal cookbook organized.
+              Tip: Sign in to create new batches, update them anytime, and build your personal Doberpop playbook.
             </p>
 
             <div className="landing__chips">
+              <span className="landing__chip">Batch management</span>
               <span className="landing__chip">Kernel profiles</span>
-              <span className="landing__chip">Ingredients</span>
-              <span className="landing__chip">Instructions</span>
-              <span className="landing__chip">Community driven</span>
+              <span className="landing__chip">Precise ingredients</span>
+              <span className="landing__chip">Step-by-step process</span>
             </div>
           </div>
         </section>

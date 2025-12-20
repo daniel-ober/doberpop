@@ -525,3 +525,104 @@ header {
    - .login-button / .register-button
    - .login-container / .register-container
    ========================================================= */
+
+/* =========================================
+   Batch Library (Recipes) – mobile layout
+   ========================================= */
+@media (max-width: 720px) {
+  /* Narrower padding for the recipes page */
+  .page.recipes {
+    padding: 40px 14px 70px;
+  }
+
+  /* Stack title, subtitle, and button */
+  .page.recipes .page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .page.recipes .page__title {
+    font-size: 30px;
+    line-height: 1.1;
+  }
+
+  .page.recipes .page__subtitle {
+    font-size: 0.95rem;
+    max-width: 26rem;
+    margin-top: 2px;
+    margin-bottom: 4px;
+  }
+
+  /* Make the "Log Your Batch Idea" button full-width */
+  .page.recipes .page__header .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding-block: 10px;
+    font-size: 0.95rem;
+    border-radius: 999px;
+  }
+
+  /* Search + sort: single column on mobile */
+  .page.recipes .toolbar {
+    grid-template-columns: 1fr;
+    margin-top: 4px;
+    margin-bottom: 14px;
+  }
+}
+
+/* Extra tiny devices */
+@media (max-width: 480px) {
+  .page.recipes .page__title {
+    font-size: 26px;
+  }
+
+  .page.recipes {
+    padding-inline: 10px;
+  }
+}
+
+/* =========================================
+   Recipes tabs – mobile layout
+   ========================================= */
+@media (max-width: 720px) {
+  .page.recipes .recipesTabs {
+    margin-top: 18px;
+    margin-bottom: 12px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two columns for row 2 */
+    grid-auto-rows: auto;
+    column-gap: 8px;
+    row-gap: 8px;
+
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .page.recipes .recipesTabs .recipesTab {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Row 1: hero pill – Signature Batches */
+  .page.recipes .recipesTabs .recipesTab:nth-child(1) {
+    grid-column: 1 / -1; /* span both columns */
+    padding: 12px 18px !important;
+    font-size: 1rem;
+
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.45),
+      0 0 0 3px rgba(245, 217, 139, 0.12);
+  }
+
+  /* Row 2: My Batch Ideas (left) + Batch Favorites (right) */
+  .page.recipes .recipesTabs .recipesTab:nth-child(2),
+  .page.recipes .recipesTabs .recipesTab:nth-child(3) {
+    padding: 9px 12px !important;
+    font-size: 0.9rem;
+  }
+}

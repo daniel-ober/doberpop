@@ -1,10 +1,217 @@
 /* client/src/pages/Login/Login.css */
 
+/* Make the login card feel as premium as register */
 .auth.auth--login .auth__card {
-  /* slightly tighter for login */
-  width: min(500px, 100%);
+  width: min(520px, 100%);
+  padding: 30px 24px 26px;
+  border-radius: 24px;
+
+  /* Gold-tinted glass panel */
+  border: 1px solid rgba(245, 230, 179, 0.32);
+  background:
+    radial-gradient(140% 180% at 0% 0%, rgba(245, 230, 179, 0.16), transparent 45%),
+    radial-gradient(140% 200% at 100% 120%, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.96));
+
+  box-shadow:
+    0 26px 80px rgba(0, 0, 0, 0.78),
+    0 0 0 1px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Subtle inner glow ring */
+.auth.auth--login .auth__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+/* Top stack: logo + title + subtitle */
 .auth.auth--login .auth__top {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.auth.auth--login .auth__logo {
+  width: 120px;
+  height: auto;
+  margin: 0 auto 6px;
+  display: block;
+  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.65));
+}
+
+.auth.auth--login .auth__title {
+  margin: 0;
+  font-size: 2.1rem;
+  letter-spacing: 0.02em;
+}
+
+.auth.auth--login .auth__subtitle {
+  margin: 6px auto 0;
+  max-width: 26rem;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: rgba(255, 238, 180, 0.78);
+}
+
+/* Form layout */
+.auth.auth--login .auth__form {
+  margin-top: 8px;
+}
+
+/* Labels + inputs get a touch more air */
+.auth.auth--login .auth__label {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.auth.auth--login .auth__labelText {
+  display: block;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: rgba(255, 238, 180, 0.76);
+}
+
+.auth.auth--login .auth__input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 0.95rem;
+
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 120ms ease,
+    background 140ms ease;
+}
+
+.auth.auth--login .auth__input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.auth.auth--login .auth__input:focus {
+  outline: none;
+  border-color: rgba(245, 230, 179, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(245, 230, 179, 0.16),
+    0 14px 34px rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Error text + error border reuse global classes from auth.css */
+.auth.auth--login .auth__errorText {
+  margin-top: 6px;
+  font-size: 0.86rem;
+}
+
+/* Actions: button gets a bit more presence */
+.auth.auth--login .auth__actions {
+  margin-top: 18px;
   margin-bottom: 10px;
+}
+
+.auth.auth--login .auth__btn--primary {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 230, 179, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 230, 170, 0.96),
+    rgba(216, 186, 120, 0.96)
+  );
+  color: rgba(18, 14, 10, 0.96);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+  transform: translateY(0);
+  transition:
+    transform 120ms ease,
+    box-shadow 140ms ease,
+    filter 120ms ease;
+}
+
+.auth.auth--login .auth__btn--primary:hover:not([disabled]) {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(0, 0, 0, 0.7);
+}
+
+.auth.auth--login .auth__btn--primary:active:not([disabled]) {
+  transform: translateY(0);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.7);
+}
+
+/* Disabled state keeps the shape but softens it */
+.auth.auth--login .auth__btn--primary[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.65);
+}
+
+/* Fine print / link */
+.auth.auth--login .auth__fineprint {
+  margin-top: 6px;
+  font-size: 0.88rem;
+  text-align: center;
+  color: rgba(255, 238, 180, 0.7);
+}
+
+.auth.auth--login .auth__link {
+  color: rgba(255, 238, 180, 0.98);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.auth.auth--login .auth__link:hover {
+  color: rgba(255, 247, 210, 1);
+  border-color: rgba(255, 247, 210, 0.95);
+}
+
+/* Alert banner spacing matches register */
+.auth.auth--login .auth__alert {
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+/* Responsive tweaks for narrower viewports */
+@media (max-width: 520px) {
+  .auth.auth--login .auth__card {
+    padding: 24px 18px 22px;
+    border-radius: 20px;
+  }
+
+  .auth.auth--login .auth__title {
+    font-size: 1.9rem;
+  }
+
+  .auth.auth--login .auth__subtitle {
+    font-size: 0.92rem;
+  }
 }

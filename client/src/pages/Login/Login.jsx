@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "../../styles/auth.css";
 import "./Login.css";
 
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo-reduced.png";
 
 // lightweight email check (for labeling UX only — NOT security)
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

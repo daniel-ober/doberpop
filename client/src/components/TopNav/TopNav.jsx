@@ -1,8 +1,7 @@
-// client/src/components/TopNav/TopNav.jsx
+// client/src/components/TopNav/TopNav.js
 import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
 import logo from "../../assets/images/logo-reduced.png";
-
 
 function isAdminUser(user) {
   return Boolean(
@@ -16,24 +15,35 @@ function isAdminUser(user) {
 
 export default function TopNav({ currentUser, handleLogout }) {
   const admin = isAdminUser(currentUser);
+  const logoTarget = currentUser ? "/home" : "/";
 
   return (
     <header className="topnav" role="banner">
       <div className="topnav__inner">
-        <Link to="/recipes" className="topnav__brand" aria-label="Go to home">
+        {/* Brand / logo */}
+        <Link
+          to={logoTarget}
+          className="topnav__brand"
+          aria-label="Go to Doberpop home"
+        >
           <img className="topnav__logo" src={logo} alt="Doberpop" />
         </Link>
 
+        {/* Primary nav */}
         <nav className="topnav__right" aria-label="Primary navigation">
-<NavLink
-  exact
-  to="/recipes"
-  className="topnav__link"
-  activeClassName="is-active"
->
-  Recipes
-</NavLink>
+          {/* Batches only when logged in */}
+          {currentUser && (
+            <NavLink
+              exact
+              to="/recipes"
+              className="topnav__link"
+              activeClassName="is-active"
+            >
+              Batches
+            </NavLink>
+          )}
 
+          {/* Admin only for admin users (and implicitly logged in) */}
           {admin && (
             <NavLink
               exact
@@ -45,6 +55,7 @@ export default function TopNav({ currentUser, handleLogout }) {
             </NavLink>
           )}
 
+          {/* Auth controls */}
           {currentUser ? (
             <button
               type="button"

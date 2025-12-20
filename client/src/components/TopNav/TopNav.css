@@ -1,26 +1,31 @@
+/* client/src/components/TopNav/TopNav.css */
+
+/* Sticky shell */
 .topnav {
   position: sticky;
   top: 0;
-  z-index: 50;
-  height: 72px;
+  z-index: 60;
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding-top: 10px;
+  padding-bottom: 8px;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.78),
-    rgba(0, 0, 0, 0.28)
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.30)
   );
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Centered nav that matches the main card width */
 .topnav__inner {
-  height: 72px;
-  width: min(1200px, 100%);
+  width: min(860px, 100% - 32px);
   margin: 0 auto;
-  padding: 0 28px;
+
+  height: 60px;
+  padding: 8px 18px;
 
   display: flex;
   align-items: center;
@@ -33,19 +38,24 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 12px;
+  padding: 4px 0;
+  border-radius: 999px;
   text-decoration: none;
   user-select: none;
+  transition:
+    background 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .topnav__brand:hover {
   background: rgba(245, 230, 179, 0.06);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+  transform: translateY(-1px);
 }
 
 .topnav__logo {
-  height: 54px;
-  padding-bottom: 10px;
+  height: 44px;
   width: auto;
   display: block;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
@@ -55,10 +65,11 @@
 .topnav__right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 18px;
 }
 
 .topnav__link {
+  position: relative;
   appearance: none;
   background: none;
   border: none;
@@ -67,74 +78,113 @@
   text-decoration: none;
   font-weight: 600;
   letter-spacing: 0.01em;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 
-  padding: 10px 12px;
-  border-radius: 999px;
+  padding: 6px 4px;
   cursor: pointer;
 
   transition:
+    color 160ms ease,
     transform 120ms ease,
-    background 160ms ease,
-    color 160ms ease;
+    opacity 120ms ease;
 }
 
+/* Animated underline bar (default hidden) */
+.topnav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(245, 230, 179, 0.96);
+  transform-origin: center;
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+/* Hover state: show underline + slight lift */
 .topnav__link:hover {
-  background: rgba(245, 230, 179, 0.08);
   color: rgba(255, 245, 210, 0.98);
   transform: translateY(-1px);
 }
 
+.topnav__link:hover::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Focus outline for accessibility */
 .topnav__link:focus-visible {
-  outline: 2px solid rgba(245, 230, 179, 0.55);
+  outline: 2px solid rgba(245, 230, 179, 0.6);
   outline-offset: 2px;
 }
 
+/* Active route – brighter text, but no extra underline
+   (underline is hover-only so only one appears at a time) */
 .topnav__link.is-active {
-  background: rgba(245, 230, 179, 0.12);
   color: rgba(255, 245, 210, 0.98);
 }
 
-/* CTA */
+/* CTA (Register) keeps pill look */
 .topnav__cta {
-  padding: 10px 16px;
-  background: rgba(245, 230, 179, 0.14);
-  border: 1px solid rgba(245, 230, 179, 0.18);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(245, 230, 179, 0.22);
+  border: 1px solid rgba(245, 230, 179, 0.35);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  text-decoration: none;
 }
 
 .topnav__cta:hover {
-  background: rgba(245, 230, 179, 0.18);
+  background: rgba(245, 230, 179, 0.26);
+  transform: translateY(-1px);
 }
 
-/* Logout (semantic hook, same look) */
+/* Logout – same base look as other text links */
 .topnav__logout {
-  /* intentionally empty — inherits topnav__link */
+  /* inherits .topnav__link */
 }
 
 /* Responsive */
 @media (max-width: 720px) {
   .topnav__inner {
-    padding: 0 14px;
+    width: calc(100% - 20px);
+    padding: 6px 10px;
+    height: auto;
+  }
+
+  .topnav__logo {
+    height: 38px;
   }
 
   .topnav__right {
-    gap: 6px;
+    gap: 10px;
   }
 
   .topnav__link {
-    padding: 9px 10px;
-    font-size: 0.9rem;
+    padding: 4px 0;
+    font-size: 0.85rem;
   }
 
   .topnav__cta {
-    padding: 9px 12px;
+    padding: 6px 11px;
+    font-size: 0.84rem;
   }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .topnav__link {
+  .topnav__link,
+  .topnav__brand {
+    transition: none;
+  }
+
+  .topnav__link::after {
     transition: none;
   }
 }

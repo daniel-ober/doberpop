@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../../styles/auth.css";
 import "./Register.css";
 
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo-reduced.png";
 
 /**
  * Validation helpers

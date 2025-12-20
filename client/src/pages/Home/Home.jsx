@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Home.css";
 
 export default function Home() {
@@ -6,41 +7,37 @@ export default function Home() {
     <div className="dpScreen dpHome">
       <div className="dpCard dpCardWide">
         <h1 className="dpH1">Welcome to Doberpop.</h1>
+
         <p className="dpSub">
-          Your popcorn recipe book — browse the catalog, then sign in to save and
-          build your own.
+          Your popcorn batch playbook — browse the catalog, then sign in to dial in and
+          save your own.
         </p>
 
         <div className="dpDivider" />
 
         <div className="dpHomeGrid">
-          <div className="dpHomeItem">
+          {/* BROWSE */}
+          <Link to="/recipes" className="dpHomeItem">
             <div className="dpKicker">Browse</div>
-            <div className="dpHomeTitle">Explore recipes</div>
+            <div className="dpHomeTitle">Explore signature batches</div>
             <div className="dpHomeText">
-              Find flavor ideas, ingredients, yields, and kernel profiles.
+              Find flavor ideas, reference batches, yields, and kernel profiles.
             </div>
-          </div>
+          </Link>
 
-          <div className="dpHomeItem">
+          {/* CREATE */}
+          <Link to="/recipes/new" className="dpHomeItem">
             <div className="dpKicker">Create</div>
-            <div className="dpHomeTitle">Build your own</div>
+            <div className="dpHomeTitle">Build your own batches</div>
             <div className="dpHomeText">
-              Create recipes, refine instructions, and iterate.
+              Create new batches, refine instructions, and iterate until everything
+              tastes just right.
             </div>
-          </div>
-
-          <div className="dpHomeItem">
-            <div className="dpKicker">Organize</div>
-            <div className="dpHomeTitle">Keep it clean</div>
-            <div className="dpHomeText">
-              A simple workflow — fast search, sorting, and editing.
-            </div>
-          </div>
+          </Link>
         </div>
 
         <p className="dpHint dpHintTight">
-          Use the top navigation to explore recipes or begin a new build.
+          Use the top navigation to browse batches or start a new one.
         </p>
       </div>
     </div>

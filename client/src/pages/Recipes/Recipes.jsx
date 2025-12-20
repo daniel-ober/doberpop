@@ -212,9 +212,11 @@ export default function Recipes(props) {
           </p>
         </div>
 
-        <Link className="btn btn--primary" to="/recipes/new">
-          Log Your Batch Idea
-        </Link>
+        {tab === "mine" && normalizedUserId != null && (
+          <Link className="btn btn--primary" to="/recipes/new">
+            Log Your Batch Idea
+          </Link>
+        )}
       </div>
 
       {/* Main tabs */}

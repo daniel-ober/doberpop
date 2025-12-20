@@ -1,65 +1,10 @@
+/* client/src/pages/Register/Register.css */
+
+/* Register-specific tweaks only — core styles live in auth.css */
+
 .auth.auth--register .auth__card {
-  /* register can be a touch wider since it has 3 fields + checklist */
+  /* slightly wider to fit 3 fields + checklist comfortably */
   width: min(520px, 100%);
 }
 
-/* alert / errors */
-.auth__alert {
-  margin: 10px 0 14px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(255, 80, 80, 0.10);
-  border: 1px solid rgba(255, 80, 80, 0.25);
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.92rem;
-  line-height: 1.35;
-}
-
-.auth__errorText {
-  margin-top: 8px;
-  font-size: 0.86rem;
-  color: rgba(255, 170, 170, 0.95);
-}
-
-.auth__input--error {
-  border-color: rgba(255, 120, 120, 0.55) !important;
-  box-shadow: 0 0 0 3px rgba(255, 80, 80, 0.10) !important;
-}
-
-/* password checklist */
-.auth__pwChecklist {
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-.auth__pwItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.88rem;
-  line-height: 1.25;
-  padding: 6px 2px;
-  color: rgba(255, 255, 255, 0.62);
-}
-
-.auth__pwItem.is-ok {
-  color: rgba(255, 255, 255, 0.88);
-}
-
-.auth__pwIcon {
-  width: 18px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 800;
-}
-
-/* disabled primary button state */
-.auth__btn[disabled] {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none !important;
-}
+/* You can add any register-only overrides here later if needed */
