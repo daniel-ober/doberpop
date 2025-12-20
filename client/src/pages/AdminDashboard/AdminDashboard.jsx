@@ -112,6 +112,15 @@ export default function AdminDashboard() {
   };
 
   const usersRows = useMemo(() => users || [], [users]);
+  const usersById = useMemo(() => {
+    const map = new Map();
+    (users || []).forEach((u) => {
+      if (u && typeof u.id !== "undefined") {
+        map.set(u.id, u);
+      }
+    });
+    return map;
+  }, [users]);
 
   const recipeRows = useMemo(() => recipes || [], [recipes]);
 
@@ -147,6 +156,19 @@ export default function AdminDashboard() {
 
     return rows;
   }, [recipeRows, recipeSort]);
+
+  // Map of recipe IDs that are in the "top 3" favorites (with count > 0)
+  const topFavoriteRecipeIds = useMemo(() => {
+    const arr = (recipeRows || []).map((r) => ({
+      id: r.id,
+      count: getFavoritesCount(r),
+    }));
+    arr.sort((a, b) => b.count - a.count);
+    const top = arr.filter((x) => x.count > 0).slice(0, 3);
+    const map = new Map();
+    top.forEach((x) => map.set(x.id, true));
+    return map;
+  }, [recipeRows]);
 
   const openDelete = (type, row) => {
     setActionError("");
@@ -300,21 +322,47 @@ export default function AdminDashboard() {
           <tbody>
             {sortedRecipeRows.map((r) => {
               const favCount = getFavoritesCount(r);
+              const isTopFavorite = topFavoriteRecipeIds.has(r.id);
+
+              const ownerUsername =
+                r.user?.username ||
+                r.username ||
+                (typeof r.user_id !== "undefined" &&
+                  usersById.get(r.user_id)?.username) ||
+                r.user_id ||
+                "—";
+
+              let favoritesCellContent;
+
+              if (favCount <= 0) {
+                favoritesCellContent = (
+                  <span className="adminFavoritesPlaceholder">--</span>
+                );
+              } else {
+                const pillClass = isTopFavorite
+                  ? "adminBadge adminBadge--favoriteTop"
+                  : "adminBadge adminBadge--favorite";
+
+                favoritesCellContent = (
+                  <button
+                    type="button"
+                    className={pillClass}
+                    onClick={() => openFavoritesModal(r)}
+                    title="Click to view users who favorited this recipe"
+                  >
+                    {favCount}
+                  </button>
+                );
+              }
+
               return (
                 <tr key={r.id}>
                   <td>{r.id}</td>
                   <td>{r.title || r.name || "(untitled)"}</td>
-                  <td>{r.user?.username || r.username || r.user_id || "—"}</td>
+                  <td>{ownerUsername}</td>
                   <td>{fmt(r.created_at || r.createdAt || r.inserted_at)}</td>
                   <td className="adminFavoritesCell">
-                    <button
-                      type="button"
-                      className="adminBadge adminBadge--favorite"
-                      onClick={() => openFavoritesModal(r)}
-                      title="Click to view users who favorited this recipe"
-                    >
-                      {favCount}
-                    </button>
+                    {favoritesCellContent}
                   </td>
                   <td className="adminActionsCell">
                     <button
@@ -349,9 +397,7 @@ export default function AdminDashboard() {
                 Are you sure you want to delete{" "}
                 <strong>{confirm.label}</strong>?
               </p>
-              <p className="adminModal__hint">
-                This cannot be undone.
-              </p>
+              <p className="adminModal__hint">This cannot be undone.</p>
               {actionError && <p className="adminError">{actionError}</p>}
             </div>
 
@@ -387,8 +433,7 @@ export default function AdminDashboard() {
             onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="adminModal__title">
-              Favorited by
-              {" "}
+              Favorited by{" "}
               {favoritesModalRecipe.title ||
                 favoritesModalRecipe.name ||
                 "(untitled)"}
@@ -408,7 +453,10 @@ export default function AdminDashboard() {
                     return (
                       <li key={idx}>
                         <span className="adminModalList__bullet">★</span>
-                        <span>{username}{email}</span>
+                        <span>
+                          {username}
+                          {email}
+                        </span>
                       </li>
                     );
                   })}

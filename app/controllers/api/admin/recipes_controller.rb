@@ -5,7 +5,55 @@ class Api::Admin::RecipesController < Api::Admin::BaseController
 
   # GET /api/admin/recipes
   def index
-    render json: Recipe.order(created_at: :desc)
+    recipes = Recipe.includes(:user).order(:id)
+
+    favorite_counts          = {}
+    favorite_users_by_recipe = Hash.new { |h, k| h[k] = [] }
+
+    # Only try to use Favorite if the model exists
+    if defined?(Favorite)
+      recipe_ids = recipes.map(&:id)
+
+      favorites = Favorite.includes(:user)
+                          .where(recipe_id: recipe_ids)
+
+      # counts per recipe
+      favorite_counts = favorites.group_by(&:recipe_id)
+                                 .transform_values(&:size)
+
+      # favorites grouped per recipe for user list
+      favorite_users_by_recipe = favorites.group_by(&:recipe_id)
+    end
+
+    render json: recipes.map { |recipe|
+      # start with whatever attributes Recipe already has
+      base = recipe.as_json
+
+      # attach compact user info for the Owner column
+      if recipe.respond_to?(:user) && recipe.user
+        base["user"] = {
+          "id"       => recipe.user.id,
+          "username" => recipe.user.username,
+          "email"    => recipe.user.email
+        }
+      end
+
+      favs_for_recipe = favorite_users_by_recipe[recipe.id] || []
+
+      base["favorites_count"] = favorite_counts[recipe.id] || 0
+      base["favorited_users"] = favs_for_recipe.map { |fav|
+        u = fav.respond_to?(:user) ? fav.user : nil
+        next unless u
+
+        {
+          "id"       => u.id,
+          "username" => (u.respond_to?(:username) ? u.username : nil),
+          "email"    => (u.respond_to?(:email)    ? u.email    : nil)
+        }
+      }.compact
+
+      base
+    }
   end
 
   # DELETE /api/admin/recipes/:id

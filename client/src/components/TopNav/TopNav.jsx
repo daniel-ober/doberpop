@@ -1,7 +1,8 @@
 // client/src/components/TopNav/TopNav.jsx
 import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo-reduced.png";
+
 
 function isAdminUser(user) {
   return Boolean(
@@ -19,7 +20,7 @@ export default function TopNav({ currentUser, handleLogout }) {
   return (
     <header className="topnav" role="banner">
       <div className="topnav__inner">
-        <Link to="/" className="topnav__brand" aria-label="Go to home">
+        <Link to="/recipes" className="topnav__brand" aria-label="Go to home">
           <img className="topnav__logo" src={logo} alt="Doberpop" />
         </Link>
 

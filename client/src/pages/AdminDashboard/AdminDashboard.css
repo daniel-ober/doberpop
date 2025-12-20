@@ -114,6 +114,11 @@
   text-align: center;
 }
 
+.adminFavoritesPlaceholder {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
 /* ---------- BADGES ---------- */
 
 .adminBadge {
@@ -154,6 +159,27 @@
 }
 
 .adminBadge--favorite:active {
+  transform: translateY(1px);
+}
+
+/* Top 3 most-favorited recipes – green pill */
+
+.adminBadge--favoriteTop {
+  background: rgba(46, 204, 113, 0.18);
+  color: #2ecc71;
+  border-color: rgba(46, 204, 113, 0.45);
+  min-width: 32px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.adminBadge--favoriteTop:hover {
+  background: rgba(46, 204, 113, 0.28);
+  box-shadow: 0 0 0 1px rgba(46, 204, 113, 0.4);
+}
+
+.adminBadge--favoriteTop:active {
   transform: translateY(1px);
 }
 

@@ -4,12 +4,39 @@
   padding: 40px 22px 64px;
 }
 
-.detailsTop {
+/* ====== HEADER ====== */
+
+.detailsHeader {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 18px;
   margin-bottom: 18px;
+}
+
+.detailsHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailsHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* back link */
+.detailsBack {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(245, 230, 179, 0.8);
+  text-decoration: none;
+}
+
+.detailsBack:hover {
+  color: rgba(255, 245, 210, 0.98);
 }
 
 .detailsTitle {
@@ -23,6 +50,60 @@
   margin: 0.35rem 0 0;
   color: rgba(245, 230, 179, 0.78);
 }
+
+/* ====== FAVORITE PILL ====== */
+
+.detailsFavoriteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 215, 128, 0.4);
+  background: rgba(255, 215, 128, 0.12);
+  color: #ffd780;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.08s ease, box-shadow 0.15s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.detailsFavoriteBtn:hover:not(:disabled) {
+  background: rgba(255, 215, 128, 0.2);
+  border-color: rgba(255, 215, 128, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 215, 128, 0.36);
+  transform: translateY(-1px);
+}
+
+.detailsFavoriteBtn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.detailsFavoriteBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.detailsFavoriteBtn.isFavorited {
+  background: rgba(255, 215, 128, 0.22);
+  border-color: rgba(255, 215, 128, 0.9);
+}
+
+.detailsFavoriteIcon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.detailsFavoriteLabel {
+  line-height: 1;
+}
+
+/* ====== HERO ====== */
 
 .detailsHero {
   margin: 18px 0 22px;
@@ -38,6 +119,8 @@
   height: auto;
 }
 
+/* ====== GRID / CARDS ====== */
+
 .detailsGrid {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -45,6 +128,11 @@
 }
 
 @media (max-width: 920px) {
+  .detailsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .detailsGrid {
     grid-template-columns: 1fr;
   }
@@ -143,11 +231,7 @@
   }
 }
 
-.detailsTopRight {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* ====== ACTION BUTTONS (LIKE / SHARE) ====== */
 
 .detailsActionBtn {
   padding: 8px 14px;
@@ -159,6 +243,8 @@
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .detailsActionBtn:hover {
@@ -167,11 +253,11 @@
   border-color: rgba(245, 230, 179, 0.28);
 }
 
-.detailsActionBtn.isLiked {
-  background: rgba(245, 217, 139, 0.12);
-  border-color: rgba(245, 217, 139, 0.35);
+.detailsActionIcon {
+  margin-right: 6px;
 }
 
+/* Share dropdown (if you ever re-enable it) */
 .detailsShareWrap {
   position: relative;
 }

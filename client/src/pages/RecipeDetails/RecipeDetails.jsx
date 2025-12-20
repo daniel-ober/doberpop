@@ -1,7 +1,12 @@
-// src/pages/Recipes/RecipeDetails.jsx
+// client/src/pages/RecipeDetails/RecipeDetails.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getOneRecipe } from "../../services/recipes";
+import {
+  getFavorites,
+  favoriteRecipe,
+  unfavoriteRecipe,
+} from "../../services/favorites";
 import "./RecipeDetails.css";
 
 // Load all flavor images from src/assets/images/flavors (including nested folders)
@@ -137,7 +142,7 @@ const TOOLS_MAP = {
     "Cutting board and knife (for dicing pepperoni)",
     "Small grater (for parmesan, if using fresh)",
   ],
-  "Ranch": [...SAVORY_TOOLS],
+  Ranch: [...SAVORY_TOOLS],
   "Sour Cream & Onion": [...SAVORY_TOOLS],
   "Spicy Sriracha": [
     ...SAVORY_TOOLS,
@@ -163,15 +168,9 @@ export default function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
 
-  // Like state (simple/local-first; you can wire to API later)
-  const likeKey = useMemo(() => `doberpop_like_recipe_${id}`, [id]);
-  const [liked, setLiked] = useState(() => {
-    try {
-      return localStorage.getItem(likeKey) === "1";
-    } catch {
-      return false;
-    }
-  });
+  // favorites (DB-backed, same as main Recipes page)
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favBusy, setFavBusy] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -181,8 +180,6 @@ export default function RecipeDetails() {
         setError("");
         const data = await getOneRecipe(id);
         if (!alive) return;
-
-        console.log("Recipe details payload:", data);
         setRecipe(data);
       } catch (e) {
         if (!alive) return;
@@ -196,13 +193,30 @@ export default function RecipeDetails() {
     };
   }, [id]);
 
+  // Load favorites for the logged-in user & check if THIS recipe is one
   useEffect(() => {
-    try {
-      localStorage.setItem(likeKey, liked ? "1" : "0");
-    } catch {
-      // ignore
-    }
-  }, [liked, likeKey]);
+    if (!id) return;
+
+    let alive = true;
+
+    (async () => {
+      try {
+        const data = await getFavorites();
+        const ids = Array.isArray(data?.recipe_ids) ? data.recipe_ids : [];
+        if (!alive) return;
+
+        const numericId = Number(id);
+        const isFav = ids.includes(numericId) || ids.includes(id);
+        setIsFavorited(isFav);
+      } catch {
+        // ignore favorites fetch failures on details page
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [id]);
 
   const heroSrc = useMemo(() => {
     if (!recipe) return "";
@@ -254,12 +268,10 @@ export default function RecipeDetails() {
       return "";
     };
 
-    // If API sends an array
     if (Array.isArray(candidate)) {
       return candidate.map(normalizeItem).filter(Boolean);
     }
 
-    // Otherwise: **split only on newlines**, not commas
     return String(candidate)
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -293,7 +305,7 @@ export default function RecipeDetails() {
         });
         return;
       } catch {
-        // user canceled
+        // user canceled or unsupported
       }
     }
 
@@ -307,6 +319,27 @@ export default function RecipeDetails() {
       window.location.href
     )}`;
     window.open(fb, "_blank", "noopener,noreferrer,width=900,height=700");
+  };
+
+  const handleFavoriteClick = async () => {
+    if (favBusy || !recipe) return;
+
+    const next = !isFavorited;
+    setFavBusy(true);
+    setIsFavorited(next); // optimistic
+
+    try {
+      if (next) {
+        await favoriteRecipe(recipe.id);
+      } else {
+        await unfavoriteRecipe(recipe.id);
+      }
+    } catch (e) {
+      // rollback on failure
+      setIsFavorited((prev) => !prev);
+    } finally {
+      setFavBusy(false);
+    }
   };
 
   if (error) {
@@ -351,16 +384,22 @@ export default function RecipeDetails() {
           </div>
 
           <div className="detailsHeaderRight">
+            {/* FAVORITE PILL – always visible on /recipes details since route is authed */}
             <button
-              className={`detailsActionBtn ${liked ? "isLiked" : ""}`}
-              onClick={() => setLiked((v) => !v)}
+              className={`detailsFavoriteBtn ${
+                isFavorited ? "isFavorited" : ""
+              }`}
+              onClick={handleFavoriteClick}
               type="button"
-              aria-pressed={liked}
+              aria-pressed={isFavorited}
+              disabled={favBusy}
             >
-              <span className="detailsActionIcon" aria-hidden>
-                {liked ? "♥" : "♡"}
+              <span className="detailsFavoriteIcon" aria-hidden>
+                {isFavorited ? "♥" : "♡"}
               </span>
-              <span>{liked ? "Liked" : "Like"}</span>
+              <span className="detailsFavoriteLabel">
+                {isFavorited ? "Saved to Favorites" : "Save to Favorites"}
+              </span>
             </button>
 
             <button

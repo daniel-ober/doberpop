@@ -44,7 +44,8 @@
 }
 
 .topnav__logo {
-  height: 34px;
+  height: 54px;
+  padding-bottom: 10px;
   width: auto;
   display: block;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
