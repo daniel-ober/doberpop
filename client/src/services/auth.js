@@ -1,11 +1,18 @@
 // client/src/services/auth.js
 
-// Base URL for the Rails API
-const API_BASE =
-  process.env.REACT_APP_API_BASE_URL ||
-  (process.env.NODE_ENV === "production"
-    ? "https://doberpop.com"
-    : "http://localhost:3000");
+const isProd = process.env.NODE_ENV === "production";
+
+// In production we MUST provide REACT_APP_API_BASE_URL via Netlify.
+// In development we default to localhost:3000.
+const API_BASE = isProd
+  ? process.env.REACT_APP_API_BASE_URL
+  : "http://localhost:3000";
+
+if (isProd && !API_BASE) {
+  console.error(
+    "[auth] Missing REACT_APP_API_BASE_URL – auth requests will fail in production."
+  );
+}
 
 const TOKEN_KEY = "authToken";
 
