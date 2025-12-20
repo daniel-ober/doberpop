@@ -9,10 +9,11 @@ class Api::RecipesController < ApplicationController
   # =========================
   # GET /api/recipes
   # =========================
- def index
-  recipes = Recipe.all.order(:name)
-  render json: recipes
-end
+  def index
+    # unscoped = ignore any default_scope in Recipe (e.g., published: true)
+    recipes = Recipe.unscoped.order(:name)
+    render json: recipes
+  end
 
   # =========================
   # GET /api/recipes/:id
@@ -87,17 +88,17 @@ end
 
   private
 
-def recipe_params
-  params.permit(
-    :name,
-    :description,
-    :kernel_type,
-    :yield,
-    :instructions,
-    :published,
-    :source,
-    :ingredients,
-    :user_id
-  )
-end
+  def recipe_params
+    params.permit(
+      :name,
+      :description,
+      :kernel_type,
+      :yield,
+      :instructions,
+      :published,
+      :source,
+      :ingredients,
+      :user_id
+    )
+  end
 end
