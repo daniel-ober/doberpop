@@ -35,7 +35,7 @@ const STARTER_STEPS = [
 
 export default function RecipeCreate() {
   // visibility
-  const [isCommunityVisible, setIsCommunityVisible] = useState(false);
+  // const [isCommunityVisible, setIsCommunityVisible] = useState(false);
 
   // basics
   const [name, setName] = useState("");
