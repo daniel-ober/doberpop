@@ -9,20 +9,10 @@ class Api::RecipesController < ApplicationController
   # =========================
   # GET /api/recipes
   # =========================
-  def index
-    recipes =
-      if current_user
-        # Logged in: all published + your own (published or private)
-        Recipe
-          .where("published = ? OR user_id = ?", true, current_user.id)
-          .order(created_at: :desc)
-      else
-        # Anonymous: only published
-        Recipe.where(published: true).order(created_at: :desc)
-      end
-
-    render json: recipes
-  end
+ def index
+  recipes = Recipe.all.order(:name)
+  render json: recipes
+end
 
   # =========================
   # GET /api/recipes/:id
