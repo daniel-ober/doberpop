@@ -9,6 +9,9 @@ import RecipeEdit from "../pages/RecipeEdit/RecipeEdit";
 
 import { getAllRecipes, deleteRecipe } from "../services/recipes";
 
+// 🔥 bring in dedicated styling
+import "./MainContainer.css";
+
 function MainContainer({ currentUser }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,38 +42,51 @@ function MainContainer({ currentUser }) {
     }
   };
 
-  if (!currentUser) {
-    // extra guard; App already redirects, but this keeps it safe
-    return <Redirect to="/login" />;
-  }
+  const isAuthed = !!currentUser;
 
   return (
-    <Switch>
-      {/* Recipes index */}
-      <Route exact path={path}>
-        <Recipes
-          recipes={recipes}
-          handleDelete={handleDelete}
-          currentUser={currentUser}
-          loading={loading}
-        />
-      </Route>
+    <div className="mainContainer">
+      <Switch>
+        {/* Recipes index – public */}
+        <Route exact path={path}>
+          <Recipes
+            recipes={recipes}
+            handleDelete={handleDelete}
+            currentUser={currentUser}
+            loading={loading}
+          />
+        </Route>
 
-      {/* New recipe */}
-      <Route exact path={`${path}/new`}>
-        <RecipeCreate currentUser={currentUser} onSubmitSuccess={loadRecipes} />
-      </Route>
+        {/* New recipe – auth only */}
+        <Route exact path={`${path}/new`}>
+          {isAuthed ? (
+            <RecipeCreate
+              currentUser={currentUser}
+              onSubmitSuccess={loadRecipes}
+            />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </Route>
 
-      {/* Edit recipe */}
-      <Route exact path={`${path}/:id/edit`}>
-        <RecipeEdit currentUser={currentUser} onSubmitSuccess={loadRecipes} />
-      </Route>
+        {/* Edit recipe – auth only */}
+        <Route exact path={`${path}/:id/edit`}>
+          {isAuthed ? (
+            <RecipeEdit
+              currentUser={currentUser}
+              onSubmitSuccess={loadRecipes}
+            />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </Route>
 
-      {/* Recipe details (gets currentUser for favorites pill) */}
-      <Route path={`${path}/:id`}>
-        <RecipeDetails currentUser={currentUser} />
-      </Route>
-    </Switch>
+        {/* Recipe details – public */}
+        <Route path={`${path}/:id`}>
+          <RecipeDetails currentUser={currentUser} />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 

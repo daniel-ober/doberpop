@@ -121,12 +121,10 @@ function App() {
           {currentUser ? <Home /> : <Redirect to="/login" />}
         </Route>
 
+        {/* Recipes index + detail are PUBLIC.
+           MainContainer internally protects create/edit. */}
         <Route path="/recipes">
-          {currentUser ? (
-            <MainContainer currentUser={currentUser} />
-          ) : (
-            <Redirect to="/login" />
-          )}
+          <MainContainer currentUser={currentUser} />
         </Route>
 
         {/* Fallback */}

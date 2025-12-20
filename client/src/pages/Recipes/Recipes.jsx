@@ -3,12 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../components/Modal/Modal";
 import RecipeCard from "../../components/RecipeCard/RecipeCard";
-
 import {
   getFavorites,
   favoriteRecipe,
   unfavoriteRecipe,
 } from "../../services/favorites";
+import "./Recipes.css";
 
 const TABS = [
   { key: "doberpop", label: "Signature Batches" },
@@ -16,6 +16,9 @@ const TABS = [
   // { key: "community", label: "Community" },
   { key: "favorites", label: "Batch Favorites" },
 ];
+
+// how many official recipes a logged-out user can preview
+const FREE_RECIPE_LIMIT = 4;
 
 export default function Recipes(props) {
   const [open, setOpen] = useState(false);
@@ -35,8 +38,8 @@ export default function Recipes(props) {
   const { recipes = [], handleDelete, currentUser } = props;
 
   // derive a normalized user id once
-  const normalizedUserId =
-    currentUser?.id ?? currentUser?.user_id ?? null;
+  const normalizedUserId = currentUser?.id ?? currentUser?.user_id ?? null;
+  const isAuthed = normalizedUserId != null;
 
   useEffect(() => {
     let alive = true;
@@ -46,7 +49,7 @@ export default function Recipes(props) {
         const data = await getFavorites();
         const ids = Array.isArray(data?.recipe_ids) ? data.recipe_ids : [];
         if (alive) setFavoriteIds(new Set(ids));
-      } catch (e) {
+      } catch {
         // ignore favorites fetch failures
       }
     };
@@ -92,8 +95,8 @@ export default function Recipes(props) {
     try {
       if (nextState) await favoriteRecipe(recipeId);
       else await unfavoriteRecipe(recipeId);
-    } catch (e) {
-      // rollback
+    } catch {
+      // rollback on error
       setFavoriteIds((prev) => {
         const next = new Set(prev);
         if (nextState) next.delete(recipeId);
@@ -110,7 +113,7 @@ export default function Recipes(props) {
   };
 
   const byTab = useMemo(() => {
-    // All official Doberpop recipes (public only)
+    // All official Doberpop recipes that are *visible* in the library
     const doberpop = recipes.filter(
       (r) => r.source === "doberpop" && r.published === true
     );
@@ -124,7 +127,7 @@ export default function Recipes(props) {
             return String(r.user_id) === String(normalizedUserId);
           });
 
-    // Community = user-created + shared
+    // Community = user-created + shared (kept for future)
     const community = recipes.filter(
       (r) => r.source === "user" && r.published === true
     );
@@ -133,6 +136,13 @@ export default function Recipes(props) {
 
     return { doberpop, mineAll, community, favorites };
   }, [recipes, normalizedUserId, favoriteIds]);
+
+  // TOTAL number of signature batches in the DB
+  // (all Doberpop recipes, regardless of published flag)
+  const totalSignatureCount = useMemo(
+    () => recipes.filter((r) => r.source === "doberpop").length,
+    [recipes]
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -180,8 +190,13 @@ export default function Recipes(props) {
         break;
     }
 
+    // Free sampler: logged-out users only see the first few official batches
+    if (!isAuthed && tab === "doberpop") {
+      return list.slice(0, FREE_RECIPE_LIMIT);
+    }
+
     return list;
-  }, [byTab, tab, query, sort, mineFilter]);
+  }, [byTab, tab, query, sort, mineFilter, isAuthed]);
 
   const emptyTitle =
     tab === "doberpop"
@@ -201,18 +216,43 @@ export default function Recipes(props) {
 
   const canFavorite = normalizedUserId != null;
 
+  // How many signature batches are actually visible in the current dataset
+  const visibleSignatureCount = byTab.doberpop?.length || 0;
+
+  // Show upsell for any guest browsing Signature Batches
+  const shouldShowUpsell = !isAuthed && tab === "doberpop";
+
+  // Tabs visible for this user (guests only see Signature Batches)
+  const visibleTabs = isAuthed ? TABS : TABS.filter((t) => t.key === "doberpop");
+
   return (
     <div className="page recipes">
       <div className="page__header">
         <div>
           <h1 className="page__title">Batch Library</h1>
           <p className="page__subtitle">
-            Browse the catalog
-            {normalizedUserId != null ? " — edit yours anytime." : "."}
+            {isAuthed ? (
+              <>Browse the catalog — edit yours anytime.</>
+            ) : (
+              <>
+                Browse the catalog and sample a few of the signature batches.
+                {" "}
+                {totalSignatureCount > 0 && (
+                  <>
+                    You&apos;re currently seeing{" "}
+                    {Math.min(FREE_RECIPE_LIMIT, visibleSignatureCount)} of{" "}
+                    {totalSignatureCount} signature batches.
+                  </>
+                )}{" "}
+                Create a free account to unlock every recipe, save your own
+                batch ideas, and build your personal popcorn playbook. No spam.
+                Just tools for dialing in ridiculous popcorn.
+              </>
+            )}
           </p>
         </div>
 
-        {tab === "mine" && normalizedUserId != null && (
+        {tab === "mine" && isAuthed && (
           <Link className="btn btn--primary" to="/recipes/new">
             Log Your Batch Idea
           </Link>
@@ -221,23 +261,46 @@ export default function Recipes(props) {
 
       {/* Main tabs */}
       <div className="recipesTabs">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            className={`recipesTab ${tab === t.key ? "isActive" : ""}`}
-            onClick={() => setTab(t.key)}
-            type="button"
-          >
-            {t.label}{" "}
-            <span className="recipesTab__count">
-              {(t.key === "mine" ? byTab.mineAll : byTab[t.key] || []).length}
-            </span>
-          </button>
-        ))}
+        {visibleTabs.map((t) => {
+          let countDisplay;
+
+          if (t.key === "doberpop") {
+            if (isAuthed) {
+              // signed-in users see the full official count
+              countDisplay = totalSignatureCount;
+            } else {
+              // guests see "4 / 23" style count
+              const visible = Math.min(
+                FREE_RECIPE_LIMIT,
+                visibleSignatureCount || 0
+              );
+              const total =
+                totalSignatureCount > 0 ? totalSignatureCount : visible;
+              countDisplay =
+                total > 0 ? `${visible} / ${total}` : "0";
+            }
+          } else {
+            const baseList =
+              t.key === "mine" ? byTab.mineAll : byTab[t.key] || [];
+            countDisplay = baseList.length;
+          }
+
+          return (
+            <button
+              key={t.key}
+              className={`recipesTab ${tab === t.key ? "isActive" : ""}`}
+              onClick={() => setTab(t.key)}
+              type="button"
+            >
+              {t.label}{" "}
+              <span className="recipesTab__count">{countDisplay}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Mini filters inside "My Recipes" */}
-      {tab === "mine" && (
+      {/* Mini filters inside "My Recipes" (authed only) */}
+      {tab === "mine" && isAuthed && (
         <div className="recipesTabs" style={{ marginTop: 4, marginBottom: 10 }}>
           <button
             type="button"
@@ -267,96 +330,133 @@ export default function Recipes(props) {
         </div>
       )}
 
-      <div className="toolbar">
-        <input
-          className="input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search recipes…"
-          aria-label="Search recipes"
-        />
+      {/* Search + sort toolbar – hidden for guests */}
+      {isAuthed && (
+        <div className="toolbar">
+          <input
+            className="input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search recipes…"
+            aria-label="Search recipes"
+          />
 
-        <select
-          className="select"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          aria-label="Sort recipes"
-        >
-          <option value="az">Sort: A → Z</option>
-          <option value="za">Sort: Z → A</option>
-          <option value="newest">Sort: Newest</option>
-          <option value="oldest">Sort: Oldest</option>
-        </select>
-      </div>
+          <select
+            className="select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            aria-label="Sort recipes"
+          >
+            <option value="az">Sort: A → Z</option>
+            <option value="za">Sort: Z → A</option>
+            <option value="newest">Sort: Newest</option>
+            <option value="oldest">Sort: Oldest</option>
+          </select>
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <div className="empty">
           <div className="empty__title">{emptyTitle}</div>
           <div className="empty__text">{emptyText}</div>
-          {tab !== "favorites" && (
+          {tab !== "favorites" && isAuthed && (
             <Link className="btn btn--ghost" to="/recipes/new">
               Create a recipe
             </Link>
           )}
         </div>
       ) : (
-        <div className="grid">
-          {filtered.map((recipe) => {
-            const isOwner =
-              normalizedUserId != null &&
-              recipe.user_id != null &&
-              String(recipe.user_id) === String(normalizedUserId);
+        <>
+          <div className="grid">
+            {filtered.map((recipe) => {
+              const isOwner =
+                normalizedUserId != null &&
+                recipe.user_id != null &&
+                String(recipe.user_id) === String(normalizedUserId);
 
-            const favorited = isFav(recipe.id);
-            const busy = favBusy.has(recipe.id);
+              const favorited = isFav(recipe.id);
+              const busy = favBusy.has(recipe.id);
 
-            return (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                to={`/recipes/${recipe.id}`}
-                isFavorited={canFavorite ? favorited : false}
-                favoriteLoading={canFavorite ? busy : false}
-                // if not logged in, pass no handler so heart doesn't render
-                onToggleFavorite={canFavorite ? toggleFavorite : undefined}
-                rightActions={
-                  isOwner ? (
-                    <>
-                      <Link
-                        className="iconBtn"
-                        to={`/recipes/${recipe.id}/edit`}
-                        aria-label="Edit recipe"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <img
-                          className="iconBtn__img"
-                          src="https://i.imgur.com/FFDaXm9.png"
-                          alt="edit"
-                        />
-                      </Link>
+              return (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  to={`/recipes/${recipe.id}`}
+                  isFavorited={canFavorite ? favorited : false}
+                  favoriteLoading={canFavorite ? busy : false}
+                  // if not logged in, pass no handler so heart doesn't render
+                  onToggleFavorite={canFavorite ? toggleFavorite : undefined}
+                  rightActions={
+                    isOwner ? (
+                      <>
+                        <Link
+                          className="iconBtn"
+                          to={`/recipes/${recipe.id}/edit`}
+                          aria-label="Edit recipe"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <img
+                            className="iconBtn__img"
+                            src="https://i.imgur.com/FFDaXm9.png"
+                            alt="edit"
+                          />
+                        </Link>
 
-                      <button
-                        className="iconBtn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openDelete(recipe.id);
-                        }}
-                        aria-label="Delete recipe"
-                        type="button"
-                      >
-                        <img
-                          className="iconBtn__img"
-                          src="https://i.imgur.com/3yTHceK.png"
-                          alt="delete"
-                        />
-                      </button>
-                    </>
-                  ) : null
-                }
-              />
-            );
-          })}
-        </div>
+                        <button
+                          className="iconBtn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDelete(recipe.id);
+                          }}
+                          aria-label="Delete recipe"
+                          type="button"
+                        >
+                          <img
+                            className="iconBtn__img"
+                            src="https://i.imgur.com/3yTHceK.png"
+                            alt="delete"
+                          />
+                        </button>
+                      </>
+                    ) : null
+                  }
+                />
+              );
+            })}
+          </div>
+
+          {shouldShowUpsell && (
+            <div className="recipesUpsell">
+              <h3 className="recipesUpsell__title">
+                Unlock the full batch library
+              </h3>
+              <p className="recipesUpsell__text">
+                You&apos;re seeing a sampler of Doberpop favorites. Create a
+                free account to unlock every recipe, save your own batch ideas,
+                and build your personal popcorn playbook.
+              </p>
+
+              <div className="recipesUpsell__actions">
+                <Link
+                  to="/register"
+                  className="recipesUpsell__btn recipesUpsell__btn--primary"
+                >
+                  Create free account
+                </Link>
+                <Link
+                  to="/login"
+                  className="recipesUpsell__btn recipesUpsell__btn--ghost"
+                >
+                  I already have an account
+                </Link>
+              </div>
+
+              <p className="recipesUpsell__hint">
+                No spam. Just tools for dialing in ridiculous popcorn.
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {open && (

@@ -10,11 +10,30 @@ class Api::RecipesController < ApplicationController
   # GET /api/recipes
   # =========================
   #
-  # Immediate-safe version: return all recipes and let the
-  # front-end do the tab filtering (Doberpop / Mine / Community)
+  # Logged out  -> return a *sampler* of official Doberpop recipes.
+  # Logged in   -> return full library (all published + your own drafts).
+  # Admin       -> return everything.
   #
   def index
-    recipes = Recipe.order(:id)
+    recipes =
+      if current_user&.admin?
+        # Admins can see everything
+        Recipe.order(:id)
+      elsif current_user.present?
+        # Signed-in users:
+        # - all published recipes (official + community)
+        # - plus any recipe they own (even if unpublished)
+        published = Recipe.where(published: true)
+        mine      = Recipe.where(user_id: current_user.id)
+
+        published.or(mine).order(:id)
+      else
+        # Guests: sampler mode – only a few official Doberpop batches
+        Recipe.where(source: "doberpop", published: true)
+              .order(:id)
+              .limit(4)  # 👈 adjust to 3–5 as you like
+      end
+
     render json: recipes
   rescue => e
     Rails.logger.error("[Api::RecipesController#index] #{e.class}: #{e.message}")

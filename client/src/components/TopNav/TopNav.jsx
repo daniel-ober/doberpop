@@ -1,4 +1,4 @@
-// client/src/components/TopNav/TopNav.js
+// client/src/components/TopNav/TopNav.jsx
 import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
 import logo from "../../assets/images/logo-reduced.png";
@@ -31,19 +31,16 @@ export default function TopNav({ currentUser, handleLogout }) {
 
         {/* Primary nav */}
         <nav className="topnav__right" aria-label="Primary navigation">
-          {/* Batches only when logged in */}
-          {currentUser && (
-            <NavLink
-              exact
-              to="/recipes"
-              className="topnav__link"
-              activeClassName="is-active"
-            >
-              Batches
-            </NavLink>
-          )}
+          {/* Always visible – free sampler mode when logged out */}
+          <NavLink
+            exact
+            to="/recipes"
+            className="topnav__link"
+            activeClassName="is-active"
+          >
+            Batches
+          </NavLink>
 
-          {/* Admin only for admin users (and implicitly logged in) */}
           {admin && (
             <NavLink
               exact
@@ -55,7 +52,6 @@ export default function TopNav({ currentUser, handleLogout }) {
             </NavLink>
           )}
 
-          {/* Auth controls */}
           {currentUser ? (
             <button
               type="button"
