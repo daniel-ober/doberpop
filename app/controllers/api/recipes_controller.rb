@@ -7,12 +7,18 @@ class Api::RecipesController < ApplicationController
   before_action :authorize_request, only: [:create, :update, :destroy]
 
   # =========================
-  # GET /api/recipes
+  # GET /api/recipes  (TEMP DEBUG VERSION)
   # =========================
   def index
-    # unscoped = ignore any default_scope in Recipe (e.g., published: true)
-    recipes = Recipe.unscoped.order(:name)
-    render json: recipes
+    count  = Recipe.unscoped.count
+    sample = Recipe.unscoped.order(:id).limit(3)
+
+    render json: {
+      rails_env: Rails.env,
+      db_name: ActiveRecord::Base.connection_db_config.database,
+      count: count,
+      sample: sample
+    }
   end
 
   # =========================
