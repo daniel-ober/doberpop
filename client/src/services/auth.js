@@ -1,7 +1,11 @@
+// client/src/services/auth.js
+
+// Base URL for the Rails API
 const API_BASE =
-  process.env.NODE_ENV === "production"
+  process.env.REACT_APP_API_BASE_URL ||
+  (process.env.NODE_ENV === "production"
     ? "https://doberpop.com"
-    : "http://localhost:3000";
+    : "http://localhost:3000");
 
 const TOKEN_KEY = "authToken";
 
