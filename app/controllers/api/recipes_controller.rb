@@ -3,38 +3,32 @@ class Api::RecipesController < ApplicationController
   protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token
 
-  # Require login for mutating actions
+  # Require login for mutating actions only
   before_action :authorize_request, only: [:create, :update, :destroy]
+  before_action :set_recipe, only: [:show, :update, :destroy]
 
   # =========================
-  # GET /api/recipes  (TEMP DEBUG VERSION)
+  # GET /api/recipes
   # =========================
   def index
-    count  = Recipe.unscoped.count
-    sample = Recipe.unscoped.order(:id).limit(3)
-
-    render json: {
-      rails_env: Rails.env,
-      db_name: ActiveRecord::Base.connection_db_config.database,
-      count: count,
-      sample: sample
-    }
+    # Return a plain ARRAY of recipes – the React app
+    # expects `[ {id: 1, ...}, {id: 2, ...}, ... ]`
+    recipes = Recipe.all.order(created_at: :asc)
+    render json: recipes
   end
 
   # =========================
   # GET /api/recipes/:id
   # =========================
   def show
-    recipe = Recipe.find(params[:id])
-
     # If NOT published, only the owner or an admin may see it.
-    if !recipe.published?
-      unless current_user && (current_user.id == recipe.user_id || current_user.admin?)
+    if !@recipe.published?
+      unless current_user && (current_user.id == @recipe.user_id || current_user.admin?)
         return render json: { error: "Recipe not found" }, status: :not_found
       end
     end
 
-    render json: recipe
+    render json: @recipe
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Recipe not found" }, status: :not_found
   end
@@ -58,18 +52,16 @@ class Api::RecipesController < ApplicationController
   # PUT/PATCH /api/recipes/:id
   # =========================
   def update
-    recipe = Recipe.find(params[:id])
-
-    unless current_user && (current_user.admin? || recipe.user_id == current_user.id)
+    unless current_user && (current_user.admin? || @recipe.user_id == current_user.id)
       return render json: { error: "Forbidden" }, status: :forbidden
     end
 
-    if recipe.update(recipe_params)
-      render json: recipe
+    if @recipe.update(recipe_params)
+      render json: @recipe
     else
       render json: {
         error: "Validation failed",
-        messages: recipe.errors.full_messages
+        messages: @recipe.errors.full_messages
       }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
@@ -80,19 +72,21 @@ class Api::RecipesController < ApplicationController
   # DELETE /api/recipes/:id
   # =========================
   def destroy
-    recipe = Recipe.find(params[:id])
-
-    unless current_user && (current_user.admin? || recipe.user_id == current_user.id)
+    unless current_user && (current_user.admin? || @recipe.user_id == current_user.id)
       return render json: { error: "Forbidden" }, status: :forbidden
     end
 
-    recipe.destroy
+    @recipe.destroy
     head :no_content
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Recipe not found" }, status: :not_found
   end
 
   private
+
+  def set_recipe
+    @recipe = Recipe.find(params[:id])
+  end
 
   def recipe_params
     params.permit(
@@ -104,6 +98,8 @@ class Api::RecipesController < ApplicationController
       :published,
       :source,
       :ingredients,
+      :hero_image_url,
+      :additional_photo_urls,
       :user_id
     )
   end
