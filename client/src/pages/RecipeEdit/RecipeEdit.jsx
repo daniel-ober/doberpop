@@ -67,9 +67,9 @@ export default function RecipeEdit() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleTogglePublished = () => {
-    setForm((prev) => ({ ...prev, published: !prev.published }));
-  };
+  // const handleTogglePublished = () => {
+  //   setForm((prev) => ({ ...prev, published: !prev.published }));
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
