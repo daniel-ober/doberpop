@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   post  "/auth/register", to: "authentication#register"
   get   "/auth/verify",   to: "authentication#verify"
   patch "/auth/account",  to: "authentication#update_account"
+  post  "/auth/password/forgot", to: "password_resets#create"
+  post  "/auth/password/reset",  to: "password_resets#update"
 
   # ============================
   # ADMIN HTML (Doberpop admin panel)
@@ -46,10 +48,9 @@ Rails.application.routes.draw do
 
     # ----------------------------
     # ACCOUNT (current user profile)
+    # Use a singular resource to guarantee GET/PATCH/PUT/DELETE /api/account
     # ----------------------------
-    get   "/account", to: "account#show"
-    patch "/account", to: "account#update"
-    put   "/account", to: "account#update"
+    resource :account, only: [:show, :update, :destroy], controller: "account"
 
     # ----------------------------
     # ADMIN API (JWT protected)
