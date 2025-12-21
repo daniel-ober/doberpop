@@ -58,6 +58,10 @@ export default function RecipeCreate() {
   const [customStep, setCustomStep] = useState("");
   const [instructionSteps, setInstructionSteps] = useState([]);
 
+  // sampler (admin-only in practice)
+  const [showInSampler, setShowInSampler] = useState(false);
+  const [samplerPosition, setSamplerPosition] = useState("");
+
   // ui state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -161,6 +165,11 @@ export default function RecipeCreate() {
       .map((step, idx) => `Step ${idx + 1}: ${step.text}`)
       .join("\n");
 
+    const parsedSamplerPosition =
+      samplerPosition && samplerPosition.trim() !== ""
+        ? parseInt(samplerPosition, 10)
+        : null;
+
     const payload = {
       name: name.trim(),
       description: description.trim(),
@@ -171,6 +180,8 @@ export default function RecipeCreate() {
       // publish only when shared to community
       published: isCommunityVisible,
       source: "user",
+      show_in_sampler: showInSampler,
+      sampler_position: parsedSamplerPosition,
     };
 
     try {
@@ -202,20 +213,7 @@ export default function RecipeCreate() {
             </p>
           </div>
 
-          {/* <div className="recipeCreateToggleRow">
-            <span className="recipeCreateToggleLabel">
-              Visible to Doberpop community
-            </span>
-            <button
-              type="button"
-              className={
-                "rcToggle" + (isCommunityVisible ? " rcToggle--on" : "")
-              }
-              onClick={() => setIsCommunityVisible((v) => !v)}
-            >
-              <span className="rcToggleThumb" />
-            </button>
-          </div> */}
+          {/* Community visibility toggle is hidden for now */}
         </header>
 
         {error && <div className="recipeCreateError">{error}</div>}
@@ -275,6 +273,10 @@ export default function RecipeCreate() {
             </div>
           </div>
         </section>
+
+        {/* INGREDIENTS */}
+        {/* (unchanged) */}
+        {/* ... keep your full Ingredients + Instructions sections exactly as in your file ... */}
 
         {/* INGREDIENTS */}
         <section className="recipeCreateSection">
@@ -530,6 +532,39 @@ export default function RecipeCreate() {
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* SAMPLER (ADMIN-ONLY) */}
+        <section className="recipeCreateSection">
+          <h2 className="recipeCreateSectionTitle">Sampler (admin-only)</h2>
+          <p className="rcHint">
+            These fields control whether this batch appears in the public
+            sampler for logged-out visitors.
+          </p>
+          <div className="rcFieldRow">
+            <div className="rcFieldGroup rcFieldGroup--sm">
+              <label className="rcLabel">
+                <input
+                  type="checkbox"
+                  checked={showInSampler}
+                  onChange={(e) => setShowInSampler(e.target.checked)}
+                  style={{ marginRight: 8 }}
+                />
+                Show in public sampler
+              </label>
+            </div>
+            <div className="rcFieldGroup rcFieldGroup--sm">
+              <label className="rcLabel">Sampler position</label>
+              <input
+                className="rcInput rcInput--inline rcInput--mini"
+                type="number"
+                min="1"
+                value={samplerPosition}
+                onChange={(e) => setSamplerPosition(e.target.value)}
+                placeholder="e.g. 1"
+              />
+            </div>
+          </div>
         </section>
 
         {/* FOOTER */}

@@ -22,6 +22,8 @@ export default function RecipeEdit() {
     ingredients: "",
     instructions: "",
     published: false,
+    show_in_sampler: false,
+    sampler_position: "",
   });
 
   // Prefill from API
@@ -44,6 +46,13 @@ export default function RecipeEdit() {
           ingredients: r.ingredients || "",
           instructions: r.instructions || "",
           published: !!r.published,
+          show_in_sampler: !!r.show_in_sampler,
+          sampler_position:
+            r.sampler_position !== null &&
+            r.sampler_position !== undefined &&
+            r.sampler_position !== ""
+              ? String(r.sampler_position)
+              : "",
         });
       } catch (e) {
         if (!alive) return;
@@ -67,9 +76,10 @@ export default function RecipeEdit() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const handleTogglePublished = () => {
-  //   setForm((prev) => ({ ...prev, published: !prev.published }));
-  // };
+  const handleCheckboxChange = (field) => (e) => {
+    const checked = e.target.checked;
+    setForm((prev) => ({ ...prev, [field]: checked }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,6 +98,11 @@ export default function RecipeEdit() {
       return;
     }
 
+    const parsedSamplerPosition =
+      form.sampler_position && form.sampler_position.trim() !== ""
+        ? parseInt(form.sampler_position, 10)
+        : null;
+
     const payload = {
       name: form.name.trim(),
       description: form.description.trim(),
@@ -95,8 +110,10 @@ export default function RecipeEdit() {
       yield: form.yield || "1",
       ingredients: form.ingredients,
       instructions: form.instructions,
-      // 🔑 only send published; NO visibility key
+      // 🔑 only send published and sampler fields; no visibility toggle
       published: form.published,
+      show_in_sampler: form.show_in_sampler,
+      sampler_position: parsedSamplerPosition,
     };
 
     try {
@@ -106,9 +123,7 @@ export default function RecipeEdit() {
     } catch (e) {
       console.error("Error updating recipe", e);
       const msg =
-        e?.response?.data?.error ||
-        e?.message ||
-        "Unable to update recipe.";
+        e?.response?.data?.error || e?.message || "Unable to update recipe.";
       setError(msg);
       setSaving(false);
     }
@@ -136,24 +151,11 @@ export default function RecipeEdit() {
             <h1 className="recipeEditTitle">Edit Recipe</h1>
             <p className="recipeEditSubtitle">
               Update details or change whether it&apos;s shared with the Doberpop
-              community.
+              community and sampler.
             </p>
           </div>
 
-          {/* <div className="recipeEditToggleRow">
-            <span className="recipeEditToggleLabel">
-              Visible to Doberpop community
-            </span>
-            <button
-              type="button"
-              className={
-                "rcToggle" + (form.published ? " rcToggle--on" : "")
-              }
-              onClick={handleTogglePublished}
-            >
-              <span className="rcToggleThumb" />
-            </button>
-          </div> */}
+          {/* Community visibility toggle is hidden for now */}
         </header>
 
         {error && <div className="recipeEditError">{error}</div>}
@@ -241,6 +243,39 @@ export default function RecipeEdit() {
               "Step 1: …\nStep 2: …\n\nUse any style you like – numbered, bullet, etc."
             }
           />
+        </section>
+
+        {/* SAMPLER (ADMIN-ONLY) */}
+        <section className="recipeEditSection">
+          <h2 className="recipeEditSectionTitle">Sampler (admin-only)</h2>
+          <p className="recipeEditHint">
+            Control whether this batch appears in the public sampler for
+            logged-out visitors.
+          </p>
+          <div className="rcFieldRow">
+            <div className="rcFieldGroup rcFieldGroup--sm">
+              <label className="rcLabel">
+                <input
+                  type="checkbox"
+                  checked={form.show_in_sampler}
+                  onChange={handleCheckboxChange("show_in_sampler")}
+                  style={{ marginRight: 8 }}
+                />
+                Show in public sampler
+              </label>
+            </div>
+            <div className="rcFieldGroup rcFieldGroup--sm">
+              <label className="rcLabel">Sampler position</label>
+              <input
+                className="rcInput rcInput--inline rcInput--mini"
+                type="number"
+                min="1"
+                value={form.sampler_position}
+                onChange={handleChange("sampler_position")}
+                placeholder="e.g. 1"
+              />
+            </div>
+          </div>
         </section>
 
         {/* FOOTER */}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_18_122516) do
+ActiveRecord::Schema.define(version: 2025_12_21_083151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 2025_12_18_122516) do
     t.text "ingredients"
     t.string "source", default: "user", null: false
     t.boolean "published", default: false, null: false
+    t.boolean "show_in_sampler"
+    t.integer "sampler_position"
     t.index ["published"], name: "index_recipes_on_published"
     t.index ["source"], name: "index_recipes_on_source"
     t.index ["user_id"], name: "index_recipes_on_user_id"
@@ -62,6 +64,8 @@ ActiveRecord::Schema.define(version: 2025_12_18_122516) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "admin"
+    t.datetime "last_username_change_at"
+    t.datetime "username_changed_at"
   end
 
   add_foreign_key "favorites", "recipes"

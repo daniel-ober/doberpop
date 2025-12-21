@@ -17,6 +17,15 @@ export const getAllRecipes = async () => {
   return getRecipes();
 };
 
+// ===== GET SAMPLER (optional helper) =====
+// Official sampler list – useful for homepage carousels, etc.
+export const getSamplerRecipes = async () => {
+  const res = await api.get("/api/recipes", {
+    params: { sampler: true },
+  });
+  return res.data;
+};
+
 // ===== GET ONE =====
 export const getOneRecipe = async (id) => {
   const res = await api.get(`/api/recipes/${id}`);

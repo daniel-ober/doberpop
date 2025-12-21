@@ -1,0 +1,334 @@
+/* Outer shell */
+.accountSettings {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px 60px;
+  color: #f5f5f5;
+}
+
+/* Glass card */
+.accountSettings__card {
+  width: min(620px, 100%);
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), transparent)
+      rgba(0, 0, 0, 0.86);
+  border-radius: 18px;
+  border: 1px solid rgba(245, 230, 179, 0.22);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.85);
+  padding: 28px 24px 26px;
+}
+
+/* Header */
+.accountSettings__title {
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.accountSettings__subtitle {
+  font-size: 0.9rem;
+  color: rgba(245, 245, 245, 0.78);
+  margin-bottom: 22px;
+}
+
+/* Alerts */
+.accountSettings__alert {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+}
+
+.accountSettings__alert--error {
+  background: rgba(255, 90, 90, 0.1);
+  border-color: rgba(255, 120, 120, 0.6);
+  color: #ffd0d0;
+}
+
+.accountSettings__alert--success {
+  background: rgba(82, 196, 120, 0.1);
+  border-color: rgba(129, 230, 170, 0.7);
+  color: #b7ffd2;
+}
+
+/* Form layout */
+.accountSettings__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Sections */
+.accountSettings__section {
+  padding-top: 4px;
+  padding-bottom: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.accountSettings__section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.accountSettings__sectionTitle {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(245, 230, 179, 0.95);
+  margin-bottom: 10px;
+}
+
+/* Labels + inputs */
+.accountSettings__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.accountSettings__labelText {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.85);
+}
+
+.accountSettings__input {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(12, 12, 12, 0.96);
+  color: #f5f5f5;
+  padding: 9px 14px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.accountSettings__input::placeholder {
+  color: rgba(200, 200, 200, 0.55);
+}
+
+.accountSettings__input:focus-visible {
+  border-color: rgba(245, 230, 179, 0.8);
+  box-shadow: 0 0 0 1px rgba(245, 230, 179, 0.65);
+}
+
+/* Error state */
+.accountSettings__input--error {
+  border-color: rgba(255, 120, 120, 0.7);
+}
+
+.accountSettings__errorText {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: #ff8c8c;
+}
+
+/* Password row (new + confirm) */
+.accountSettings__section--password {
+  margin-top: 4px;
+}
+
+.accountSettings__pwRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.accountSettings__pwRow .accountSettings__label {
+  flex: 1;
+}
+
+/* Hint text under password fields */
+.accountSettings__pwHint {
+  font-size: 0.8rem;
+  color: rgba(245, 245, 245, 0.7);
+  margin-top: 4px;
+}
+
+/* Password checklist */
+.accountSettings__pwChecklist {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+.accountSettings__pwItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(245, 245, 245, 0.78);
+}
+
+.accountSettings__pwIcon {
+  width: 16px;
+  display: inline-flex;
+  justify-content: center;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.accountSettings__pwItem.is-ok {
+  color: rgba(183, 255, 210, 0.95);
+}
+
+.accountSettings__pwItem.is-ok .accountSettings__pwIcon {
+  opacity: 1;
+}
+
+/* Actions */
+.accountSettings__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.accountSettings__btn {
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    transform 80ms ease,
+    opacity 80ms ease;
+}
+
+.accountSettings__btn--primary {
+  background: rgba(245, 230, 179, 0.24);
+  border-color: rgba(245, 230, 179, 0.45);
+  color: #fff8dd;
+}
+
+.accountSettings__btn--primary:hover {
+  background: rgba(245, 230, 179, 0.3);
+  transform: translateY(-1px);
+}
+
+.accountSettings__btn--ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(245, 245, 245, 0.9);
+}
+
+.accountSettings__btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.accountSettings__btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+/* === Username change confirmation modal === */
+
+.accountSettings__confirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.accountSettings__confirmDialog {
+  width: min(480px, 100% - 32px);
+  background: radial-gradient(circle at top left, #151515, #050505);
+  border-radius: 18px;
+  border: 1px solid rgba(245, 230, 179, 0.25);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.9);
+  padding: 20px 20px 18px;
+  color: #f7f7f7;
+}
+
+.accountSettings__confirmTitle {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.accountSettings__confirmText {
+  font-size: 0.92rem;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  color: rgba(245, 245, 245, 0.9);
+}
+
+.accountSettings__confirmText--warning {
+  margin-top: 4px;
+  color: #facc6b;
+}
+
+.accountSettings__confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.accountSettings__confirmBtn {
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease,
+    transform 80ms ease, color 80ms ease;
+}
+
+.accountSettings__confirmBtn--ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(245, 245, 245, 0.9);
+}
+
+.accountSettings__confirmBtn--ghost:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.accountSettings__confirmBtn--primary {
+  background: rgba(245, 230, 179, 0.32);
+  border-color: rgba(245, 230, 179, 0.6);
+  color: #fff9e0;
+}
+
+.accountSettings__confirmBtn--primary:hover {
+  background: rgba(245, 230, 179, 0.4);
+  transform: translateY(-1px);
+}
+
+.accountSettings__confirmBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .accountSettings__card {
+    width: 100%;
+    padding: 20px 16px 22px;
+  }
+
+  .accountSettings__pwRow {
+    flex-direction: column;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .accountSettings__btn,
+  .accountSettings__input {
+    transition: none;
+  }
+}

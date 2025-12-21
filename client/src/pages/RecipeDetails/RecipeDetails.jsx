@@ -163,7 +163,7 @@ function getToolsForRecipe(name) {
    COMPONENT
    ========================================================= */
 
-export default function RecipeDetails() {
+export default function RecipeDetails({ currentUser }) {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
@@ -171,6 +171,11 @@ export default function RecipeDetails() {
   // favorites (DB-backed, same as main Recipes page)
   const [isFavorited, setIsFavorited] = useState(false);
   const [favBusy, setFavBusy] = useState(false);
+
+  // normalize auth state
+  const normalizedUserId =
+    currentUser?.id ?? currentUser?.user_id ?? null;
+  const isAuthed = normalizedUserId != null;
 
   useEffect(() => {
     let alive = true;
@@ -195,7 +200,7 @@ export default function RecipeDetails() {
 
   // Load favorites for the logged-in user & check if THIS recipe is one
   useEffect(() => {
-    if (!id) return;
+    if (!id || !isAuthed) return;
 
     let alive = true;
 
@@ -216,7 +221,7 @@ export default function RecipeDetails() {
     return () => {
       alive = false;
     };
-  }, [id]);
+  }, [id, isAuthed]);
 
   const heroSrc = useMemo(() => {
     if (!recipe) return "";
@@ -322,7 +327,7 @@ export default function RecipeDetails() {
   };
 
   const handleFavoriteClick = async () => {
-    if (favBusy || !recipe) return;
+    if (!isAuthed || favBusy || !recipe) return;
 
     const next = !isFavorited;
     setFavBusy(true);
@@ -384,23 +389,25 @@ export default function RecipeDetails() {
           </div>
 
           <div className="detailsHeaderRight">
-            {/* FAVORITE PILL – always visible on /recipes details since route is authed */}
-            <button
-              className={`detailsFavoriteBtn ${
-                isFavorited ? "isFavorited" : ""
-              }`}
-              onClick={handleFavoriteClick}
-              type="button"
-              aria-pressed={isFavorited}
-              disabled={favBusy}
-            >
-              <span className="detailsFavoriteIcon" aria-hidden>
-                {isFavorited ? "♥" : "♡"}
-              </span>
-              <span className="detailsFavoriteLabel">
-                {isFavorited ? "Saved to Favorites" : "Save to Favorites"}
-              </span>
-            </button>
+            {/* FAVORITE PILL – only visible when user is signed in */}
+            {isAuthed && (
+              <button
+                className={`detailsFavoriteBtn ${
+                  isFavorited ? "isFavorited" : ""
+                }`}
+                onClick={handleFavoriteClick}
+                type="button"
+                aria-pressed={isFavorited}
+                disabled={favBusy}
+              >
+                <span className="detailsFavoriteIcon" aria-hidden>
+                  {isFavorited ? "♥" : "♡"}
+                </span>
+                <span className="detailsFavoriteLabel">
+                  {isFavorited ? "Saved to Favorites" : "Save to Favorites"}
+                </span>
+              </button>
+            )}
 
             <button
               className="detailsActionBtn"

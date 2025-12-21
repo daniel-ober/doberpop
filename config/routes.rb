@@ -3,9 +3,11 @@ Rails.application.routes.draw do
   # ============================
   # AUTH (JWT)
   # ============================
-  post "/auth/login",    to: "authentication#login"
-  post "/auth/register", to: "authentication#register"
-  get  "/auth/verify",   to: "authentication#verify"
+  post  "/auth/login",   to: "authentication#login"
+post  "/auth/register", to: "authentication#register"
+get   "/auth/verify",  to: "authentication#verify"
+patch "/auth/account", to: "authentication#update_account"
+
 
   # ============================
   # ADMIN HTML (Doberpop admin panel)
@@ -44,11 +46,18 @@ Rails.application.routes.draw do
     delete "/recipes/:recipe_id/favorite", to: "favorites#destroy"
 
     # ----------------------------
+    # ACCOUNT (current user profile)
+    # ----------------------------
+    get   "/account", to: "account#show"
+    patch "/account", to: "account#update"
+    put   "/account", to: "account#update"
+
+    # ----------------------------
     # ADMIN API (JWT protected)
     # ----------------------------
     namespace :admin do
       resources :users,   only: [:index, :destroy]
-      resources :recipes, only: [:index, :destroy]
+      resources :recipes, only: [:index, :update, :destroy]
     end
   end
 end

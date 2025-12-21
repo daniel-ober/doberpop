@@ -1,4 +1,4 @@
-// src/pages/AdminDashboard/AdminDashboard.jsx
+// client/src/pages/AdminDashboard/AdminDashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
   getAdminUsers,
@@ -6,6 +6,7 @@ import {
   deleteAdminUser,
   deleteAdminRecipe,
 } from "../../services/admin";
+import api from "../../services/api-config";
 import "./AdminDashboard.css";
 
 function getCreatedAt(row) {
@@ -65,6 +66,9 @@ export default function AdminDashboard() {
 
   // favorites modal
   const [favoritesModalRecipe, setFavoritesModalRecipe] = useState(null);
+
+  // sampler toggle busy state
+  const [samplerBusyIds, setSamplerBusyIds] = useState(() => new Set());
 
   useEffect(() => {
     let alive = true;
@@ -228,9 +232,62 @@ export default function AdminDashboard() {
     [favoritesModalRecipe]
   );
 
+  // ---- sampler toggle ----
+  const handleToggleSampler = async (recipe) => {
+    if (!recipe || typeof recipe.id === "undefined") return;
+
+    const id = recipe.id;
+    const prev = !!recipe.show_in_sampler;
+    const next = !prev;
+
+    // optimistic UI update
+    setRecipes((prevList) =>
+      prevList.map((r) =>
+        r.id === id ? { ...r, show_in_sampler: next } : r
+      )
+    );
+    setSamplerBusyIds((prevSet) => {
+      const nextSet = new Set(prevSet);
+      nextSet.add(id);
+      return nextSet;
+    });
+    setActionError("");
+
+    try {
+      await api.patch(`/api/admin/recipes/${id}`, {
+        show_in_sampler: next,
+      });
+    } catch (e) {
+      console.error("Failed to update sampler flag", e);
+      // rollback on error
+      setRecipes((prevList) =>
+        prevList.map((r) =>
+          r.id === id ? { ...r, show_in_sampler: prev } : r
+        )
+      );
+      const msg =
+        e?.response?.data?.error ||
+        e?.message ||
+        "Failed to update sampler setting.";
+      setActionError(msg);
+    } finally {
+      setSamplerBusyIds((prevSet) => {
+        const nextSet = new Set(prevSet);
+        nextSet.delete(id);
+        return nextSet;
+      });
+    }
+  };
+
   return (
     <div className="adminDashboard">
       <h1>Admin Dashboard</h1>
+
+      {actionError && (
+        <p className="adminError" style={{ marginTop: 0 }}>
+          {actionError}
+        </p>
+      )}
 
       {/* USERS */}
       <h2>Users</h2>
@@ -315,6 +372,7 @@ export default function AdminDashboard() {
               <th>Title</th>
               <th>Owner</th>
               <th>Created</th>
+              <th className="adminSamplerCol">Sampler</th>
               <th className="adminFavoritesCol">Favorites</th>
               <th className="adminActionsCol">Actions</th>
             </tr>
@@ -331,6 +389,9 @@ export default function AdminDashboard() {
                   usersById.get(r.user_id)?.username) ||
                 r.user_id ||
                 "—";
+
+              const isSampler = !!r.show_in_sampler;
+              const samplerBusy = samplerBusyIds.has(r.id);
 
               let favoritesCellContent;
 
@@ -361,6 +422,26 @@ export default function AdminDashboard() {
                   <td>{r.title || r.name || "(untitled)"}</td>
                   <td>{ownerUsername}</td>
                   <td>{fmt(r.created_at || r.createdAt || r.inserted_at)}</td>
+                  <td className="adminSamplerCell">
+                    <button
+                      type="button"
+                      className={
+                        "adminSamplerToggle " +
+                        (isSampler
+                          ? "adminSamplerToggle--on"
+                          : "adminSamplerToggle--off")
+                      }
+                      onClick={() => handleToggleSampler(r)}
+                      disabled={samplerBusy}
+                      title={
+                        isSampler
+                          ? "Click to hide from guest sampler"
+                          : "Click to show in guest sampler"
+                      }
+                    >
+                      {isSampler ? "Showing" : "Hidden"}
+                    </button>
+                  </td>
                   <td className="adminFavoritesCell">
                     {favoritesCellContent}
                   </td>

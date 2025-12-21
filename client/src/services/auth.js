@@ -1,119 +1,107 @@
 // client/src/services/auth.js
-
-const isProd = process.env.NODE_ENV === "production";
-
-// In production we MUST provide REACT_APP_API_BASE_URL via Netlify.
-// In development we default to localhost:3000.
-const API_BASE = isProd
-  ? process.env.REACT_APP_API_BASE_URL
-  : "http://localhost:3000";
-
-if (isProd && !API_BASE) {
-  console.error(
-    "[auth] Missing REACT_APP_API_BASE_URL – auth requests will fail in production."
-  );
-}
+import api from "./api-config";
 
 const TOKEN_KEY = "authToken";
 
-export const setToken = (token) => {
+/**
+ * Token helpers
+ */
+export function setToken(token) {
   if (token) {
     localStorage.setItem(TOKEN_KEY, token);
+    api.defaults.headers.common.authorization = `Bearer ${token}`;
+  } else {
+    localStorage.removeItem(TOKEN_KEY);
+    delete api.defaults.headers.common.authorization;
   }
-};
+}
 
-export const getToken = () => {
+export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
-};
+}
 
-export const removeToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
-};
+export function removeToken() {
+  setToken(null);
+}
 
-// helper to shape errors so Login.jsx's extractAuthError() can read status
-async function buildError(res) {
-  let data;
-  try {
-    data = await res.json();
-  } catch (e) {
-    data = null;
-  }
-
-  const err = new Error(data?.error || "Request failed");
-  err.response = {
-    status: res.status,
-    data,
-  };
-  return err;
+// On initial load, if a token exists in localStorage, attach it to axios
+const existingToken = getToken();
+if (existingToken) {
+  api.defaults.headers.common.authorization = `Bearer ${existingToken}`;
 }
 
 /**
  * LOGIN
- * POST /auth/login
- * body: { identifier, password }
- * response: { user: {...}, token: "..." }
+ * Expects backend: POST /auth/login
+ * Response shape: { user: {...}, token: "..." }
  */
-export const loginUser = async ({ identifier, password }) => {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ identifier, password }),
-  });
+export async function loginUser(credentials) {
+  const payload = {
+    identifier: credentials.identifier,
+    password: credentials.password,
+  };
 
-  if (!res.ok) {
-    throw await buildError(res);
-  }
+  const res = await api.post("/auth/login", payload);
+  const { user, token } = res.data || {};
 
-  const data = await res.json();
-  setToken(data.token);
-  return data.user;
-};
+  if (token) setToken(token);
+
+  return user || null;
+}
 
 /**
  * REGISTER
- * POST /auth/register
- * body: { user: { username, email, password } }
+ * Expects backend: POST /auth/register
+ * Response shape: { user: {...}, token: "..." }
  */
-export const registerUser = async ({ username, email, password }) => {
-  const res = await fetch(`${API_BASE}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user: { username, email, password },
-    }),
-  });
+export async function registerUser(data) {
+  const payload = {
+    user: {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    },
+  };
 
-  if (!res.ok) {
-    throw await buildError(res);
-  }
+  const res = await api.post("/auth/register", payload);
+  const { user, token } = res.data || {};
 
-  const data = await res.json();
-  return data.user;
-};
+  if (token) setToken(token);
+
+  return user || null;
+}
 
 /**
  * VERIFY
- * GET /auth/verify
- * headers: Authorization: Bearer <token>
+ * Expects backend: GET /auth/verify
+ * Response shape: { user: {...} }
  */
-export const verifyUser = async () => {
+export async function verifyUser() {
   const token = getToken();
-  if (!token) {
-    throw new Error("No token");
+  if (!token) return null;
+
+  try {
+    const res = await api.get("/auth/verify");
+    return res.data?.user || null;
+  } catch {
+    removeToken();
+    return null;
   }
+}
 
-  const res = await fetch(`${API_BASE}/auth/verify`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    throw await buildError(res);
-  }
-
-  const data = await res.json();
-  return data.user;
-};
-
+/**
+ * ACCOUNT UPDATE
+ * Expects backend: PATCH /auth/account
+ * Request body can contain:
+ *  - username
+ *  - email
+ *  - current_password (required if changing password)
+ *  - new_password    (optional)
+ *
+ * Response shape: { user: {...} }
+ */
+export async function updateAccount(payload) {
+  const res = await api.patch("/auth/account", payload);
+  // We don't expect a new token here, just updated user
+  return res.data;
+}

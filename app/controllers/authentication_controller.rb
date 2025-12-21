@@ -1,7 +1,7 @@
 # app/controllers/authentication_controller.rb
 class AuthenticationController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:login, :register]
-  before_action :authorize_request, only: [:verify]
+  skip_before_action :verify_authenticity_token, only: [:login, :register, :update_account]
+  before_action :authorize_request, only: [:verify, :update_account]
 
   # POST /auth/login
   def login
@@ -36,6 +36,38 @@ class AuthenticationController < ApplicationController
   # GET /auth/verify
   def verify
     render json: { user: safe_user_json(current_user) }, status: :ok
+  end
+
+  # PATCH /auth/account
+  def update_account
+    user = current_user
+    unless user
+      render json: { error: "Unauthorized" }, status: :unauthorized
+      return
+    end
+
+    username         = params[:username].to_s.strip
+    email            = params[:email].to_s.strip
+    current_password = params[:current_password].to_s
+    new_password     = params[:new_password].to_s
+
+    # If changing password, verify current password first
+    if new_password.present?
+      unless user.authenticate(current_password)
+        render json: { error: "Current password is incorrect" }, status: :unprocessable_entity
+        return
+      end
+      user.password = new_password
+    end
+
+    user.username = username if username.present? && username != user.username
+    user.email    = email if email.present? && email != user.email
+
+    if user.save
+      render json: { user: safe_user_json(user) }, status: :ok
+    else
+      render json: { error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
   end
 
   private

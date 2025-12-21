@@ -15,7 +15,7 @@
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.85),
-    rgba(0, 0, 0, 0.30)
+    rgba(0, 0, 0, 0.3)
   );
 }
 
@@ -124,8 +124,7 @@
   outline-offset: 2px;
 }
 
-/* Active route – brighter text, but no extra underline
-   (underline is hover-only so only one appears at a time) */
+/* Active route – brighter text */
 .topnav__link.is-active {
   color: rgba(255, 245, 210, 0.98);
 }

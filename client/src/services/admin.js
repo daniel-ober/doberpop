@@ -14,42 +14,30 @@ function authHeaders() {
   };
 }
 
+async function handleJsonResponse(res, defaultMessage) {
+  if (!res.ok) {
+    let errBody;
+    try {
+      errBody = await res.json();
+    } catch {
+      errBody = {};
+    }
+    throw new Error(errBody.error || errBody.errors || defaultMessage);
+  }
+  // If there is no content (204), don't try to parse JSON
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+/* ================================
+ * ADMIN USERS
+ * ================================ */
+
 export async function getAdminUsers() {
   const res = await fetch(`${API_BASE}/api/admin/users`, {
     headers: authHeaders(),
   });
-
-  if (!res.ok) {
-    let errBody;
-    try {
-      errBody = await res.json();
-    } catch {
-      errBody = {};
-    }
-    throw new Error(errBody.error || errBody.errors || "Failed to fetch users");
-  }
-
-  return res.json();
-}
-
-export async function getAdminRecipes() {
-  const res = await fetch(`${API_BASE}/api/admin/recipes`, {
-    headers: authHeaders(),
-  });
-
-  if (!res.ok) {
-    let errBody;
-    try {
-      errBody = await res.json();
-    } catch {
-      errBody = {};
-    }
-    throw new Error(
-      errBody.error || errBody.errors || "Failed to fetch recipes"
-    );
-  }
-
-  return res.json();
+  return handleJsonResponse(res, "Failed to fetch users");
 }
 
 export async function deleteAdminUser(id) {
@@ -57,16 +45,18 @@ export async function deleteAdminUser(id) {
     method: "DELETE",
     headers: authHeaders(),
   });
+  await handleJsonResponse(res, "Failed to delete user");
+}
 
-  if (!res.ok) {
-    let errBody;
-    try {
-      errBody = await res.json();
-    } catch {
-      errBody = {};
-    }
-    throw new Error(errBody.error || errBody.errors || "Failed to delete user");
-  }
+/* ================================
+ * ADMIN RECIPES
+ * ================================ */
+
+export async function getAdminRecipes() {
+  const res = await fetch(`${API_BASE}/api/admin/recipes`, {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse(res, "Failed to fetch recipes");
 }
 
 export async function deleteAdminRecipe(id) {
@@ -74,16 +64,21 @@ export async function deleteAdminRecipe(id) {
     method: "DELETE",
     headers: authHeaders(),
   });
+  await handleJsonResponse(res, "Failed to delete recipe");
+}
 
-  if (!res.ok) {
-    let errBody;
-    try {
-      errBody = await res.json();
-    } catch {
-      errBody = {};
-    }
-    throw new Error(
-      errBody.error || errBody.errors || "Failed to delete recipe"
-    );
-  }
+/**
+ * Toggle / update sampler fields for a recipe from the admin dashboard.
+ *
+ * attrs can be:
+ *   { show_in_sampler: true/false }
+ *   or also include sampler_position later if you want ordering.
+ */
+export async function updateAdminRecipeSampler(id, attrs) {
+  const res = await fetch(`${API_BASE}/api/admin/recipes/${id}`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(attrs),
+  });
+  return handleJsonResponse(res, "Failed to update sampler settings");
 }

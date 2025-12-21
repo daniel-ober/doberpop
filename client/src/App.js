@@ -10,6 +10,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import AccountSettings from "./pages/Account/AccountSettings";
 
 // App container (Recipes + nested children)
 import MainContainer from "./containers/MainContainer";
@@ -86,6 +87,11 @@ function App() {
     history.push("/");
   };
 
+  const handleAccountUpdated = (updatedUser) => {
+    // keep App state in sync after settings change
+    setCurrentUser(updatedUser);
+  };
+
   return (
     <Layout currentUser={currentUser} handleLogout={handleLogout}>
       <Switch>
@@ -108,7 +114,7 @@ function App() {
           )}
         </Route>
 
-        {/* Authenticated */}
+        {/* Authenticated-only pages */}
         <Route path="/admin">
           {currentUser && isAdminUser(currentUser) ? (
             <AdminDashboard />
@@ -121,8 +127,19 @@ function App() {
           {currentUser ? <Home /> : <Redirect to="/login" />}
         </Route>
 
+        <Route path="/account">
+          {currentUser ? (
+            <AccountSettings
+              currentUser={currentUser}
+              onAccountUpdated={handleAccountUpdated}
+            />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </Route>
+
         {/* Recipes index + detail are PUBLIC.
-           MainContainer internally protects create/edit. */}
+            MainContainer internally protects create/edit. */}
         <Route path="/recipes">
           <MainContainer currentUser={currentUser} />
         </Route>

@@ -1,4 +1,3 @@
-// client/src/components/TopNav/TopNav.jsx
 import { NavLink, Link } from "react-router-dom";
 import "./TopNav.css";
 import logo from "../../assets/images/logo-reduced.png";
@@ -41,6 +40,19 @@ export default function TopNav({ currentUser, handleLogout }) {
             Batches
           </NavLink>
 
+          {/* Account settings – only for signed-in users */}
+          {currentUser && (
+            <NavLink
+              exact
+              to="/account"
+              className="topnav__link"
+              activeClassName="is-active"
+            >
+              Account
+            </NavLink>
+          )}
+
+          {/* Admin dashboard link – only for admin users */}
           {admin && (
             <NavLink
               exact
