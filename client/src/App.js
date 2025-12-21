@@ -12,6 +12,10 @@ import Home from "./pages/Home/Home";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import AccountSettings from "./pages/Account/AccountSettings";
 
+// Forgot + Reset (components)
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import ResetPassword from "./components/ResetPassword/ResetPassword";
+
 // App container (Recipes + nested children)
 import MainContainer from "./containers/MainContainer";
 
@@ -113,6 +117,10 @@ function App() {
             <Register handleRegister={handleRegister} />
           )}
         </Route>
+
+        {/* Forgot + Reset are PUBLIC */}
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
 
         {/* Authenticated-only pages */}
         <Route path="/admin">

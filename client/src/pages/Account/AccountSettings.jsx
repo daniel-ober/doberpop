@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./AccountSettings.css";
 import { updateAccount } from "../../services/auth";
+import AccountDangerZone from "../../components/AccountDangerZone/AccountDangerZone";
 
 // Password rules (same as Register)
 const passwordRules = (pw) => {
@@ -217,6 +218,7 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
       const msg =
         err?.response?.data?.error ||
         err?.response?.data?.message ||
+        err?.message ||
         "Unable to update account. Please try again.";
       setError(msg);
     } finally {
@@ -466,6 +468,9 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
               {saving ? "Saving…" : "Save changes"}
             </button>
           </div>
+
+          {/* Danger zone */}
+          <AccountDangerZone />
         </form>
       </div>
     </div>

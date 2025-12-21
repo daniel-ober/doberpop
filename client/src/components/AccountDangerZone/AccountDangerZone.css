@@ -1,0 +1,55 @@
+/* client/src/components/AccountDangerZone/AccountDangerZone.css */
+
+.accountDanger {
+  margin-top: 32px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  background: rgba(127, 29, 29, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+}
+
+.accountDanger__title {
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: #fecaca;
+}
+
+.accountDanger__text {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: rgba(255, 241, 242, 0.85);
+}
+
+.accountDanger__error {
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: #fecaca;
+}
+
+.accountDanger__btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #b91c1c;
+  color: #fff7ed;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+}
+
+.accountDanger__btn:hover:not(:disabled) {
+  background: #dc2626;
+  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.35);
+  transform: translateY(-1px);
+}
+
+.accountDanger__btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}

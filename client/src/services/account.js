@@ -5,10 +5,16 @@ const API_BASE =
 
 function authHeaders() {
   const token = localStorage.getItem("authToken");
-  return {
-    Authorization: `Bearer ${token}`,
+
+  const headers = {
     "Content-Type": "application/json",
   };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
 }
 
 async function handleAccountResponse(res, defaultErrorMessage) {
@@ -22,7 +28,9 @@ async function handleAccountResponse(res, defaultErrorMessage) {
   if (!res.ok) {
     const message =
       body.error || body.errors || defaultErrorMessage || "Request failed";
-    const err = new Error(message);
+    const err = new Error(
+      typeof message === "string" ? message : JSON.stringify(message)
+    );
     err.status = res.status;
     throw err;
   }
@@ -47,4 +55,14 @@ export async function updateAccount(payload) {
   });
 
   return handleAccountResponse(res, "Failed to update account");
+}
+
+// 🔥 Self-service account deletion
+export async function deleteMyAccount() {
+  const res = await fetch(`${API_BASE}/api/account`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+
+  return handleAccountResponse(res, "Failed to delete account");
 }
