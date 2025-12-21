@@ -1,7 +1,6 @@
 # app/controllers/password_resets_controller.rb
 class PasswordResetsController < ApplicationController
   # These endpoints are public – user is not logged in yet
-  skip_before_action :authorize_request, only: [:create, :update]
 
   # POST /auth/password/forgot
   # Body: { email: "user@example.com" }
