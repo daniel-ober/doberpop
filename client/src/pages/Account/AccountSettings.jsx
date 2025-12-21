@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+// client/src/pages/Account/AccountSettings.jsx
+import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./AccountSettings.css";
 import { updateAccount } from "../../services/auth";
@@ -15,13 +16,10 @@ const passwordRules = (pw) => {
   };
 };
 
+const USERNAME_LOCK_DAYS = 90;
+
 export default function AccountSettings({ currentUser, onAccountUpdated }) {
   const history = useHistory();
-
-  const [initialUsername, setInitialUsername] = useState(
-    currentUser?.username || ""
-  );
-  const [initialEmail, setInitialEmail] = useState(currentUser?.email || "");
 
   const [form, setForm] = useState({
     username: currentUser?.username || "",
@@ -43,27 +41,59 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Username confirmation modal state
-  const [showUsernameConfirm, setShowUsernameConfirm] = useState(false);
-  const [usernameConfirmed, setUsernameConfirmed] = useState(false);
-
   // Keep form username/email in sync with currentUser
   useEffect(() => {
-    const nextUsername = currentUser?.username || "";
-    const nextEmail = currentUser?.email || "";
-
-    setInitialUsername(nextUsername);
-    setInitialEmail(nextEmail);
-
     setForm((prev) => ({
       ...prev,
-      username: nextUsername,
-      email: nextEmail,
+      username: currentUser?.username || "",
+      email: currentUser?.email || "",
     }));
   }, [currentUser]);
 
   const { username, email, currentPassword, newPassword, confirmPassword } =
     form;
+
+  // 90-day username lock logic
+  const { canChangeUsername, formattedLastChanged, formattedNextAllowed } =
+    useMemo(() => {
+      const raw = currentUser?.username_changed_at;
+      if (!raw) {
+        // never changed (or older users before we started tracking) → allow
+        return {
+          canChangeUsername: true,
+          formattedLastChanged: null,
+          formattedNextAllowed: null,
+        };
+      }
+
+      const last = new Date(raw);
+      if (Number.isNaN(last.getTime())) {
+        return {
+          canChangeUsername: true,
+          formattedLastChanged: null,
+          formattedNextAllowed: null,
+        };
+      }
+
+      const now = new Date();
+      const diffMs = now.getTime() - last.getTime();
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      const canChange = diffDays >= USERNAME_LOCK_DAYS;
+
+      const nextAllowed = new Date(
+        last.getTime() + USERNAME_LOCK_DAYS * 24 * 60 * 60 * 1000
+      );
+
+      const opts = { year: "numeric", month: "short", day: "numeric" };
+      const lastStr = last.toLocaleDateString("en-US", opts);
+      const nextStr = nextAllowed.toLocaleDateString("en-US", opts);
+
+      return {
+        canChangeUsername: canChange,
+        formattedLastChanged: lastStr,
+        formattedNextAllowed: nextStr,
+      };
+    }, [currentUser]);
 
   const pw = useMemo(() => passwordRules(newPassword), [newPassword]);
 
@@ -112,7 +142,8 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
-  const performSubmit = useCallback(async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setTouched({
       username: true,
       email: true,
@@ -120,6 +151,17 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
       newPassword: true,
       confirmPassword: true,
     });
+
+    // If inside the 90-day lock window, do not allow username change
+    const trimmedUsername = (username || "").trim();
+    const originalUsername = currentUser?.username || "";
+
+    if (!canChangeUsername && trimmedUsername !== originalUsername) {
+      setError(
+        "You can only change your username once every 90 days. Please try again later."
+      );
+      return;
+    }
 
     if (usernameError || emailError) return;
 
@@ -139,8 +181,8 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
 
     try {
       const payload = {
-        username: username.trim(),
-        email: email.trim(),
+        username: trimmedUsername,
+        email: (email || "").trim(),
       };
 
       if (wantsPasswordChange) {
@@ -157,11 +199,7 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
 
       setSuccess("Your account settings have been updated.");
 
-      // Reset "initial" values to reflect the latest username/email
-      setInitialUsername(updatedUser?.username || username.trim());
-      setInitialEmail(updatedUser?.email || email.trim());
-
-      // Clear password fields + confirmation
+      // Clear password fields
       setForm((prev) => ({
         ...prev,
         currentPassword: "",
@@ -175,55 +213,19 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
         newPassword: false,
         confirmPassword: false,
       }));
-
-      setUsernameConfirmed(false);
     } catch (err) {
       const msg =
         err?.response?.data?.error ||
         err?.response?.data?.message ||
         "Unable to update account. Please try again.";
-
       setError(msg);
     } finally {
       setSaving(false);
     }
-  }, [
-    username,
-    email,
-    currentPassword,
-    newPassword,
-    confirmPassword,
-    usernameError,
-    emailError,
-    newPasswordError,
-    confirmPasswordError,
-  ]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const usernameChanged =
-      username.trim() !== (initialUsername || "").trim();
-
-    // If the username has changed and we haven't confirmed yet, show modal
-    if (usernameChanged && !usernameConfirmed) {
-      setShowUsernameConfirm(true);
-      return;
-    }
-
-    // Either username didn't change, or user already confirmed
-    await performSubmit();
   };
 
   const handleCancel = () => {
     history.goBack();
-  };
-
-  const confirmUsernameChange = async () => {
-    setShowUsernameConfirm(false);
-    setUsernameConfirmed(true);
-    await performSubmit();
-    // after submit, we reset usernameConfirmed in performSubmit
   };
 
   const showUsernameError = touched.username && usernameError;
@@ -272,13 +274,31 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
                 placeholder="username"
                 className={`accountSettings__input ${
                   showUsernameError ? "accountSettings__input--error" : ""
+                } ${
+                  !canChangeUsername ? "accountSettings__input--readonly" : ""
                 }`}
                 autoComplete="username"
                 spellCheck={false}
+                disabled={!canChangeUsername}
               />
               {showUsernameError && (
                 <div className="accountSettings__errorText">
                   {usernameError}
+                </div>
+              )}
+
+              {!canChangeUsername &&
+                formattedLastChanged &&
+                formattedNextAllowed && (
+                  <div className="accountSettings__usernameMeta">
+                    Your username was last changed on {formattedLastChanged} and
+                    can be changed again on {formattedNextAllowed}.
+                  </div>
+                )}
+
+              {canChangeUsername && (
+                <div className="accountSettings__hint">
+                  You can change your username once every 90 days.
                 </div>
               )}
             </label>
@@ -391,9 +411,7 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
                 At least 8 characters
               </div>
               <div
-                className={`accountSettings__pwItem ${
-                  pw.lower ? "is-ok" : ""
-                }`}
+                className={`accountSettings__pwItem ${pw.lower ? "is-ok" : ""}`}
               >
                 <span className="accountSettings__pwIcon">
                   {pw.lower ? "✓" : "•"}
@@ -401,9 +419,7 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
                 One lowercase letter
               </div>
               <div
-                className={`accountSettings__pwItem ${
-                  pw.upper ? "is-ok" : ""
-                }`}
+                className={`accountSettings__pwItem ${pw.upper ? "is-ok" : ""}`}
               >
                 <span className="accountSettings__pwIcon">
                   {pw.upper ? "✓" : "•"}
@@ -452,45 +468,6 @@ export default function AccountSettings({ currentUser, onAccountUpdated }) {
           </div>
         </form>
       </div>
-
-      {/* Username change confirmation modal */}
-      {showUsernameConfirm && (
-        <div className="accountSettings__confirmOverlay">
-          <div className="accountSettings__confirmDialog">
-            <h2 className="accountSettings__confirmTitle">
-              Change username?
-            </h2>
-            <p className="accountSettings__confirmText">
-              You&apos;re about to change your username from{" "}
-              <strong>{initialUsername || "(none)"}</strong> to{" "}
-              <strong>{username.trim() || "(blank)"}</strong>.
-            </p>
-            <p className="accountSettings__confirmText accountSettings__confirmText--warning">
-              For security and consistency, usernames can only be updated once
-              every <strong>90 days</strong>. You won&apos;t be able to change
-              it again until that window has passed.
-            </p>
-
-            <div className="accountSettings__confirmActions">
-              <button
-                type="button"
-                className="accountSettings__confirmBtn accountSettings__confirmBtn--ghost"
-                onClick={() => setShowUsernameConfirm(false)}
-              >
-                Go back
-              </button>
-              <button
-                type="button"
-                className="accountSettings__confirmBtn accountSettings__confirmBtn--primary"
-                onClick={confirmUsernameChange}
-                disabled={saving}
-              >
-                {saving ? "Saving…" : "Yes, change username"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

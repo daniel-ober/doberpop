@@ -79,6 +79,16 @@ class AuthenticationController < ApplicationController
   def safe_user_json(user)
     return nil unless user
 
-    user.as_json(only: [:id, :username, :email, :admin, :created_at, :updated_at])
+    user.as_json(
+      only: [
+        :id,
+        :username,
+        :email,
+        :admin,
+        :created_at,
+        :updated_at,
+        :username_changed_at   # 👈 add this so the frontend can enforce/visualize the 90-day rule
+      ]
+    )
   end
 end
