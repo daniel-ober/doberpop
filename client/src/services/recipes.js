@@ -6,10 +6,26 @@ import api from "./api-config";
  * Rails routes live under /api/recipes
  */
 
-// ===== GET ALL RECIPES =====
-export const getRecipes = async () => {
+/**
+ * Core helper: fetch recipes + metadata from the API.
+ * Always returns an object:
+ *   { recipes: [...], totalSignatureCount: number | undefined }
+ */
+export const getRecipesWithMeta = async () => {
   const res = await api.get("/api/recipes");
-  return res.data;
+  const data = res.data || {};
+
+  const recipes = Array.isArray(data) ? data : data.recipes || [];
+  const totalSignatureCount = data.total_signature_count;
+
+  return { recipes, totalSignatureCount };
+};
+
+// ===== GET ALL RECIPES (backwards-compatible) =====
+// Old callers that expect JUST an array can keep using this.
+export const getRecipes = async () => {
+  const { recipes } = await getRecipesWithMeta();
+  return recipes;
 };
 
 // 👇 Backwards-compat alias for MainContainer
@@ -18,12 +34,15 @@ export const getAllRecipes = async () => {
 };
 
 // ===== GET SAMPLER (optional helper) =====
-// Official sampler list – useful for homepage carousels, etc.
+// Explicit sampler list – useful for homepage carousels, etc.
 export const getSamplerRecipes = async () => {
   const res = await api.get("/api/recipes", {
     params: { sampler: true },
   });
-  return res.data;
+
+  const data = res.data || {};
+  const recipes = Array.isArray(data) ? data : data.recipes || [];
+  return recipes;
 };
 
 // ===== GET ONE =====

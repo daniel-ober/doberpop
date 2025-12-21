@@ -20,8 +20,26 @@ const TABS = [
 // how many official recipes a logged-out user can preview in the sampler
 const SAMPLE_RECIPE_LIMIT = 20;
 
+// Local fallback: count ALL official signature batches
+// (non-user-submitted) from whatever list we have in memory.
+function getTotalSignatureCount(recipes) {
+  if (!Array.isArray(recipes)) return 0;
+
+  return recipes.filter((r) => {
+    if (!r) return false;
+    const isUserSubmitted = r.source === "user";
+    return !isUserSubmitted;
+  }).length;
+}
+
 export default function Recipes(props) {
-  const { recipes = [], handleDelete, currentUser } = props;
+  const {
+    recipes = [],
+    handleDelete,
+    currentUser,
+    loading,
+    totalSignatureCount: totalSignatureCountFromServer,
+  } = props;
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -52,13 +70,22 @@ export default function Recipes(props) {
   const firstRenderRef = useRef(true);
 
   useEffect(() => {
-    // Skip the very first render (before the fetch resolves)
+    // Handle initial mount separately. If we *already* have recipes
+    // (e.g. navigating back from a detail page), mark as loaded immediately.
     if (firstRenderRef.current) {
       firstRenderRef.current = false;
+
+      if (Array.isArray(recipes) && recipes.length > 0) {
+        setHasLoadedRecipes(true);
+      }
+
       return;
     }
-    // Any subsequent change to `recipes` means the fetch completed
-    setHasLoadedRecipes(true);
+
+    // Any subsequent change to `recipes` means the fetch completed.
+    if (Array.isArray(recipes)) {
+      setHasLoadedRecipes(true);
+    }
   }, [recipes]);
 
   useEffect(() => {
@@ -157,6 +184,15 @@ export default function Recipes(props) {
     return { doberpop, mineAll, community, favorites };
   }, [recipes, normalizedUserId, favoriteIds]);
 
+  // 🔥 authoritative count of ALL signature batches in the full library
+  const totalSignatureCount = useMemo(() => {
+    if (typeof totalSignatureCountFromServer === "number") {
+      return totalSignatureCountFromServer;
+    }
+    // graceful fallback if metadata wasn’t provided
+    return getTotalSignatureCount(recipes);
+  }, [totalSignatureCountFromServer, recipes]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -178,9 +214,7 @@ export default function Recipes(props) {
         });
 
       if (q) {
-        list = list.filter((r) =>
-          (r.name || "").toLowerCase().includes(q)
-        );
+        list = list.filter((r) => (r.name || "").toLowerCase().includes(q));
       }
 
       // guests see the curated sampler list, up to the configured limit
@@ -269,31 +303,26 @@ export default function Recipes(props) {
 
   const canFavorite = normalizedUserId != null;
 
-  const totalOfficialCount = byTab.doberpop?.length || 0;
-
   // Show upsell for any guest browsing Signature Batches
   const shouldShowUpsell = !isAuthed && tab === "doberpop";
 
-  // Tabs visible for this user (guests only see Signature Batches)
-  const visibleTabs = isAuthed ? TABS : TABS.filter((t) => t.key === "doberpop");
+  // Tabs visible in the UI (none for guests – pill hidden)
+  const visibleTabs = isAuthed ? TABS : [];
 
   return (
     <div className="page recipes">
       <div className="page__header">
         <div>
           <h1 className="page__title">Batch Library</h1>
-          <p className="page__subtitle">
-            {isAuthed ? (
-              <>Browse the catalog — edit yours anytime.</>
-            ) : (
-              <>
-                Browse the catalog and sample a few of the signature batches.{" "}
-                Create a free account to unlock every recipe, save your own
-                batch ideas, and build your personal popcorn playbook. No spam.
-                Just tools for dialing in ridiculous popcorn.
-              </>
-            )}
-          </p>
+<p className="recipesUpsell__text">
+  You&apos;re looking at a limited sampler of Doberpop favorites. Create a free
+  account to unlock{" "}
+  <span className="page__subtitleHighlight">
+    all {totalSignatureCount}
+  </span>{" "}
+  signature recipes, explore the full library, and start building your own
+  popcorn experiments.
+</p>
         </div>
 
         {tab === "mine" && isAuthed && (
@@ -303,24 +332,14 @@ export default function Recipes(props) {
         )}
       </div>
 
-      {/* Main tabs */}
+      {/* Main tabs – guests see NO pills */}
       <div className="recipesTabs">
         {visibleTabs.map((t) => {
           let countDisplay;
 
           if (t.key === "doberpop") {
-            if (isAuthed) {
-              countDisplay = totalOfficialCount;
-            } else {
-              const visible = Math.min(
-                SAMPLE_RECIPE_LIMIT,
-                totalOfficialCount || 0
-              );
-              countDisplay =
-                totalOfficialCount > 0
-                  ? `${visible} / ${totalOfficialCount}`
-                  : "0";
-            }
+            // Signed-in users see total full-library signature batch count
+            countDisplay = isAuthed ? totalSignatureCount : null;
           } else {
             const baseList =
               t.key === "mine" ? byTab.mineAll : byTab[t.key] || [];
@@ -334,7 +353,7 @@ export default function Recipes(props) {
               onClick={() => setTab(t.key)}
               type="button"
             >
-              {t.label}{" "}
+              {t.label}
               <span className="recipesTab__count">{countDisplay}</span>
             </button>
           );
@@ -479,11 +498,14 @@ export default function Recipes(props) {
               <h3 className="recipesUpsell__title">
                 Unlock the full batch library
               </h3>
-              <p className="recipesUpsell__text">
-                You&apos;re seeing a sampler of Doberpop favorites. Create a
-                free account to unlock every recipe, save your own batch ideas,
-                and build your personal popcorn playbook.
-              </p>
+<p className="recipesUpsell__text">
+  Ready to go beyond the sampler? Create a free account to unlock{" "}
+  <span className="recipesUpsell__highlight">
+    all {totalSignatureCount}
+  </span>{" "}
+  signature recipes, access the full batch library, and turn ideas into
+  seriously good popcorn.
+</p>
 
               <div className="recipesUpsell__actions">
                 <Link

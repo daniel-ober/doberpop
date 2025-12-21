@@ -7,23 +7,32 @@ import RecipeDetails from "../pages/RecipeDetails/RecipeDetails";
 import RecipeCreate from "../pages/RecipeCreate/RecipeCreate";
 import RecipeEdit from "../pages/RecipeEdit/RecipeEdit";
 
-import { getAllRecipes, deleteRecipe } from "../services/recipes";
+import { getRecipesWithMeta, deleteRecipe } from "../services/recipes";
 
 // 🔥 bring in dedicated styling
 import "./MainContainer.css";
 
 function MainContainer({ currentUser }) {
   const [recipes, setRecipes] = useState([]);
+  const [totalSignatureCount, setTotalSignatureCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const { path } = useRouteMatch();
 
   const loadRecipes = async () => {
     try {
       setLoading(true);
-      const data = await getAllRecipes();
+
+      // NEW: fetch recipes + metadata from API
+      const { recipes: data, totalSignatureCount } = await getRecipesWithMeta();
+
       setRecipes(Array.isArray(data) ? data : []);
+
+      setTotalSignatureCount(
+        typeof totalSignatureCount === "number" ? totalSignatureCount : null
+      );
     } catch (e) {
       setRecipes([]);
+      setTotalSignatureCount(null);
     } finally {
       setLoading(false);
     }
@@ -54,6 +63,7 @@ function MainContainer({ currentUser }) {
             handleDelete={handleDelete}
             currentUser={currentUser}
             loading={loading}
+            totalSignatureCount={totalSignatureCount}
           />
         </Route>
 

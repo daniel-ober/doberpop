@@ -14,9 +14,23 @@ class Api::RecipesController < ApplicationController
   # Logged in   -> full library (all published + your own drafts).
   # Admin       -> everything.
   #
+  # If params[:sampler] is truthy, always return the public sampler
+  # lineup (official Doberpop + show_in_sampler = true), regardless
+  # of auth state. This is handy for homepage carousels, etc.
+  #
   def index
+    sampler_only = ActiveModel::Type::Boolean.new.cast(params[:sampler])
+
     base_scope =
-      if current_user&.admin?
+      if sampler_only
+        # Explicit sampler view
+        Recipe.where(
+          source: "doberpop",
+          published: true,
+          show_in_sampler: true
+        )
+
+      elsif current_user&.admin?
         # Admins can see everything
         Recipe.all
 
@@ -53,10 +67,23 @@ class Api::RecipesController < ApplicationController
                                 .count
     end
 
-    render json: recipes.map { |r|
-      r.as_json.merge(
-        favorites_count: favorite_counts[r.id] || 0
-      )
+    # ----- TOTAL SIGNATURE COUNT (full library, not just sampler) -----
+    #
+    # "Signature batches" = official Doberpop recipes (non-user-submitted)
+    # that are published. This intentionally ignores show_in_sampler so
+    # guests can see how many are in the full library they’d unlock.
+    total_signature_count = Recipe.where(
+      source: "doberpop",
+      published: true
+    ).count
+
+    render json: {
+      recipes: recipes.map { |r|
+        r.as_json.merge(
+          favorites_count: favorite_counts[r.id] || 0
+        )
+      },
+      total_signature_count: total_signature_count
     }
   rescue => e
     Rails.logger.error("[Api::RecipesController#index] #{e.class}: #{e.message}")
