@@ -71,7 +71,7 @@ export default function AdminDashboard() {
   // sampler toggle busy state
   const [samplerBusyIds, setSamplerBusyIds] = useState(() => new Set());
 
-  // ✅ used to tell SamplerLineup when to refetch
+  // used to tell SamplerLineup when to refetch
   const [samplerRefreshToken, setSamplerRefreshToken] = useState(0);
 
   useEffect(() => {
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
         show_in_sampler: next,
       });
 
-      // ✅ tell SamplerLineup to refetch
+      // tell SamplerLineup to refetch
       setSamplerRefreshToken((t) => t + 1);
     } catch (e) {
       console.error("Failed to update sampler flag", e);
@@ -287,285 +287,290 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="adminDashboard">
-      <h1>Admin Dashboard</h1>
+    <div className="adminDashboardPage">
+      <div className="adminDashboard">
+        <h1>Admin Dashboard</h1>
 
-      {actionError && (
-        <p className="adminError" style={{ marginTop: 0 }}>
-          {actionError}
-        </p>
-      )}
+        {actionError && (
+          <p className="adminError" style={{ marginTop: 0 }}>
+            {actionError}
+          </p>
+        )}
 
-      {/* USERS */}
-      <h2>Users</h2>
-      {loadingUsers ? (
-        <p className="adminLoading">Loading users…</p>
-      ) : usersError ? (
-        <p className="adminError">{usersError}</p>
-      ) : (
-        <table className="adminTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Admin</th>
-              <th>Created</th>
-              <th className="adminActionsCol">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usersRows.map((u) => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.username}</td>
-                <td>{u.email}</td>
-                <td>
-                  <span
-                    className={`adminBadge ${
-                      u.admin ? "adminBadge--yes" : "adminBadge--no"
-                    }`}
-                  >
-                    {u.admin ? "YES" : "no"}
-                  </span>
-                </td>
-                <td>{fmt(u.created_at || u.createdAt || u.inserted_at)}</td>
-                <td className="adminActionsCell">
-                  <button
-                    className="adminBtn adminBtn--danger"
-                    onClick={() => openDelete("user", u)}
-                    disabled={deleting}
-                    type="button"
-                    title="Delete user"
-                  >
-                    Delete
-                  </button>
-                </td>
+        {/* USERS */}
+        <h2>Users</h2>
+        {loadingUsers ? (
+          <p className="adminLoading">Loading users…</p>
+        ) : usersError ? (
+          <p className="adminError">{usersError}</p>
+        ) : (
+          <table className="adminTable adminTable--users">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Admin</th>
+                <th>Created</th>
+                <th className="adminActionsCol">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      {/* RECIPES */}
-      <div className="adminRecipesHeaderRow">
-        <h2>Recipes</h2>
-        <div className="adminSortRow">
-          <span className="adminSortLabel">Sort recipes by:</span>
-          <select
-            className="adminSortSelect"
-            value={recipeSort}
-            onChange={(e) => setRecipeSort(e.target.value)}
-          >
-            <option value="most_favorited">Most favorited</option>
-            <option value="least_favorited">Least favorited</option>
-            <option value="title_asc">Title A–Z</option>
-            <option value="title_desc">Title Z–A</option>
-            <option value="created_newest">Newest</option>
-            <option value="created_oldest">Oldest</option>
-          </select>
-        </div>
-      </div>
-
-      {loadingRecipes ? (
-        <p className="adminLoading">Loading recipes…</p>
-      ) : recipesError ? (
-        <p className="adminError">{recipesError}</p>
-      ) : (
-        <table className="adminTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Owner</th>
-              <th>Created</th>
-              <th className="adminSamplerCol">Sampler</th>
-              <th className="adminFavoritesCol">Favorites</th>
-              <th className="adminActionsCol">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedRecipeRows.map((r) => {
-              const favCount = getFavoritesCount(r);
-              const isTopFavorite = topFavoriteRecipeIds.has(r.id);
-
-              const ownerUsername =
-                r.user?.username ||
-                r.username ||
-                (typeof r.user_id !== "undefined" &&
-                  usersById.get(r.user_id)?.username) ||
-                r.user_id ||
-                "—";
-
-              const isSampler = !!r.show_in_sampler;
-              const samplerBusy = samplerBusyIds.has(r.id);
-
-              let favoritesCellContent;
-
-              if (favCount <= 0) {
-                favoritesCellContent = (
-                  <span className="adminFavoritesPlaceholder">--</span>
-                );
-              } else {
-                const pillClass = isTopFavorite
-                  ? "adminBadge adminBadge--favoriteTop"
-                  : "adminBadge adminBadge--favorite";
-
-                favoritesCellContent = (
-                  <button
-                    type="button"
-                    className={pillClass}
-                    onClick={() => openFavoritesModal(r)}
-                    title="Click to view users who favorited this recipe"
-                  >
-                    {favCount}
-                  </button>
-                );
-              }
-
-              return (
-                <tr key={r.id}>
-                  <td>{r.id}</td>
-                  <td>{r.title || r.name || "(untitled)"}</td>
-                  <td>{ownerUsername}</td>
-                  <td>{fmt(r.created_at || r.createdAt || r.inserted_at)}</td>
-                  <td className="adminSamplerCell">
-                    <button
-                      type="button"
-                      className={
-                        "adminSamplerToggle " +
-                        (isSampler
-                          ? "adminSamplerToggle--on"
-                          : "adminSamplerToggle--off")
-                      }
-                      onClick={() => handleToggleSampler(r)}
-                      disabled={samplerBusy}
-                      title={
-                        isSampler
-                          ? "Click to hide from guest sampler"
-                          : "Click to show in guest sampler"
-                      }
+            </thead>
+            <tbody>
+              {usersRows.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.username}</td>
+                  <td>{u.email}</td>
+                  <td>
+                    <span
+                      className={`adminBadge ${
+                        u.admin ? "adminBadge--yes" : "adminBadge--no"
+                      }`}
                     >
-                      {isSampler ? "Showing" : "Hidden"}
-                    </button>
+                      {u.admin ? "YES" : "no"}
+                    </span>
                   </td>
-                  <td className="adminFavoritesCell">
-                    {favoritesCellContent}
-                  </td>
+                  <td>{fmt(u.created_at || u.createdAt || u.inserted_at)}</td>
                   <td className="adminActionsCell">
                     <button
                       className="adminBtn adminBtn--danger"
-                      onClick={() => openDelete("recipe", r)}
+                      onClick={() => openDelete("user", u)}
                       disabled={deleting}
                       type="button"
-                      title="Delete recipe"
+                      title="Delete user"
                     >
                       Delete
                     </button>
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
+              ))}
+            </tbody>
+          </table>
+        )}
 
-      {/* ✅ Sampler lineup card listens to refreshToken */}
-      <SamplerLineup refreshToken={samplerRefreshToken} />
-
-      {/* CONFIRM DELETE MODAL */}
-      {confirm && (
-        <div className="adminModalOverlay" onMouseDown={closeDelete}>
-          <div
-            className="adminModal"
-            role="dialog"
-            aria-modal="true"
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            <div className="adminModal__title">Confirm delete</div>
-            <div className="adminModal__body">
-              <p>
-                Are you sure you want to delete{" "}
-                <strong>{confirm.label}</strong>?
-              </p>
-              <p className="adminModal__hint">This cannot be undone.</p>
-              {actionError && <p className="adminError">{actionError}</p>}
-            </div>
-
-            <div className="adminModal__actions">
-              <button
-                className="adminBtn"
-                onClick={closeDelete}
-                disabled={deleting}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                className="adminBtn adminBtn--danger"
-                onClick={doDelete}
-                disabled={deleting}
-                type="button"
-              >
-                {deleting ? "Deleting…" : "Yes, delete"}
-              </button>
-            </div>
+        {/* RECIPES */}
+        <div className="adminRecipesHeaderRow">
+          <h2>Recipes</h2>
+          <div className="adminSortRow">
+            <span className="adminSortLabel">Sort recipes by:</span>
+            <select
+              className="adminSortSelect"
+              value={recipeSort}
+              onChange={(e) => setRecipeSort(e.target.value)}
+            >
+              <option value="most_favorited">Most favorited</option>
+              <option value="least_favorited">Least favorited</option>
+              <option value="title_asc">Title A–Z</option>
+              <option value="title_desc">Title Z–A</option>
+              <option value="created_newest">Newest</option>
+              <option value="created_oldest">Oldest</option>
+            </select>
           </div>
         </div>
-      )}
 
-      {/* FAVORITES MODAL */}
-      {favoritesModalRecipe && (
-        <div className="adminModalOverlay" onMouseDown={closeFavoritesModal}>
-          <div
-            className="adminModal"
-            role="dialog"
-            aria-modal="true"
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            <div className="adminModal__title">
-              Favorited by{" "}
-              {favoritesModalRecipe.title ||
-                favoritesModalRecipe.name ||
-                "(untitled)"}
-            </div>
-            <div className="adminModal__body">
-              {favoritesModalUsers.length === 0 ? (
-                <p className="adminModal__hint">
-                  No users have favorited this recipe yet.
+        {loadingRecipes ? (
+          <p className="adminLoading">Loading recipes…</p>
+        ) : recipesError ? (
+          <p className="adminError">{recipesError}</p>
+        ) : (
+          <table className="adminTable adminTable--recipes">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Owner</th>
+                <th>Created</th>
+                <th className="adminSamplerCol">Sampler</th>
+                <th className="adminFavoritesCol">Favorites</th>
+                <th className="adminActionsCol">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedRecipeRows.map((r) => {
+                const favCount = getFavoritesCount(r);
+                const isTopFavorite = topFavoriteRecipeIds.has(r.id);
+
+                const ownerUsername =
+                  r.user?.username ||
+                  r.username ||
+                  (typeof r.user_id !== "undefined" &&
+                    usersById.get(r.user_id)?.username) ||
+                  r.user_id ||
+                  "—";
+
+                const isSampler = !!r.show_in_sampler;
+                const samplerBusy = samplerBusyIds.has(r.id);
+
+                let favoritesCellContent;
+
+                if (favCount <= 0) {
+                  favoritesCellContent = (
+                    <span className="adminFavoritesPlaceholder">--</span>
+                  );
+                } else {
+                  const pillClass = isTopFavorite
+                    ? "adminBadge adminBadge--favoriteTop"
+                    : "adminBadge adminBadge--favorite";
+
+                  favoritesCellContent = (
+                    <button
+                      type="button"
+                      className={pillClass}
+                      onClick={() => openFavoritesModal(r)}
+                      title="Click to view users who favorited this recipe"
+                    >
+                      {favCount}
+                    </button>
+                  );
+                }
+
+                return (
+                  <tr key={r.id}>
+                    <td>{r.id}</td>
+                    <td>{r.title || r.name || "(untitled)"}</td>
+                    <td>{ownerUsername}</td>
+                    <td>{fmt(r.created_at || r.createdAt || r.inserted_at)}</td>
+                    <td className="adminSamplerCell">
+                      <button
+                        type="button"
+                        className={
+                          "adminSamplerToggle " +
+                          (isSampler
+                            ? "adminSamplerToggle--on"
+                            : "adminSamplerToggle--off")
+                        }
+                        onClick={() => handleToggleSampler(r)}
+                        disabled={samplerBusy}
+                        title={
+                          isSampler
+                            ? "Click to hide from guest sampler"
+                            : "Click to show in guest sampler"
+                        }
+                      >
+                        {isSampler ? "Showing" : "Hidden"}
+                      </button>
+                    </td>
+                    <td className="adminFavoritesCell">
+                      {favoritesCellContent}
+                    </td>
+                    <td className="adminActionsCell">
+                      <button
+                        className="adminBtn adminBtn--danger"
+                        onClick={() => openDelete("recipe", r)}
+                        disabled={deleting}
+                        type="button"
+                        title="Delete recipe"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+
+        {/* Sampler lineup card listens to refreshToken */}
+        <SamplerLineup refreshToken={samplerRefreshToken} />
+
+        {/* CONFIRM DELETE MODAL */}
+        {confirm && (
+          <div className="adminModalOverlay" onMouseDown={closeDelete}>
+            <div
+              className="adminModal"
+              role="dialog"
+              aria-modal="true"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <div className="adminModal__title">Confirm delete</div>
+              <div className="adminModal__body">
+                <p>
+                  Are you sure you want to delete{" "}
+                  <strong>{confirm.label}</strong>?
                 </p>
-              ) : (
-                <ul className="adminModalList">
-                  {favoritesModalUsers.map((u, idx) => {
-                    const username =
-                      u.username || u.handle || u.name || u.email || String(u);
-                    const email =
-                      u.email && u.email !== username ? ` (${u.email})` : "";
-                    return (
-                      <li key={idx}>
-                        <span className="adminModalList__bullet">★</span>
-                        <span>
-                          {username}
-                          {email}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-            <div className="adminModal__actions">
-              <button
-                type="button"
-                className="adminBtn"
-                onClick={closeFavoritesModal}
-              >
-                Close
-              </button>
+                <p className="adminModal__hint">This cannot be undone.</p>
+                {actionError && <p className="adminError">{actionError}</p>}
+              </div>
+
+              <div className="adminModal__actions">
+                <button
+                  className="adminBtn"
+                  onClick={closeDelete}
+                  disabled={deleting}
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  className="adminBtn adminBtn--danger"
+                  onClick={doDelete}
+                  disabled={deleting}
+                  type="button"
+                >
+                  {deleting ? "Deleting…" : "Yes, delete"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* FAVORITES MODAL */}
+        {favoritesModalRecipe && (
+          <div
+            className="adminModalOverlay"
+            onMouseDown={closeFavoritesModal}
+          >
+            <div
+              className="adminModal"
+              role="dialog"
+              aria-modal="true"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <div className="adminModal__title">
+                Favorited by{" "}
+                {favoritesModalRecipe.title ||
+                  favoritesModalRecipe.name ||
+                  "(untitled)"}
+              </div>
+              <div className="adminModal__body">
+                {favoritesModalUsers.length === 0 ? (
+                  <p className="adminModal__hint">
+                    No users have favorited this recipe yet.
+                  </p>
+                ) : (
+                  <ul className="adminModalList">
+                    {favoritesModalUsers.map((u, idx) => {
+                      const username =
+                        u.username || u.handle || u.name || u.email || String(u);
+                      const email =
+                        u.email && u.email !== username ? ` (${u.email})` : "";
+                      return (
+                        <li key={idx}>
+                          <span className="adminModalList__bullet">★</span>
+                          <span>
+                            {username}
+                            {email}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+              <div className="adminModal__actions">
+                <button
+                  type="button"
+                  className="adminBtn"
+                  onClick={closeFavoritesModal}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

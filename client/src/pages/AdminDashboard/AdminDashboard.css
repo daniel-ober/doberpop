@@ -1,10 +1,20 @@
 /* client/src/pages/AdminDashboard/AdminDashboard.css */
 
+/* Outer shell just for /admin so we can clamp width + overflow */
+.adminDashboardPage {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* main panel */
 .adminDashboard {
   padding: 32px;
   color: #f5f5f5;
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .adminDashboard h1 {
@@ -23,28 +33,28 @@
 
 /* ---------- RECIPES HEADER / SORT ---------- */
 
-.adminRecipesHeaderRow {
+.adminDashboard .adminRecipesHeaderRow {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
 }
 
-.adminSortRow {
+.adminDashboard .adminSortRow {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
 }
 
-.adminSortLabel {
+.adminDashboard .adminSortLabel {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 11px;
   opacity: 0.8;
 }
 
-.adminSortSelect {
+.adminDashboard .adminSortSelect {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -57,7 +67,7 @@
 
 /* ---------- TABLE ---------- */
 
-.adminTable {
+.adminDashboard .adminTable {
   width: 100%;
   border-collapse: collapse;
   background: rgba(0, 0, 0, 0.55);
@@ -67,11 +77,11 @@
   margin-top: 10px;
 }
 
-.adminTable thead {
+.adminDashboard .adminTable thead {
   background: rgba(255, 255, 255, 0.08);
 }
 
-.adminTable th {
+.adminDashboard .adminTable th {
   text-align: left;
   padding: 10px 12px;
   font-size: 12px;
@@ -81,40 +91,40 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.adminTable td {
+.adminDashboard .adminTable td {
   padding: 10px 12px;
   font-size: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.adminTable tr:last-child td {
+.adminDashboard .adminTable tr:last-child td {
   border-bottom: none;
 }
 
-.adminTable tr:hover {
+.adminDashboard .adminTable tr:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.adminActionsCol {
+.adminDashboard .adminActionsCol {
   width: 120px;
 }
 
-.adminActionsCell {
+.adminDashboard .adminActionsCell {
   text-align: right;
 }
 
 /* ---------- SAMPLER COLUMN ---------- */
 
-.adminSamplerCol {
+.adminDashboard .adminSamplerCol {
   width: 130px;
   text-align: center;
 }
 
-.adminSamplerCell {
+.adminDashboard .adminSamplerCell {
   text-align: center;
 }
 
-.adminSamplerToggle {
+.adminDashboard .adminSamplerToggle {
   min-width: 90px;
   padding: 4px 10px;
   border-radius: 999px;
@@ -132,61 +142,60 @@
     box-shadow 0.15s ease;
 }
 
-.adminSamplerToggle--on {
+.adminDashboard .adminSamplerToggle--on {
   background: rgba(255, 215, 128, 0.18);
   border-color: rgba(255, 215, 128, 0.6);
   color: #ffd780;
   box-shadow: 0 0 0 1px rgba(255, 215, 128, 0.3);
 }
 
-.adminSamplerToggle--off {
+.adminDashboard .adminSamplerToggle--off {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.18);
   color: #bbbbbb;
 }
 
-/* “Unsaved change” highlight when local state is dirty */
-.adminSamplerToggle--dirty {
+.adminDashboard .adminSamplerToggle--dirty {
   box-shadow: 0 0 0 2px rgba(160, 214, 255, 0.55);
   border-color: rgba(160, 214, 255, 0.9);
 }
 
-.adminSamplerToggle:hover:not(:disabled) {
+.adminDashboard .adminSamplerToggle:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.adminSamplerToggle--on:hover:not(:disabled) {
+.adminDashboard .adminSamplerToggle--on:hover:not(:disabled) {
   background: rgba(255, 215, 128, 0.25);
 }
 
-.adminSamplerToggle:active:not(:disabled) {
+.adminDashboard .adminSamplerToggle:active:not(:disabled) {
   transform: translateY(1px);
 }
 
-.adminSamplerToggle:disabled {
+.adminDashboard .adminSamplerToggle:disabled {
   opacity: 0.55;
   cursor: default;
 }
 
 /* ---------- FAVORITES COLUMN ---------- */
 
-.adminFavoritesCol {
+.adminDashboard .adminFavoritesCol {
   width: 110px;
   text-align: center;
 }
 
-.adminFavoritesCell {
+.adminDashboard .adminFavoritesCell {
   text-align: center;
 }
 
-.adminFavoritesPlaceholder {
+.adminDashboard .adminFavoritesPlaceholder {
   font-size: 13px;
   opacity: 0.6;
 }
 
 /* ---------- BADGES ---------- */
 
-.adminBadge {
+.adminDashboard .adminBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -198,17 +207,17 @@
   border: 1px solid transparent;
 }
 
-.adminBadge--yes {
+.adminDashboard .adminBadge--yes {
   background: rgba(46, 204, 113, 0.2);
   color: #2ecc71;
 }
 
-.adminBadge--no {
+.adminDashboard .adminBadge--no {
   background: rgba(255, 255, 255, 0.12);
   color: #bbb;
 }
 
-.adminBadge--favorite {
+.adminDashboard .adminBadge--favorite {
   background: rgba(255, 215, 128, 0.12);
   color: #ffd780;
   border-color: rgba(255, 215, 128, 0.45);
@@ -220,18 +229,18 @@
     box-shadow 0.15s ease;
 }
 
-.adminBadge--favorite:hover {
+.adminDashboard .adminBadge--favorite:hover {
   background: rgba(255, 215, 128, 0.22);
   box-shadow: 0 0 0 1px rgba(255, 215, 128, 0.3);
 }
 
-.adminBadge--favorite:active {
+.adminDashboard .adminBadge--favorite:active {
   transform: translateY(1px);
 }
 
 /* Top 3 most-favorited recipes – green pill */
 
-.adminBadge--favoriteTop {
+.adminDashboard .adminBadge--favoriteTop {
   background: rgba(46, 204, 113, 0.18);
   color: #2ecc71;
   border-color: rgba(46, 204, 113, 0.45);
@@ -243,18 +252,18 @@
     box-shadow 0.15s ease;
 }
 
-.adminBadge--favoriteTop:hover {
+.adminDashboard .adminBadge--favoriteTop:hover {
   background: rgba(46, 204, 113, 0.28);
   box-shadow: 0 0 0 1px rgba(46, 204, 113, 0.4);
 }
 
-.adminBadge--favoriteTop:active {
+.adminDashboard .adminBadge--favoriteTop:active {
   transform: translateY(1px);
 }
 
 /* ---------- BUTTONS ---------- */
 
-.adminBtn {
+.adminDashboard .adminBtn {
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
@@ -269,44 +278,44 @@
     transform 0.05s ease;
 }
 
-.adminBtn:hover {
+.adminDashboard .adminBtn:hover {
   background: rgba(255, 255, 255, 0.12);
 }
 
-.adminBtn:active {
+.adminDashboard .adminBtn:active {
   transform: translateY(1px);
 }
 
-.adminBtn:disabled {
+.adminDashboard .adminBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.adminBtn--danger {
+.adminDashboard .adminBtn--danger {
   border-color: rgba(231, 76, 60, 0.5);
   background: rgba(231, 76, 60, 0.12);
   color: #ffb3ab;
 }
 
-.adminBtn--danger:hover {
+.adminDashboard .adminBtn--danger:hover {
   background: rgba(231, 76, 60, 0.22);
 }
 
 /* ---------- ERROR / LOADING ---------- */
 
-.adminError {
+.adminDashboard .adminError {
   color: #ff7676;
   margin-top: 8px;
 }
 
-.adminLoading {
+.adminDashboard .adminLoading {
   opacity: 0.8;
   font-style: italic;
 }
 
 /* ---------- MODAL ---------- */
 
-.adminModalOverlay {
+.adminDashboard .adminModalOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.65);
@@ -317,7 +326,7 @@
   z-index: 999;
 }
 
-.adminModal {
+.adminDashboard .adminModal {
   background: rgba(15, 15, 15, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -326,24 +335,24 @@
   padding: 20px;
 }
 
-.adminModal__title {
+.adminDashboard .adminModal__title {
   font-size: 18px;
   margin-bottom: 12px;
   letter-spacing: 0.04em;
 }
 
-.adminModal__body {
+.adminDashboard .adminModal__body {
   font-size: 14px;
   line-height: 1.5;
 }
 
-.adminModal__hint {
+.adminDashboard .adminModal__hint {
   margin-top: 6px;
   font-size: 12px;
   opacity: 0.75;
 }
 
-.adminModal__actions {
+.adminDashboard .adminModal__actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -352,52 +361,142 @@
 
 /* favorites list inside modal */
 
-.adminModalList {
+.adminDashboard .adminModalList {
   list-style: none;
   padding: 0;
   margin: 6px 0 0;
 }
 
-.adminModalList li {
+.adminDashboard .adminModalList li {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 2px 0;
 }
 
-.adminModalList__bullet {
+.adminDashboard .adminModalList__bullet {
   color: #ffd780;
   font-size: 11px;
 }
 
-/* ---------- RESPONSIVE ---------- */
+/* ============================
+   RESPONSIVE
+   ============================ */
 
 @media (max-width: 768px) {
-  .adminDashboard {
-    padding: 20px;
+  .adminDashboardPage {
+    padding: 0 0 40px;
   }
 
-  .adminRecipesHeaderRow {
+  .adminDashboard {
+    padding: 16px 12px 40px;
+    max-width: 100%;
+  }
+
+  .adminDashboard h1 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .adminDashboard h2 {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .adminDashboard .adminRecipesHeaderRow {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 0.5rem;
   }
 
-  .adminSortRow {
-    font-size: 12px;
+  .adminDashboard .adminSortRow {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 0.8rem;
   }
 
-  .adminSortLabel {
-    font-size: 10px;
+  .adminDashboard .adminSortLabel {
+    font-size: 0.65rem;
   }
 
-  .adminTable th,
-  .adminTable td {
-    font-size: 13px;
-    padding: 8px;
+  .adminDashboard .adminSortSelect {
+    width: 52%;
+    font-size: 0.8rem;
+    padding: 6px 8px;
   }
 
-  .adminActionsCol {
+  /* Tables: allow wrapping, hide ID + Created, no horizontal scroll */
+  .adminDashboard .adminTable {
+    width: 100%;
+    table-layout: auto;
+    font-size: 0.8rem;
+  }
+
+  .adminDashboard .adminTable th,
+  .adminDashboard .adminTable td {
+    padding: 6px 4px;
+    font-size: 0.75rem;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  /* Hide ID + Created columns for both tables */
+  .adminDashboard .adminTable th:nth-child(1),
+  .adminDashboard .adminTable td:nth-child(1),
+  .adminDashboard .adminTable th:nth-child(4),
+  .adminDashboard .adminTable td:nth-child(4) {
+    display: none;
+  }
+
+  .adminDashboard .adminActionsCol {
     width: 90px;
+  }
+
+  .adminDashboard .adminSamplerCol,
+  .adminDashboard .adminFavoritesCol {
+    width: auto;
+  }
+
+  .adminDashboard .adminSamplerToggle {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .adminDashboard .adminBtn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .adminDashboard .adminBadge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+
+  /* Modals: edge-to-edge feel on phones */
+  .adminDashboard .adminModal {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 16px 14px;
+  }
+
+  .adminDashboard .adminModal__title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .adminDashboard .adminModal__body {
+    font-size: 0.85rem;
+  }
+
+  .adminDashboard .adminModal__actions {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .adminDashboard .adminModalList {
+    max-height: 220px;
+    overflow-y: auto;
   }
 }
