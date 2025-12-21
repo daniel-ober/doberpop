@@ -3,11 +3,10 @@ Rails.application.routes.draw do
   # ============================
   # AUTH (JWT)
   # ============================
-  post  "/auth/login",   to: "authentication#login"
-post  "/auth/register", to: "authentication#register"
-get   "/auth/verify",  to: "authentication#verify"
-patch "/auth/account", to: "authentication#update_account"
-
+  post  "/auth/login",    to: "authentication#login"
+  post  "/auth/register", to: "authentication#register"
+  get   "/auth/verify",   to: "authentication#verify"
+  patch "/auth/account",  to: "authentication#update_account"
 
   # ============================
   # ADMIN HTML (Doberpop admin panel)
@@ -56,8 +55,15 @@ patch "/auth/account", to: "authentication#update_account"
     # ADMIN API (JWT protected)
     # ----------------------------
     namespace :admin do
-      resources :users,   only: [:index, :destroy]
-      resources :recipes, only: [:index, :update, :destroy]
+      resources :users, only: [:index, :destroy]
+
+      resources :recipes, only: [:index, :update, :destroy] do
+        collection do
+          # Sampler lineup admin-only routes
+          get   :sampler_lineup    # GET  /api/admin/recipes/sampler_lineup
+          patch :sampler_order     # PATCH /api/admin/recipes/sampler_order
+        end
+      end
     end
   end
 end

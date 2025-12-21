@@ -18,7 +18,7 @@ const TABS = [
 ];
 
 // how many official recipes a logged-out user can preview in the sampler
-const SAMPLE_RECIPE_LIMIT = 3;
+const SAMPLE_RECIPE_LIMIT = 20;
 
 export default function Recipes(props) {
   const { recipes = [], handleDelete, currentUser } = props;
@@ -159,6 +159,38 @@ export default function Recipes(props) {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+
+    // -------------------------------------------------------
+    // GUESTS on "Signature Batches" tab:
+    // Use the admin-defined sampler lineup order
+    // (show_in_sampler + sampler_position), capped by
+    // SAMPLE_RECIPE_LIMIT.
+    // -------------------------------------------------------
+    if (!isAuthed && tab === "doberpop") {
+      let list = (byTab.doberpop || [])
+        .filter((r) => r.show_in_sampler)
+        .sort((a, b) => {
+          const aPos =
+            typeof a.sampler_position === "number" ? a.sampler_position : 0;
+          const bPos =
+            typeof b.sampler_position === "number" ? b.sampler_position : 0;
+          return aPos - bPos;
+        });
+
+      if (q) {
+        list = list.filter((r) =>
+          (r.name || "").toLowerCase().includes(q)
+        );
+      }
+
+      // guests see the curated sampler list, up to the configured limit
+      return list.slice(0, SAMPLE_RECIPE_LIMIT);
+    }
+
+    // -------------------------------------------------------
+    // EVERY OTHER CASE:
+    // Keep your existing sort + filter behavior
+    // -------------------------------------------------------
     let baseList;
 
     if (tab === "mine") {
@@ -214,25 +246,6 @@ export default function Recipes(props) {
       default:
         list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
         break;
-    }
-
-    // Free sampler: logged-out users only see the top 3 official batches.
-    // Admin-selected sampler recipes (show_in_sampler / sampler_featured)
-    // float to the front, then we fall back to the rest.
-    if (!isAuthed && tab === "doberpop") {
-      const allOfficial = byTab.doberpop || [];
-
-      const isSamplerFeatured = (r) =>
-        r?.show_in_sampler === true || r?.sampler_featured === true;
-
-      const featuredIds = new Set(
-        allOfficial.filter(isSamplerFeatured).map((r) => r.id)
-      );
-
-      const featured = list.filter((r) => featuredIds.has(r.id));
-      const nonFeatured = list.filter((r) => !featuredIds.has(r.id));
-
-      return [...featured, ...nonFeatured].slice(0, SAMPLE_RECIPE_LIMIT);
     }
 
     return list;

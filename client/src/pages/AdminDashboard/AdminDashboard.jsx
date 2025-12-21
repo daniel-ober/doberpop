@@ -8,6 +8,7 @@ import {
 } from "../../services/admin";
 import api from "../../services/api-config";
 import "./AdminDashboard.css";
+import SamplerLineup from "./SamplerLineup";
 
 function getCreatedAt(row) {
   const raw = row?.created_at || row?.createdAt || row?.inserted_at;
@@ -69,6 +70,9 @@ export default function AdminDashboard() {
 
   // sampler toggle busy state
   const [samplerBusyIds, setSamplerBusyIds] = useState(() => new Set());
+
+  // ✅ used to tell SamplerLineup when to refetch
+  const [samplerRefreshToken, setSamplerRefreshToken] = useState(0);
 
   useEffect(() => {
     let alive = true;
@@ -257,6 +261,9 @@ export default function AdminDashboard() {
       await api.patch(`/api/admin/recipes/${id}`, {
         show_in_sampler: next,
       });
+
+      // ✅ tell SamplerLineup to refetch
+      setSamplerRefreshToken((t) => t + 1);
     } catch (e) {
       console.error("Failed to update sampler flag", e);
       // rollback on error
@@ -462,6 +469,9 @@ export default function AdminDashboard() {
           </tbody>
         </table>
       )}
+
+      {/* ✅ Sampler lineup card listens to refreshToken */}
+      <SamplerLineup refreshToken={samplerRefreshToken} />
 
       {/* CONFIRM DELETE MODAL */}
       {confirm && (
