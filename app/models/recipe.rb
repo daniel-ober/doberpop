@@ -16,3 +16,10 @@ class Recipe < ApplicationRecord
       .map { |u| { id: u.id, username: u.username, email: u.email } }
   end
 end
+
+def as_json(options = {})
+  super(options).merge(
+    show_in_sampler: show_in_sampler == true,
+    sampler_position: sampler_position
+  )
+end

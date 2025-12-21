@@ -1,5 +1,5 @@
 // client/src/pages/Recipes/Recipes.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../components/Modal/Modal";
 import RecipeCard from "../../components/RecipeCard/RecipeCard";
@@ -17,15 +17,23 @@ const TABS = [
   { key: "favorites", label: "Batch Favorites" },
 ];
 
-// how many official recipes a logged-out user can preview
-const FREE_RECIPE_LIMIT = 4;
+// how many official recipes a logged-out user can preview in the sampler
+const SAMPLE_RECIPE_LIMIT = 3;
 
 export default function Recipes(props) {
+  const { recipes = [], handleDelete, currentUser } = props;
+
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("az");
+
+  // default sort:
+  // - signed in  -> most_favorited
+  // - guest      -> A → Z
+  const initialSort = currentUser ? "most_favorited" : "az";
+  const [sort, setSort] = useState(initialSort);
+
   const [tab, setTab] = useState("doberpop");
 
   const [favoriteIds, setFavoriteIds] = useState(() => new Set());
@@ -35,11 +43,23 @@ export default function Recipes(props) {
   // all | private | community
   const [mineFilter, setMineFilter] = useState("all");
 
-  const { recipes = [], handleDelete, currentUser } = props;
-
   // derive a normalized user id once
   const normalizedUserId = currentUser?.id ?? currentUser?.user_id ?? null;
   const isAuthed = normalizedUserId != null;
+
+  // --- loading UX guard so we don't flash "No recipes" while the first fetch runs ---
+  const [hasLoadedRecipes, setHasLoadedRecipes] = useState(false);
+  const firstRenderRef = useRef(true);
+
+  useEffect(() => {
+    // Skip the very first render (before the fetch resolves)
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      return;
+    }
+    // Any subsequent change to `recipes` means the fetch completed
+    setHasLoadedRecipes(true);
+  }, [recipes]);
 
   useEffect(() => {
     let alive = true;
@@ -113,7 +133,7 @@ export default function Recipes(props) {
   };
 
   const byTab = useMemo(() => {
-    // All official Doberpop recipes that are *visible* in the library
+    // All official Doberpop recipes (public only)
     const doberpop = recipes.filter(
       (r) => r.source === "doberpop" && r.published === true
     );
@@ -136,13 +156,6 @@ export default function Recipes(props) {
 
     return { doberpop, mineAll, community, favorites };
   }, [recipes, normalizedUserId, favoriteIds]);
-
-  // TOTAL number of signature batches in the DB
-  // (all Doberpop recipes, regardless of published flag)
-  const totalSignatureCount = useMemo(
-    () => recipes.filter((r) => r.source === "doberpop").length,
-    [recipes]
-  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -178,21 +191,48 @@ export default function Recipes(props) {
       case "za":
         list.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
         break;
+
       case "newest":
         list.sort((a, b) => getTime(b) - getTime(a));
         break;
+
       case "oldest":
         list.sort((a, b) => getTime(a) - getTime(b));
         break;
+
+      case "most_favorited": {
+        list.sort((a, b) => {
+          const af = a.favorites_count || 0;
+          const bf = b.favorites_count || 0;
+          if (bf !== af) return bf - af; // higher favorites first
+          return (a.name || "").localeCompare(b.name || "");
+        });
+        break;
+      }
+
       case "az":
       default:
         list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
         break;
     }
 
-    // Free sampler: logged-out users only see the first few official batches
+    // Free sampler: logged-out users only see the top 3 official batches.
+    // Admin-selected sampler recipes (show_in_sampler / sampler_featured)
+    // float to the front, then we fall back to the rest.
     if (!isAuthed && tab === "doberpop") {
-      return list.slice(0, FREE_RECIPE_LIMIT);
+      const allOfficial = byTab.doberpop || [];
+
+      const isSamplerFeatured = (r) =>
+        r?.show_in_sampler === true || r?.sampler_featured === true;
+
+      const featuredIds = new Set(
+        allOfficial.filter(isSamplerFeatured).map((r) => r.id)
+      );
+
+      const featured = list.filter((r) => featuredIds.has(r.id));
+      const nonFeatured = list.filter((r) => !featuredIds.has(r.id));
+
+      return [...featured, ...nonFeatured].slice(0, SAMPLE_RECIPE_LIMIT);
     }
 
     return list;
@@ -216,8 +256,7 @@ export default function Recipes(props) {
 
   const canFavorite = normalizedUserId != null;
 
-  // How many signature batches are actually visible in the current dataset
-  const visibleSignatureCount = byTab.doberpop?.length || 0;
+  const totalOfficialCount = byTab.doberpop?.length || 0;
 
   // Show upsell for any guest browsing Signature Batches
   const shouldShowUpsell = !isAuthed && tab === "doberpop";
@@ -235,15 +274,7 @@ export default function Recipes(props) {
               <>Browse the catalog — edit yours anytime.</>
             ) : (
               <>
-                Browse the catalog and sample a few of the signature batches.
-                {" "}
-                {totalSignatureCount > 0 && (
-                  <>
-                    You&apos;re currently seeing{" "}
-                    {Math.min(FREE_RECIPE_LIMIT, visibleSignatureCount)} of{" "}
-                    {totalSignatureCount} signature batches.
-                  </>
-                )}{" "}
+                Browse the catalog and sample a few of the signature batches.{" "}
                 Create a free account to unlock every recipe, save your own
                 batch ideas, and build your personal popcorn playbook. No spam.
                 Just tools for dialing in ridiculous popcorn.
@@ -266,18 +297,16 @@ export default function Recipes(props) {
 
           if (t.key === "doberpop") {
             if (isAuthed) {
-              // signed-in users see the full official count
-              countDisplay = totalSignatureCount;
+              countDisplay = totalOfficialCount;
             } else {
-              // guests see "4 / 23" style count
               const visible = Math.min(
-                FREE_RECIPE_LIMIT,
-                visibleSignatureCount || 0
+                SAMPLE_RECIPE_LIMIT,
+                totalOfficialCount || 0
               );
-              const total =
-                totalSignatureCount > 0 ? totalSignatureCount : visible;
               countDisplay =
-                total > 0 ? `${visible} / ${total}` : "0";
+                totalOfficialCount > 0
+                  ? `${visible} / ${totalOfficialCount}`
+                  : "0";
             }
           } else {
             const baseList =
@@ -347,6 +376,7 @@ export default function Recipes(props) {
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sort recipes"
           >
+            <option value="most_favorited">Sort: Most favorited</option>
             <option value="az">Sort: A → Z</option>
             <option value="za">Sort: Z → A</option>
             <option value="newest">Sort: Newest</option>
@@ -355,7 +385,13 @@ export default function Recipes(props) {
         </div>
       )}
 
-      {filtered.length === 0 ? (
+      {/* MAIN CONTENT: loading → empty → grid */}
+      {!hasLoadedRecipes ? (
+        <div className="recipesLoading">
+          <div className="recipesLoading__spinner" />
+          <div className="recipesLoading__text">Loading batches…</div>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="empty">
           <div className="empty__title">{emptyTitle}</div>
           <div className="empty__text">{emptyText}</div>

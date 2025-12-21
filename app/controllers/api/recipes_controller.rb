@@ -10,31 +10,54 @@ class Api::RecipesController < ApplicationController
   # GET /api/recipes
   # =========================
   #
-  # Logged out  -> return a *sampler* of official Doberpop recipes.
-  # Logged in   -> return full library (all published + your own drafts).
-  # Admin       -> return everything.
+  # Logged out  -> ONLY sampler-flagged official Doberpop recipes
+  # Logged in   -> full library (all published + your own drafts).
+  # Admin       -> everything.
   #
   def index
-    recipes =
+    base_scope =
       if current_user&.admin?
         # Admins can see everything
-        Recipe.order(:id)
+        Recipe.all
+
       elsif current_user.present?
         # Signed-in users:
         # - all published recipes (official + community)
         # - plus any recipe they own (even if unpublished)
         published = Recipe.where(published: true)
         mine      = Recipe.where(user_id: current_user.id)
+        published.or(mine)
 
-        published.or(mine).order(:id)
       else
-        # Guests: sampler mode – only a few official Doberpop batches
-        Recipe.where(source: "doberpop", published: true)
-              .order(:id)
-              .limit(4)  # 👈 adjust to 3–5 as you like
+        # Guests:
+        # Only official Doberpop recipes that are explicitly flagged
+        # for the public sampler (show_in_sampler = true).
+        Recipe.where(
+          source: "doberpop",
+          published: true,
+          show_in_sampler: true
+        )
       end
 
-    render json: recipes
+    # default ordering by ID (stable base ordering)
+    recipes = base_scope.order(:id)
+
+    # ----- favorites count per recipe (for "Most favorited" sort) -----
+    recipe_ids = recipes.pluck(:id)
+    favorite_counts = {}
+
+    if defined?(Favorite) && recipe_ids.any?
+      # { recipe_id => count }
+      favorite_counts = Favorite.where(recipe_id: recipe_ids)
+                                .group(:recipe_id)
+                                .count
+    end
+
+    render json: recipes.map { |r|
+      r.as_json.merge(
+        favorites_count: favorite_counts[r.id] || 0
+      )
+    }
   rescue => e
     Rails.logger.error("[Api::RecipesController#index] #{e.class}: #{e.message}")
     render json: { status: 500, error: "Internal Server Error" }, status: :internal_server_error
@@ -125,7 +148,10 @@ class Api::RecipesController < ApplicationController
       :additional_photo_urls,
       :published,
       :source,
-      :user_id
+      :user_id,
+      # 👇 sampler fields
+      :show_in_sampler,
+      :sampler_position
     )
   end
 end

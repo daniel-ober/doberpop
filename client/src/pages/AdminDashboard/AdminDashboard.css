@@ -103,7 +103,72 @@
   text-align: right;
 }
 
-/* favorites column */
+/* ---------- SAMPLER COLUMN ---------- */
+
+.adminSamplerCol {
+  width: 130px;
+  text-align: center;
+}
+
+.adminSamplerCell {
+  text-align: center;
+}
+
+.adminSamplerToggle {
+  min-width: 90px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.5);
+  color: #dddddd;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.adminSamplerToggle--on {
+  background: rgba(255, 215, 128, 0.18);
+  border-color: rgba(255, 215, 128, 0.6);
+  color: #ffd780;
+  box-shadow: 0 0 0 1px rgba(255, 215, 128, 0.3);
+}
+
+.adminSamplerToggle--off {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #bbbbbb;
+}
+
+/* “Unsaved change” highlight when local state is dirty */
+.adminSamplerToggle--dirty {
+  box-shadow: 0 0 0 2px rgba(160, 214, 255, 0.55);
+  border-color: rgba(160, 214, 255, 0.9);
+}
+
+.adminSamplerToggle:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.adminSamplerToggle--on:hover:not(:disabled) {
+  background: rgba(255, 215, 128, 0.25);
+}
+
+.adminSamplerToggle:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.adminSamplerToggle:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------- FAVORITES COLUMN ---------- */
 
 .adminFavoritesCol {
   width: 110px;
@@ -149,7 +214,9 @@
   border-color: rgba(255, 215, 128, 0.45);
   min-width: 32px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease,
+  transition:
+    background 0.15s ease,
+    transform 0.05s ease,
     box-shadow 0.15s ease;
 }
 
@@ -170,7 +237,9 @@
   border-color: rgba(46, 204, 113, 0.45);
   min-width: 32px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease,
+  transition:
+    background 0.15s ease,
+    transform 0.05s ease,
     box-shadow 0.15s ease;
 }
 
@@ -194,7 +263,9 @@
   font-size: 12px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease,
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
     transform 0.05s ease;
 }
 

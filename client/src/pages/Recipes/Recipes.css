@@ -255,6 +255,38 @@
   color: rgba(255, 255, 255, 0.56);
 }
 
+.recipesLoading {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.9;
+}
+
+.recipesLoading__spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #ffd780;
+  animation: recipes-spinner 0.75s linear infinite;
+}
+
+.recipesLoading__text {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+@keyframes recipes-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* =========================================================
    MOBILE POLISH
    ========================================================= */

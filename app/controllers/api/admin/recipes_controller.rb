@@ -56,6 +56,20 @@ class Api::Admin::RecipesController < Api::Admin::BaseController
     }
   end
 
+  # PATCH/PUT /api/admin/recipes/:id
+  # Used by the admin dashboard “Showing / Hidden” sampler toggle.
+  def update
+    recipe = Recipe.find(params[:id])
+
+    if recipe.update(admin_recipe_params)
+      render json: recipe.as_json
+    else
+      render json: { error: recipe.errors.full_messages }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Recipe not found" }, status: :not_found
+  end
+
   # DELETE /api/admin/recipes/:id
   def destroy
     recipe = Recipe.find(params[:id])
@@ -63,5 +77,12 @@ class Api::Admin::RecipesController < Api::Admin::BaseController
     head :no_content
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Recipe not found" }, status: :not_found
+  end
+
+  private
+
+  # Only allow sampler-related fields to be changed via the admin API.
+  def admin_recipe_params
+    params.permit(:show_in_sampler, :sampler_position)
   end
 end
