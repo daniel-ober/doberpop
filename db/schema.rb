@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_21_095122) do
+ActiveRecord::Schema.define(version: 2025_12_21_131551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 2025_12_21_095122) do
     t.boolean "published", default: false, null: false
     t.boolean "show_in_sampler"
     t.integer "sampler_position"
+    t.text "tools_and_supplies"
     t.index ["published"], name: "index_recipes_on_published"
     t.index ["source"], name: "index_recipes_on_source"
     t.index ["user_id"], name: "index_recipes_on_user_id"

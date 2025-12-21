@@ -159,6 +159,27 @@ function getToolsForRecipe(name) {
   return TOOLS_MAP[name] || BASE_POPCORN_TOOLS;
 }
 
+function deriveToolsList(recipe) {
+  if (!recipe) return [];
+
+  // Prefer the DB-backed text column
+  const raw =
+    recipe.tools_and_supplies ??
+    recipe.toolsAndSupplies ??
+    recipe.tools_text ??
+    null;
+
+  if (typeof raw === "string" && raw.trim().length > 0) {
+    return raw
+      .split(/\r?\n/)          // split on line breaks
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+  }
+
+  // Fallback to the old hard-coded map if nothing is stored
+  return getToolsForRecipe(recipe.name);
+}
+
 /* =========================================================
    COMPONENT
    ========================================================= */
@@ -295,10 +316,7 @@ export default function RecipeDetails({ currentUser }) {
   }, [recipe]);
 
   // --- TOOLS LIST ------------------------------------------------------------
-  const toolsList = useMemo(
-    () => getToolsForRecipe(recipe?.name),
-    [recipe?.name]
-  );
+  const toolsList = useMemo(() => deriveToolsList(recipe), [recipe]);
 
   const handleShare = async () => {
     if (navigator.share) {

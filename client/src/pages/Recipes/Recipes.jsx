@@ -313,15 +313,27 @@ export default function Recipes(props) {
       <div className="page__header">
         <div>
           <h1 className="page__title">Batch Library</h1>
-          <p className="recipesUpsell__text">
-            You&apos;re looking at a limited sampler of Doberpop favorites.
-            Create a free account to unlock{" "}
-            <span className="page__subtitleHighlight">
-              all {totalSignatureCount}
-            </span>{" "}
-            signature recipes, explore the full library, and start building your
-            own popcorn experiments.
-          </p>
+
+          {/* Header copy now depends on auth status */}
+          {!isAuthed ? (
+            <p className="recipesUpsell__text">
+              You&apos;re looking at a limited sampler of Doberpop favorites.
+              Create a free account to unlock{" "}
+              <span className="page__subtitleHighlight">
+                all {totalSignatureCount}
+              </span>{" "}
+              signature recipes, explore the full library, and start building
+              your own popcorn experiments.
+            </p>
+          ) : (
+            <p className="recipesUpsell__text">
+              Welcome back to the batch library. You have access to{" "}
+              <span className="page__subtitleHighlight">
+                all {totalSignatureCount}
+              </span>{" "}
+              signature recipes, plus your own batch ideas and favorites.
+            </p>
+          )}
         </div>
 
         {tab === "mine" && isAuthed && (
