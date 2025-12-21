@@ -8,7 +8,7 @@ import "./RecipeCard.css";
  */
 import baconCheddarBg from "../../assets/images/flavors/Bacon & Cheddar/bg.png";
 import birthdayCakeBg from "../../assets/images/flavors/Birthday Cake/bg.png";
-import blastOffCheddaNRanchBg from "../../assets/images/flavors/Blast Off Chedda N Ranch/bg.png";
+import blastOffCheddaNRanchBg from "../../assets/images/flavors/Blast-Off Chedda N Ranch/bg.png";
 import breakfastOfChampionsBg from "../../assets/images/flavors/Breakfast of Champions/bg.png";
 import buffaloRanchBg from "../../assets/images/flavors/Buffalo Ranch/bg.png";
 import chicagoStyleBg from "../../assets/images/flavors/Chicago Style/bg.png";
@@ -39,8 +39,6 @@ const CARD_BACKGROUNDS = {
   "Bacon & Cheddar": baconCheddarBg,
   "Birthday Cake": birthdayCakeBg,
   "Blast-Off Chedda n Ranch": blastOffCheddaNRanchBg,
-  "Blast Off Chedda N Ranch": blastOffCheddaNRanchBg, // safety alias
-
   "Breakfast of Champions": breakfastOfChampionsBg,
   "Buffalo Ranch": buffaloRanchBg,
   "Chicago Style": chicagoStyleBg,
