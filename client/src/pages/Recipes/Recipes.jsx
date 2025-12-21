@@ -37,7 +37,6 @@ export default function Recipes(props) {
     recipes = [],
     handleDelete,
     currentUser,
-    loading,
     totalSignatureCount: totalSignatureCountFromServer,
   } = props;
 
@@ -314,15 +313,15 @@ export default function Recipes(props) {
       <div className="page__header">
         <div>
           <h1 className="page__title">Batch Library</h1>
-<p className="recipesUpsell__text">
-  You&apos;re looking at a limited sampler of Doberpop favorites. Create a free
-  account to unlock{" "}
-  <span className="page__subtitleHighlight">
-    all {totalSignatureCount}
-  </span>{" "}
-  signature recipes, explore the full library, and start building your own
-  popcorn experiments.
-</p>
+          <p className="recipesUpsell__text">
+            You&apos;re looking at a limited sampler of Doberpop favorites.
+            Create a free account to unlock{" "}
+            <span className="page__subtitleHighlight">
+              all {totalSignatureCount}
+            </span>{" "}
+            signature recipes, explore the full library, and start building your
+            own popcorn experiments.
+          </p>
         </div>
 
         {tab === "mine" && isAuthed && (
@@ -498,14 +497,14 @@ export default function Recipes(props) {
               <h3 className="recipesUpsell__title">
                 Unlock the full batch library
               </h3>
-<p className="recipesUpsell__text">
-  Ready to go beyond the sampler? Create a free account to unlock{" "}
-  <span className="recipesUpsell__highlight">
-    all {totalSignatureCount}
-  </span>{" "}
-  signature recipes, access the full batch library, and turn ideas into
-  seriously good popcorn.
-</p>
+              <p className="recipesUpsell__text">
+                Ready to go beyond the sampler? Create a free account to unlock{" "}
+                <span className="recipesUpsell__highlight">
+                  all {totalSignatureCount}
+                </span>{" "}
+                signature recipes, access the full batch library, and turn ideas
+                into seriously good popcorn.
+              </p>
 
               <div className="recipesUpsell__actions">
                 <Link
