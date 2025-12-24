@@ -9,8 +9,8 @@ export default function Home() {
         <h1 className="dpH1">Welcome to Doberpop.</h1>
 
         <p className="dpSub">
-          Your popcorn batch playbook — browse the catalog, then sign in to dial in and
-          save your own.
+          Your popcorn batch playbook — browse the catalog, then sign in to dial
+          in and save your own.
         </p>
 
         <div className="dpDivider" />
@@ -30,14 +30,21 @@ export default function Home() {
             <div className="dpKicker">Create</div>
             <div className="dpHomeTitle">Build your own batches</div>
             <div className="dpHomeText">
-              Create new batches, refine instructions, and iterate until everything
-              tastes just right.
+              Create new batches, refine instructions, and iterate until
+              everything tastes just right.
             </div>
           </Link>
         </div>
 
         <p className="dpHint dpHintTight">
           Use the top navigation to browse batches or start a new one.
+        </p>
+
+        <p className="dpLegal">
+          © 2025 Doberpop •{" "}
+          <Link to="/privacy" className="dpLegalLink">
+            Privacy Policy
+          </Link>
         </p>
       </div>
     </div>

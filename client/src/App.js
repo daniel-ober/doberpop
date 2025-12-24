@@ -1,4 +1,3 @@
-// client/src/App.js
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -11,6 +10,7 @@ import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import AccountSettings from "./pages/Account/AccountSettings";
+import Privacy from "./pages/Privacy/Privacy";
 
 // Forgot + Reset (components)
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
@@ -121,6 +121,9 @@ function App() {
         {/* Forgot + Reset are PUBLIC */}
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
+
+        {/* Privacy is PUBLIC */}
+        <Route path="/privacy" component={Privacy} />
 
         {/* Authenticated-only pages */}
         <Route path="/admin">
