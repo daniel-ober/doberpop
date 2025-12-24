@@ -6,6 +6,8 @@ import "./Landing.css";
 import logo from "../../assets/images/logo.png";
 
 export default function Landing() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="landing">
       <div className="landing__wrap">
@@ -20,12 +22,16 @@ export default function Landing() {
             </h1>
 
             <p className="landing__subtitle">
-              Browse flavors, then sign in to create your own batches, dial in your process, 
-              and keep everything organized in one place.
+              Browse flavors, then sign in to create your own batches, dial in your
+              process, and keep everything organized in one place.
             </p>
           </div>
 
-          <div className="landing__actions" role="group" aria-label="Primary actions">
+          <div
+            className="landing__actions"
+            role="group"
+            aria-label="Primary actions"
+          >
             <Link className="landing__btn landing__btn--primary" to="/recipes">
               Browse Batches
             </Link>
@@ -43,7 +49,8 @@ export default function Landing() {
 
           <div className="landing__bottom">
             <p className="landing__tip">
-              Tip: Sign in to create new batches, update them anytime, and build your personal Doberpop playbook.
+              Tip: Sign in to create new batches, update them anytime, and build
+              your personal Doberpop playbook.
             </p>
 
             <div className="landing__chips">
@@ -52,6 +59,15 @@ export default function Landing() {
               <span className="landing__chip">Precise ingredients</span>
               <span className="landing__chip">Step-by-step process</span>
             </div>
+          </div>
+
+          {/* Legal footer */}
+          <div className="landing__legal">
+            <span>© {currentYear} Doberpop</span>
+            <span className="landing__legalDot">•</span>
+            <Link to="/privacy" className="landing__legalLink">
+              Privacy Policy
+            </Link>
           </div>
         </section>
       </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Privacy.css";
 
 export default function Privacy() {
@@ -32,9 +33,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            2. Information I collect
-          </h2>
+          <h2 className="dpPrivacySectionTitle">2. Information I collect</h2>
           <p className="dpPrivacyText">
             Depending on how you use Doberpop, I may collect:
           </p>
@@ -56,9 +55,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            3. How your information is used
-          </h2>
+          <h2 className="dpPrivacySectionTitle">3. How your information is used</h2>
           <p className="dpPrivacyText">
             I use the information described above to:
           </p>
@@ -79,9 +76,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            4. Cookies & analytics
-          </h2>
+          <h2 className="dpPrivacySectionTitle">4. Cookies & analytics</h2>
           <p className="dpPrivacyText">
             Doberpop may use cookies or similar technologies to keep you logged
             in and remember basic settings. I may also use privacy-aware
@@ -97,15 +92,9 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            5. When information is shared
-          </h2>
-          <p className="dpPrivacyText">
-            I don’t sell your personal information.
-          </p>
-          <p className="dpPrivacyText">
-            Information may be shared only with:
-          </p>
+          <h2 className="dpPrivacySectionTitle">5. When information is shared</h2>
+          <p className="dpPrivacyText">I don’t sell your personal information.</p>
+          <p className="dpPrivacyText">Information may be shared only with:</p>
           <ul className="dpPrivacyList">
             <li>
               <strong>Service providers</strong> that help run Doberpop (for
@@ -121,9 +110,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            6. Data retention
-          </h2>
+          <h2 className="dpPrivacySectionTitle">6. Data retention</h2>
           <p className="dpPrivacyText">
             I keep your information for as long as your account is active and as
             long as it’s needed to provide the service. If you delete your
@@ -134,9 +121,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            7. Your choices & rights
-          </h2>
+          <h2 className="dpPrivacySectionTitle">7. Your choices & rights</h2>
           <p className="dpPrivacyText">
             Depending on your location, you may have rights to access, update,
             or delete certain personal information.
@@ -155,9 +140,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            8. Security
-          </h2>
+          <h2 className="dpPrivacySectionTitle">8. Security</h2>
           <p className="dpPrivacyText">
             I use reasonable technical and organizational measures to help
             protect your information (such as HTTPS and hashed passwords).
@@ -167,9 +150,7 @@ export default function Privacy() {
         </section>
 
         <section className="dpPrivacySection">
-          <h2 className="dpPrivacySectionTitle">
-            9. Changes to this policy
-          </h2>
+          <h2 className="dpPrivacySectionTitle">9. Changes to this policy</h2>
           <p className="dpPrivacyText">
             I may update this policy from time to time as Doberpop evolves. If a
             material change is made, I’ll update the &quot;Last updated&quot;
@@ -192,6 +173,13 @@ export default function Privacy() {
             .
           </p>
         </section>
+
+        {/* ===== Back Button ===== */}
+        <div className="dpPrivacyBackWrap">
+          <Link to="/" className="dpPrivacyBackBtn">
+            ← Back
+          </Link>
+        </div>
       </div>
     </div>
   );

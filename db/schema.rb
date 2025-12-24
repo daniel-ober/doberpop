@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_21_131551) do
+ActiveRecord::Schema.define(version: 2025_12_21_145113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,8 @@ ActiveRecord::Schema.define(version: 2025_12_21_131551) do
     t.boolean "admin"
     t.datetime "last_username_change_at"
     t.datetime "username_changed_at"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
   end
 
   add_foreign_key "favorites", "recipes"

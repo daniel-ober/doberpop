@@ -23,7 +23,7 @@ class PasswordResetsController < ApplicationController
         Resend.api_key = ENV["RESEND_API_KEY"]
 
         Resend::Emails.send(
-          from: "Doberpop <#{ENV.fetch("RESEND_FROM_EMAIL", "no-reply@doberpop.com")}>",
+          from: "Doberpop <#{ENV.fetch("RESEND_FROM_EMAIL", "noreply-doberpopgourmet@gmail.com")}>",
           to: user.email,
           subject: "Reset your Doberpop password",
           html: <<~HTML
@@ -86,8 +86,6 @@ class PasswordResetsController < ApplicationController
   end
 
   def client_base_url
-    # Make sure this is set in your environment:
-    # e.g. CLIENT_BASE_URL="https://doberpop.com"
     ENV.fetch("CLIENT_BASE_URL", "http://localhost:3000")
   end
 end

@@ -121,6 +121,36 @@
   color: rgba(255, 255, 255, 1);
 }
 
+/* =========================================
+   Back Button
+   ========================================= */
+.dpPrivacyBackWrap {
+  margin-top: 26px;
+  display: flex;
+  justify-content:left;
+}
+
+.dpPrivacyBackBtn {
+  text-decoration: none;
+  padding: 10px 16px;
+  /* border-radius: 999px; */
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  background: rgba(245, 230, 179, 0.1);
+  /* border: 1px solid rgba(245, 230, 179, 0.28); */
+  color: rgba(255, 245, 210, 0.92);
+
+  transition: all 180ms ease;
+}
+
+.dpPrivacyBackBtn:hover {
+  background: rgba(245, 230, 179, 0.18);
+  color: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
 /* Responsive */
 
 @media (max-width: 720px) {

@@ -138,9 +138,42 @@
   color: rgba(245, 230, 179, 0.8);
 }
 
+/* Legal footer */
+.landing__legal {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(245, 230, 179, 0.12);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 0.78rem;
+  color: rgba(245, 230, 179, 0.66);
+}
+
+.landing__legalDot {
+  opacity: 0.7;
+}
+
+.landing__legalLink {
+  text-decoration: none;
+  color: rgba(245, 230, 179, 0.8);
+}
+
+.landing__legalLink:hover {
+  text-decoration: underline;
+  color: rgba(245, 230, 179, 1);
+}
+
 @media (max-width: 520px) {
   .landing__btn {
     width: 100%;
     text-align: center;
+  }
+
+  .landing__legal {
+    font-size: 0.76rem;
   }
 }

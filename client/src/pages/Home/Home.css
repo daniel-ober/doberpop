@@ -175,27 +175,6 @@
   color: rgba(255, 255, 255, 0.56);
 }
 
-/* Legal footer line */
-.dpLegal {
-  margin-top: 10px;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: left;
-  align-self: flex-start;
-}
-
-.dpLegalLink {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-  padding-bottom: 1px;
-}
-
-.dpLegalLink:hover {
-  color: rgba(255, 255, 255, 1);
-  border-bottom-color: rgba(255, 255, 255, 0.8);
-}
-
 /* Responsive */
 @media (max-width: 860px) {
   .dpHome {
@@ -224,10 +203,5 @@
 
   .dpSub {
     font-size: 0.96rem;
-  }
-
-  .dpLegal {
-    text-align: center;
-    align-self: center;
   }
 }
