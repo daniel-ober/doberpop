@@ -21,12 +21,11 @@ node_modules
 # Environment variables
 .env
 .env.*
-!.env.example
-!client/.env.example
 
 # Client env files
 client/.env.development
 client/.env.production
+client/.env.example
 
 # Firebase
 firebase-service-account.json
