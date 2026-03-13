@@ -58,12 +58,6 @@ function normalizeRecipe(id, data) {
 export const getRecipesWithMeta = async () => {
   const snapshot = await getDocs(recipesCollection);
 
-  console.log(
-    "FIRESTORE RECIPES SNAPSHOT:",
-    snapshot.size,
-    snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
-  );
-
   const recipes = snapshot.docs.map((docSnap) =>
     normalizeRecipe(docSnap.id, docSnap.data())
   );
