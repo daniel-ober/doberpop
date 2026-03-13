@@ -1,64 +1,58 @@
-import { useEffect, useState } from "react";
-import api from "../../services/api-config";
+import { useEffect, useMemo, useState } from "react";
+import { updateRecipe } from "../../services/recipes";
 import "./SamplerLineup.css";
 
-export default function SamplerLineup({ refreshToken }) {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function SamplerLineup({ recipes = [], onRefresh }) {
+  const [lineup, setLineup] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  // desktop drag state
   const [dragIndex, setDragIndex] = useState(null);
 
   useEffect(() => {
-    const fetchLineup = async () => {
-      try {
-        setLoading(true);
-        setError("");
+    const nextLineup = [...recipes]
+      .filter((r) => r.source === "doberpop" && r.show_in_sampler === true)
+      .sort((a, b) => {
+        const aPos =
+          typeof a.sampler_position === "number" ? a.sampler_position : 9999;
+        const bPos =
+          typeof b.sampler_position === "number" ? b.sampler_position : 9999;
+        return aPos - bPos;
+      });
 
-        const res = await api.get("/api/admin/recipes/sampler_lineup");
-        const data = Array.isArray(res.data) ? res.data : res.data.recipes || [];
+    setLineup(nextLineup);
+  }, [recipes]);
 
-        setRecipes(data);
-      } catch (e) {
-        console.error("Failed to load sampler lineup", e);
-        setError(e.message || "Unable to load sampler lineup.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const maxSlots = 20;
+  const count = lineup.length;
 
-    fetchLineup();
-  }, [refreshToken]);
-
-  const maxSlots = recipes[0]?.max_sampler_slots || 20;
-  const count = recipes.length;
-
-  // ----- shared save helper (used by drag + arrow buttons) -----
-  async function persistOrder(nextList) {
+  const persistOrder = async (nextList) => {
     try {
       setSaving(true);
       setError("");
       setSuccess("");
 
-      const sampler_order = nextList.map((r) => r.id);
-
-      await api.patch("/api/admin/recipes/sampler_order", {
-        sampler_order,
-      });
+      await Promise.all(
+        nextList.map((recipe, index) =>
+          updateRecipe(recipe.id, {
+            sampler_position: index + 1,
+            show_in_sampler: true,
+          })
+        )
+      );
 
       setSuccess("Sampler order updated.");
+      if (typeof onRefresh === "function") {
+        await onRefresh();
+      }
     } catch (e) {
       console.error("Failed to save sampler order", e);
-      setError(e.message || "Unable to save sampler order.");
+      setError(e?.message || "Unable to save sampler order.");
     } finally {
       setSaving(false);
     }
-  }
+  };
 
-  // ----- desktop drag / drop -----
   const handleDragStart = (index) => () => {
     setDragIndex(index);
   };
@@ -67,24 +61,24 @@ export default function SamplerLineup({ refreshToken }) {
     e.preventDefault();
     if (dragIndex === null || dragIndex === index) return;
 
-    setRecipes((prev) => {
+    setLineup((prev) => {
       const next = [...prev];
       const [moved] = next.splice(dragIndex, 1);
       next.splice(index, 0, moved);
       return next;
     });
+
     setDragIndex(index);
   };
 
   const handleDrop = async () => {
     if (dragIndex === null) return;
     setDragIndex(null);
-    await persistOrder(recipes);
+    await persistOrder(lineup);
   };
 
-  // ----- mobile / keyboard-friendly up/down buttons -----
   const moveItem = (index, direction) => {
-    setRecipes((prev) => {
+    setLineup((prev) => {
       const next = [...prev];
       const targetIndex = direction === "up" ? index - 1 : index + 1;
 
@@ -93,9 +87,7 @@ export default function SamplerLineup({ refreshToken }) {
       const [item] = next.splice(index, 1);
       next.splice(targetIndex, 0, item);
 
-      // fire-and-forget save (don’t block UI)
       void persistOrder(next);
-
       return next;
     });
   };
@@ -110,14 +102,13 @@ export default function SamplerLineup({ refreshToken }) {
             recipes shown to non-signed-in visitors.
           </p>
         </div>
+
         <div className="samplerPanel__badgeGroup">
           <span className="samplerPanel__badge">
             {count} / {maxSlots} slots used
           </span>
         </div>
       </header>
-
-      {loading && <div className="samplerPanel__meta">Loading lineup…</div>}
 
       {error && (
         <div className="samplerPanel__alert samplerPanel__alert--error">
@@ -131,16 +122,16 @@ export default function SamplerLineup({ refreshToken }) {
         </div>
       )}
 
-      {!loading && !recipes.length && !error && (
+      {!lineup.length && !error && (
         <div className="samplerPanel__meta">
           No recipes are currently in the sampler. Toggle “Showing” in the admin
           table to add some.
         </div>
       )}
 
-      {!loading && recipes.length > 0 && (
+      {lineup.length > 0 && (
         <ul className="samplerPanel__list" onDrop={handleDrop}>
-          {recipes.map((r, index) => (
+          {lineup.map((r, index) => (
             <li
               key={r.id}
               className="samplerPanel__item"
@@ -161,7 +152,6 @@ export default function SamplerLineup({ refreshToken }) {
                 </div>
               </div>
 
-              {/* Arrow controls – these will be visible on mobile via CSS */}
               <div className="samplerPanel__itemControls">
                 <button
                   type="button"
@@ -176,7 +166,7 @@ export default function SamplerLineup({ refreshToken }) {
                   type="button"
                   className="samplerPanel__moveBtn"
                   onClick={() => moveItem(index, "down")}
-                  disabled={index === recipes.length - 1 || saving}
+                  disabled={index === lineup.length - 1 || saving}
                   aria-label="Move down"
                 >
                   ↓

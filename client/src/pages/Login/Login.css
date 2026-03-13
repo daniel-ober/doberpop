@@ -6,11 +6,18 @@
   padding: 30px 24px 26px;
   border-radius: 24px;
 
-  /* Gold-tinted glass panel */
   border: 1px solid rgba(245, 230, 179, 0.32);
   background:
-    radial-gradient(140% 180% at 0% 0%, rgba(245, 230, 179, 0.16), transparent 45%),
-    radial-gradient(140% 200% at 100% 120%, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.96));
+    radial-gradient(
+      140% 180% at 0% 0%,
+      rgba(245, 230, 179, 0.16),
+      transparent 45%
+    ),
+    radial-gradient(
+      140% 200% at 100% 120%,
+      rgba(0, 0, 0, 0.86),
+      rgba(0, 0, 0, 0.96)
+    );
 
   box-shadow:
     0 26px 80px rgba(0, 0, 0, 0.78),
@@ -108,16 +115,14 @@
   transform: translateY(-1px);
 }
 
-/* Error text + error border reuse global classes from auth.css */
 .auth.auth--login .auth__errorText {
   margin-top: 6px;
   font-size: 0.86rem;
 }
 
-/* Actions: button gets a bit more presence */
 .auth.auth--login .auth__actions {
   margin-top: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .auth.auth--login .auth__btn--primary {
@@ -159,7 +164,6 @@
     0 0 0 1px rgba(0, 0, 0, 0.7);
 }
 
-/* Disabled state keeps the shape but softens it */
 .auth.auth--login .auth__btn--primary[disabled] {
   opacity: 0.45;
   cursor: not-allowed;
@@ -170,34 +174,88 @@
     0 0 0 1px rgba(0, 0, 0, 0.65);
 }
 
-/* Fine print / link */
-.auth.auth--login .auth__fineprint {
-  margin-top: 6px;
-  font-size: 0.88rem;
-  text-align: center;
-  color: rgba(255, 238, 180, 0.7);
-}
-
-.auth.auth--login .auth__link {
-  color: rgba(255, 238, 180, 0.98);
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 1px;
-  transition:
-    border-color 140ms ease,
-    color 140ms ease;
-}
-
-.auth.auth--login .auth__link:hover {
-  color: rgba(255, 247, 210, 1);
-  border-color: rgba(255, 247, 210, 0.95);
-}
-
 /* Alert banner spacing matches register */
 .auth.auth--login .auth__alert {
   margin-top: 8px;
   margin-bottom: 14px;
+}
+
+/* Tidied auth links block */
+.loginAuthLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.loginAuthLinks__primary {
+  color: rgba(255, 238, 180, 0.96);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+.loginAuthLinks__primary:hover {
+  color: rgba(255, 247, 210, 1);
+}
+
+.loginAuthLinks__divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 238, 180, 0.56);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.loginAuthLinks__divider span:first-child,
+.loginAuthLinks__divider span:last-child {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 230, 179, 0),
+    rgba(245, 230, 179, 0.22),
+    rgba(245, 230, 179, 0)
+  );
+}
+
+.loginAuthLinks__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 210px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 230, 179, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 238, 180, 0.96);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 30px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 120ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.loginAuthLinks__secondary:hover {
+  transform: translateY(-1px);
+  border-color: rgba(245, 230, 179, 0.45);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 16px 36px rgba(0, 0, 0, 0.42);
 }
 
 /* Responsive tweaks for narrower viewports */
@@ -213,5 +271,10 @@
 
   .auth.auth--login .auth__subtitle {
     font-size: 0.92rem;
+  }
+
+  .loginAuthLinks__secondary {
+    width: 100%;
+    min-width: 0;
   }
 }

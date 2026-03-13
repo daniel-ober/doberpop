@@ -1,4 +1,3 @@
-// client/src/pages/Login/Login.jsx
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/auth.css";
@@ -13,7 +12,8 @@ function extractAuthError(err) {
   // Keep error generic on purpose (avoid account enumeration)
   const status = err?.response?.status;
   if (status === 401) return "Invalid username/email or password.";
-  if (status === 422) return "Unable to sign in. Please check your details and try again.";
+  if (status === 422)
+    return "Unable to sign in. Please check your details and try again.";
   return "Something went wrong. Please try again.";
 }
 
@@ -53,7 +53,6 @@ export default function Login(props) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // clear errors as user types
     setGeneralError("");
 
     setFormData((prev) => ({
@@ -107,7 +106,9 @@ export default function Login(props) {
         <div className="auth__top">
           <img className="auth__logo" src={logo} alt="Doberpop" />
           <h1 className="auth__title">Sign in</h1>
-          <p className="auth__subtitle">Welcome back — let’s get you into your cookbook.</p>
+          <p className="auth__subtitle">
+            Welcome back — let’s get you into your cookbook.
+          </p>
         </div>
 
         {generalError ? (
@@ -126,7 +127,9 @@ export default function Login(props) {
               value={identifier}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`auth__input ${showIdentifierError ? "auth__input--error" : ""}`}
+              className={`auth__input ${
+                showIdentifierError ? "auth__input--error" : ""
+              }`}
               autoComplete="username"
               spellCheck={false}
               inputMode="text"
@@ -145,7 +148,9 @@ export default function Login(props) {
               value={password}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`auth__input ${showPasswordError ? "auth__input--error" : ""}`}
+              className={`auth__input ${
+                showPasswordError ? "auth__input--error" : ""
+              }`}
               autoComplete="current-password"
             />
             {showPasswordError ? (
@@ -164,10 +169,19 @@ export default function Login(props) {
             </button>
           </div>
 
-          <div className="auth__fineprint">
-            Don’t have an account?{" "}
-            <Link to="/register" className="auth__link">
-              Register
+          <div className="loginAuthLinks">
+            <Link to="/forgot-password" className="loginAuthLinks__primary">
+              Forgot your password?
+            </Link>
+
+            <div className="loginAuthLinks__divider">
+              <span />
+              <span>New here?</span>
+              <span />
+            </div>
+
+            <Link to="/register" className="loginAuthLinks__secondary">
+              Create your account
             </Link>
           </div>
         </form>

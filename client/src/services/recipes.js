@@ -1,70 +1,170 @@
 // client/src/services/recipes.js
-import api from "./api-config";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
+import { db } from "../firebase";
+
+const recipesCollection = collection(db, "recipes");
+
+function normalizeRecipe(id, data) {
+  return {
+    id,
+
+    name: data.name || "",
+    description: data.description || "",
+    instructions: data.instructions || "",
+    ingredients: data.ingredients || "",
+
+    kernel_type: data.kernelType ?? data.kernel_type ?? "",
+    yield: data.yieldCups ?? data.yield ?? null,
+
+    hero_image_url: data.heroImageUrl ?? data.hero_image_url ?? "",
+    additional_photo_urls:
+      data.additionalPhotoUrls ?? data.additional_photo_urls ?? [],
+
+    source: data.source ?? "user",
+    published: data.published === true,
+
+    show_in_sampler:
+      data.showInSampler === true || data.show_in_sampler === true,
+
+    sampler_position:
+      data.samplerPosition ?? data.sampler_position ?? null,
+
+    tools_and_supplies:
+      data.toolsAndSupplies ?? data.tools_and_supplies ?? "",
+
+    user_id: data.userId ?? data.user_id ?? null,
+    favorites_count: data.favoritesCount ?? data.favorites_count ?? 0,
+
+    created_at: data.createdAt?.toDate?.().toISOString?.() || null,
+    updated_at: data.updatedAt?.toDate?.().toISOString?.() || null,
+  };
+}
 
 /**
- * PUBLIC recipes (logged-in users & admins)
- * Rails routes live under /api/recipes
- */
-
-/**
- * Core helper: fetch recipes + metadata from the API.
- * Always returns an object:
- *   { recipes: [...], totalSignatureCount: number | undefined }
+ * Always returns:
+ * { recipes: [...], totalSignatureCount: number }
  */
 export const getRecipesWithMeta = async () => {
-  const res = await api.get("/api/recipes");
-  const data = res.data || {};
+  const snapshot = await getDocs(recipesCollection);
 
-  const recipes = Array.isArray(data) ? data : data.recipes || [];
-  const totalSignatureCount = data.total_signature_count;
+  console.log(
+    "FIRESTORE RECIPES SNAPSHOT:",
+    snapshot.size,
+    snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
+  );
+
+  const recipes = snapshot.docs.map((docSnap) =>
+    normalizeRecipe(docSnap.id, docSnap.data())
+  );
+
+  const totalSignatureCount = recipes.filter(
+    (r) => r.source === "doberpop"
+  ).length;
 
   return { recipes, totalSignatureCount };
 };
 
-// ===== GET ALL RECIPES (backwards-compatible) =====
-// Old callers that expect JUST an array can keep using this.
 export const getRecipes = async () => {
   const { recipes } = await getRecipesWithMeta();
   return recipes;
 };
 
-// 👇 Backwards-compat alias for MainContainer
 export const getAllRecipes = async () => {
   return getRecipes();
 };
 
-// ===== GET SAMPLER (optional helper) =====
-// Explicit sampler list – useful for homepage carousels, etc.
 export const getSamplerRecipes = async () => {
-  const res = await api.get("/api/recipes", {
-    params: { sampler: true },
+  const qRef = query(
+    recipesCollection,
+    where("showInSampler", "==", true),
+    orderBy("samplerPosition", "asc")
+  );
+
+  const snapshot = await getDocs(qRef);
+  return snapshot.docs.map((docSnap) =>
+    normalizeRecipe(docSnap.id, docSnap.data())
+  );
+};
+
+export const getOneRecipe = async (id) => {
+  const docRef = doc(db, "recipes", String(id));
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    throw new Error("Recipe not found");
+  }
+
+  return normalizeRecipe(snapshot.id, snapshot.data());
+};
+
+export const createRecipe = async (payload) => {
+  const docData = {
+    name: payload.name || "",
+    description: payload.description || "",
+    ingredients: payload.ingredients || "",
+    instructions: payload.instructions || "",
+    kernelType: payload.kernel_type ?? "",
+    yieldCups: payload.yield ?? null,
+    published: payload.published === true,
+    source: payload.source || "user",
+    showInSampler: payload.show_in_sampler === true,
+    samplerPosition: payload.sampler_position ?? null,
+    heroImageUrl: payload.hero_image_url ?? "",
+    additionalPhotoUrls: payload.additional_photo_urls ?? [],
+    toolsAndSupplies: payload.tools_and_supplies ?? "",
+    userId: payload.user_id ?? null,
+    favoritesCount: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const ref = await addDoc(recipesCollection, docData);
+  return { id: ref.id, ...normalizeRecipe(ref.id, docData) };
+};
+
+export const updateRecipe = async (id, payload) => {
+  const docRef = doc(db, "recipes", String(id));
+
+  const updateData = {
+    name: payload.name,
+    description: payload.description,
+    ingredients: payload.ingredients,
+    instructions: payload.instructions,
+    kernelType: payload.kernel_type,
+    yieldCups: payload.yield,
+    published: payload.published,
+    showInSampler: payload.show_in_sampler,
+    samplerPosition: payload.sampler_position,
+    heroImageUrl: payload.hero_image_url,
+    additionalPhotoUrls: payload.additional_photo_urls,
+    toolsAndSupplies: payload.tools_and_supplies,
+    updatedAt: new Date(),
+  };
+
+  Object.keys(updateData).forEach((key) => {
+    if (typeof updateData[key] === "undefined") {
+      delete updateData[key];
+    }
   });
 
-  const data = res.data || {};
-  const recipes = Array.isArray(data) ? data : data.recipes || [];
-  return recipes;
+  await updateDoc(docRef, updateData);
+
+  const updatedSnap = await getDoc(docRef);
+  return normalizeRecipe(updatedSnap.id, updatedSnap.data());
 };
 
-// ===== GET ONE =====
-export const getOneRecipe = async (id) => {
-  const res = await api.get(`/api/recipes/${id}`);
-  return res.data;
-};
-
-// ===== CREATE =====
-export const createRecipe = async (payload) => {
-  const res = await api.post("/api/recipes", payload);
-  return res.data;
-};
-
-// ===== UPDATE =====
-export const updateRecipe = async (id, payload) => {
-  const res = await api.put(`/api/recipes/${id}`, payload);
-  return res.data;
-};
-
-// ===== DELETE =====
 export const deleteRecipe = async (id) => {
-  const res = await api.delete(`/api/recipes/${id}`);
-  return res.data;
+  await deleteDoc(doc(db, "recipes", String(id)));
+  return { success: true };
 };

@@ -1,12 +1,10 @@
-// client/src/pages/AdminDashboard/AdminDashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  getAdminUsers,
-  getAdminRecipes,
-  deleteAdminUser,
-  deleteAdminRecipe,
-} from "../../services/admin";
-import api from "../../services/api-config";
+  getRecipesWithMeta,
+  deleteRecipe,
+  updateRecipe,
+} from "../../services/recipes";
+import { getUsers, deleteUser } from "../../services/users";
 import "./AdminDashboard.css";
 import SamplerLineup from "./SamplerLineup";
 
@@ -55,23 +53,13 @@ export default function AdminDashboard() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingRecipes, setLoadingRecipes] = useState(true);
 
-  // delete modal state
   const [confirm, setConfirm] = useState(null);
-  // { type: "user"|"recipe", id: number, label: string }
-
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState("");
 
-  // recipe sort
   const [recipeSort, setRecipeSort] = useState("most_favorited");
-
-  // favorites modal
   const [favoritesModalRecipe, setFavoritesModalRecipe] = useState(null);
-
-  // sampler toggle busy state
   const [samplerBusyIds, setSamplerBusyIds] = useState(() => new Set());
-
-  // used to tell SamplerLineup when to refetch
   const [samplerRefreshToken, setSamplerRefreshToken] = useState(0);
 
   useEffect(() => {
@@ -79,9 +67,9 @@ export default function AdminDashboard() {
 
     (async () => {
       try {
-        const data = await getAdminUsers();
+        const data = await getUsers();
         if (!alive) return;
-        setUsers(Array.isArray(data) ? data : data.users || []);
+        setUsers(Array.isArray(data) ? data : []);
       } catch (e) {
         if (!alive) return;
         setUsersError(e?.message || "Failed to load users");
@@ -93,9 +81,9 @@ export default function AdminDashboard() {
 
     (async () => {
       try {
-        const data = await getAdminRecipes();
+        const result = await getRecipesWithMeta();
         if (!alive) return;
-        setRecipes(Array.isArray(data) ? data : data.recipes || []);
+        setRecipes(Array.isArray(result?.recipes) ? result.recipes : []);
       } catch (e) {
         if (!alive) return;
         setRecipesError(e?.message || "Failed to load recipes");
@@ -120,11 +108,12 @@ export default function AdminDashboard() {
   };
 
   const usersRows = useMemo(() => users || [], [users]);
+
   const usersById = useMemo(() => {
     const map = new Map();
     (users || []).forEach((u) => {
       if (u && typeof u.id !== "undefined") {
-        map.set(u.id, u);
+        map.set(String(u.id), u);
       }
     });
     return map;
@@ -165,7 +154,6 @@ export default function AdminDashboard() {
     return rows;
   }, [recipeRows, recipeSort]);
 
-  // Map of recipe IDs that are in the "top 3" favorites (with count > 0)
   const topFavoriteRecipeIds = useMemo(() => {
     const arr = (recipeRows || []).map((r) => ({
       id: r.id,
@@ -180,6 +168,7 @@ export default function AdminDashboard() {
 
   const openDelete = (type, row) => {
     setActionError("");
+
     if (type === "user") {
       setConfirm({
         type,
@@ -201,27 +190,28 @@ export default function AdminDashboard() {
     setActionError("");
   };
 
-  const doDelete = async () => {
-    if (!confirm) return;
+const doDelete = async () => {
+  if (!confirm) return;
 
-    setDeleting(true);
-    setActionError("");
+  setDeleting(true);
+  setActionError("");
 
-    try {
-      if (confirm.type === "user") {
-        await deleteAdminUser(confirm.id);
-        setUsers((prev) => prev.filter((u) => u.id !== confirm.id));
-      } else {
-        await deleteAdminRecipe(confirm.id);
-        setRecipes((prev) => prev.filter((r) => r.id !== confirm.id));
-      }
+  try {
+    if (confirm.type === "user") {
+      await deleteUser(confirm.id);
+      setUsers((prev) => prev.filter((u) => u.id !== confirm.id));
       setConfirm(null);
-    } catch (e) {
-      setActionError(e?.message || "Delete failed");
-    } finally {
-      setDeleting(false);
+    } else {
+      await deleteRecipe(confirm.id);
+      setRecipes((prev) => prev.filter((r) => r.id !== confirm.id));
+      setConfirm(null);
     }
-  };
+  } catch (e) {
+    setActionError(e?.message || "Delete failed");
+  } finally {
+    setDeleting(false);
+  }
+};
 
   const openFavoritesModal = (recipe) => {
     setFavoritesModalRecipe(recipe);
@@ -233,10 +223,9 @@ export default function AdminDashboard() {
 
   const favoritesModalUsers = useMemo(
     () => getFavoritesUsers(favoritesModalRecipe),
-    [favoritesModalRecipe]
+    [favoritesModalRecipe],
   );
 
-  // ---- sampler toggle ----
   const handleToggleSampler = async (recipe) => {
     if (!recipe || typeof recipe.id === "undefined") return;
 
@@ -244,34 +233,34 @@ export default function AdminDashboard() {
     const prev = !!recipe.show_in_sampler;
     const next = !prev;
 
-    // optimistic UI update
     setRecipes((prevList) =>
-      prevList.map((r) =>
-        r.id === id ? { ...r, show_in_sampler: next } : r
-      )
+      prevList.map((r) => (r.id === id ? { ...r, show_in_sampler: next } : r)),
     );
+
     setSamplerBusyIds((prevSet) => {
       const nextSet = new Set(prevSet);
       nextSet.add(id);
       return nextSet;
     });
+
     setActionError("");
 
     try {
-      await api.patch(`/api/admin/recipes/${id}`, {
+      await updateRecipe(id, {
         show_in_sampler: next,
+        sampler_position: next ? (recipe.sampler_position ?? 0) : 0,
       });
 
-      // tell SamplerLineup to refetch
       setSamplerRefreshToken((t) => t + 1);
     } catch (e) {
       console.error("Failed to update sampler flag", e);
-      // rollback on error
+
       setRecipes((prevList) =>
         prevList.map((r) =>
-          r.id === id ? { ...r, show_in_sampler: prev } : r
-        )
+          r.id === id ? { ...r, show_in_sampler: prev } : r,
+        ),
       );
+
       const msg =
         e?.response?.data?.error ||
         e?.message ||
@@ -297,7 +286,6 @@ export default function AdminDashboard() {
           </p>
         )}
 
-        {/* USERS */}
         <h2>Users</h2>
         {loadingUsers ? (
           <p className="adminLoading">Loading users…</p>
@@ -348,7 +336,6 @@ export default function AdminDashboard() {
           </table>
         )}
 
-        {/* RECIPES */}
         <div className="adminRecipesHeaderRow">
           <h2>Recipes</h2>
           <div className="adminSortRow">
@@ -393,8 +380,7 @@ export default function AdminDashboard() {
                 const ownerUsername =
                   r.user?.username ||
                   r.username ||
-                  (typeof r.user_id !== "undefined" &&
-                    usersById.get(r.user_id)?.username) ||
+                  usersById.get(String(r.user_id))?.username ||
                   r.user_id ||
                   "—";
 
@@ -471,10 +457,14 @@ export default function AdminDashboard() {
           </table>
         )}
 
-        {/* Sampler lineup card listens to refreshToken */}
-        <SamplerLineup refreshToken={samplerRefreshToken} />
+        <SamplerLineup
+          recipes={recipes}
+          onRefresh={async () => {
+            const result = await getRecipesWithMeta();
+            setRecipes(Array.isArray(result?.recipes) ? result.recipes : []);
+          }}
+        />
 
-        {/* CONFIRM DELETE MODAL */}
         {confirm && (
           <div className="adminModalOverlay" onMouseDown={closeDelete}>
             <div
@@ -515,12 +505,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* FAVORITES MODAL */}
         {favoritesModalRecipe && (
-          <div
-            className="adminModalOverlay"
-            onMouseDown={closeFavoritesModal}
-          >
+          <div className="adminModalOverlay" onMouseDown={closeFavoritesModal}>
             <div
               className="adminModal"
               role="dialog"
@@ -542,7 +528,11 @@ export default function AdminDashboard() {
                   <ul className="adminModalList">
                     {favoritesModalUsers.map((u, idx) => {
                       const username =
-                        u.username || u.handle || u.name || u.email || String(u);
+                        u.username ||
+                        u.handle ||
+                        u.name ||
+                        u.email ||
+                        String(u);
                       const email =
                         u.email && u.email !== username ? ` (${u.email})` : "";
                       return (

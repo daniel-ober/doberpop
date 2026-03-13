@@ -13,7 +13,7 @@ import "./RecipeDetails.css";
 const flavorCtx = require.context(
   "../../assets/images/flavors",
   true,
-  /\.(png|jpe?g|webp)$/i
+  /\.(png|jpe?g|webp)$/i,
 );
 
 function normalizeFlavorKey(str) {
@@ -68,10 +68,7 @@ const CANDY_COATED_TOOLS = [
 
 const TOOLS_MAP = {
   // Candy / chocolate / glaze–style
-  "Maple & Bourbon": [
-    ...CANDY_COATED_TOOLS,
-    "Whisk (for maple–bourbon glaze)",
-  ],
+  "Maple & Bourbon": [...CANDY_COATED_TOOLS, "Whisk (for maple–bourbon glaze)"],
   "Cookies & Cream": [
     ...CANDY_COATED_TOOLS,
     "Rolling pin or mallet (for crushing cookies)",
@@ -110,7 +107,10 @@ const TOOLS_MAP = {
 
   // Savory / butter / seasoning–style
   "Classic Butter": [...SAVORY_TOOLS],
-  "Classic Cheddar": [...SAVORY_TOOLS, "Small whisk (for mixing cheddar powder)"],
+  "Classic Cheddar": [
+    ...SAVORY_TOOLS,
+    "Small whisk (for mixing cheddar powder)",
+  ],
   "Bacon & Cheddar": [
     ...SAVORY_TOOLS,
     "Skillet and tongs or spatula (for cooking bacon)",
@@ -128,7 +128,7 @@ const TOOLS_MAP = {
     ...SAVORY_TOOLS,
     "Spray bottle or small spoon (for light oil mist)",
   ],
-  "Jalapeño": [...SAVORY_TOOLS],
+  Jalapeño: [...SAVORY_TOOLS],
   "Jalapeño & Cheddar": [
     ...SAVORY_TOOLS,
     "Small whisk (for mixing cheddar base)",
@@ -171,7 +171,7 @@ function deriveToolsList(recipe) {
 
   if (typeof raw === "string" && raw.trim().length > 0) {
     return raw
-      .split(/\r?\n/)          // split on line breaks
+      .split(/\r?\n/) // split on line breaks
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
   }
@@ -194,8 +194,7 @@ export default function RecipeDetails({ currentUser }) {
   const [favBusy, setFavBusy] = useState(false);
 
   // normalize auth state
-  const normalizedUserId =
-    currentUser?.id ?? currentUser?.user_id ?? null;
+  const normalizedUserId = currentUser?.id ?? currentUser?.user_id ?? null;
   const isAuthed = normalizedUserId != null;
 
   useEffect(() => {
@@ -227,22 +226,22 @@ export default function RecipeDetails({ currentUser }) {
 
     (async () => {
       try {
-        const data = await getFavorites();
+        const data = await getFavorites(normalizedUserId);
         const ids = Array.isArray(data?.recipe_ids) ? data.recipe_ids : [];
         if (!alive) return;
 
         const numericId = Number(id);
         const isFav = ids.includes(numericId) || ids.includes(id);
         setIsFavorited(isFav);
-      } catch {
-        // ignore favorites fetch failures on details page
+      } catch (err) {
+        console.error("Failed to load favorites on details page:", err);
       }
     })();
 
     return () => {
       alive = false;
     };
-  }, [id, isAuthed]);
+  }, [id, isAuthed, normalizedUserId]);
 
   const heroSrc = useMemo(() => {
     if (!recipe) return "";
@@ -339,7 +338,7 @@ export default function RecipeDetails({ currentUser }) {
     }
 
     const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      window.location.href
+      window.location.href,
     )}`;
     window.open(fb, "_blank", "noopener,noreferrer,width=900,height=700");
   };
@@ -349,16 +348,16 @@ export default function RecipeDetails({ currentUser }) {
 
     const next = !isFavorited;
     setFavBusy(true);
-    setIsFavorited(next); // optimistic
+    setIsFavorited(next);
 
     try {
       if (next) {
-        await favoriteRecipe(recipe.id);
+        await favoriteRecipe(normalizedUserId, recipe.id);
       } else {
-        await unfavoriteRecipe(recipe.id);
+        await unfavoriteRecipe(normalizedUserId, recipe.id);
       }
-    } catch (e) {
-      // rollback on failure
+    } catch (err) {
+      console.error("Failed to toggle favorite from details page:", err);
       setIsFavorited((prev) => !prev);
     } finally {
       setFavBusy(false);

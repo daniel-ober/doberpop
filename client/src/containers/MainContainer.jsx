@@ -1,5 +1,4 @@
-// client/src/containers/MainContainer.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom";
 
 import Recipes from "../pages/Recipes/Recipes";
@@ -9,12 +8,11 @@ import RecipeEdit from "../pages/RecipeEdit/RecipeEdit";
 
 import { getRecipesWithMeta, deleteRecipe } from "../services/recipes";
 
-// 🔥 bring in dedicated styling
 import "./MainContainer.css";
 
 function MainContainer({ currentUser }) {
   const [recipes, setRecipes] = useState([]);
-  const [totalSignatureCount, setTotalSignatureCount] = useState(null);
+  const [totalSignatureCount, setTotalSignatureCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { path } = useRouteMatch();
 
@@ -22,17 +20,19 @@ function MainContainer({ currentUser }) {
     try {
       setLoading(true);
 
-      // NEW: fetch recipes + metadata from API
-      const { recipes: data, totalSignatureCount } = await getRecipesWithMeta();
+      const result = await getRecipesWithMeta();
+      const allRecipes = Array.isArray(result?.recipes) ? result.recipes : [];
 
-      setRecipes(Array.isArray(data) ? data : []);
-
+      setRecipes(allRecipes);
       setTotalSignatureCount(
-        typeof totalSignatureCount === "number" ? totalSignatureCount : null
+        typeof result?.totalSignatureCount === "number"
+          ? result.totalSignatureCount
+          : allRecipes.filter((r) => r.source === "doberpop").length
       );
     } catch (e) {
+      console.error("MAINCONTAINER: loadRecipes failed =", e);
       setRecipes([]);
-      setTotalSignatureCount(null);
+      setTotalSignatureCount(0);
     } finally {
       setLoading(false);
     }
@@ -47,19 +47,31 @@ function MainContainer({ currentUser }) {
       await deleteRecipe(id);
       await loadRecipes();
     } catch (e) {
-      // optional: toast/log
+      console.error("Delete failed:", e);
     }
   };
+
+  const samplerRecipes = useMemo(() => {
+    return [...recipes]
+      .filter((r) => r.source === "doberpop" && r.show_in_sampler === true)
+      .sort((a, b) => {
+        const aPos =
+          typeof a.sampler_position === "number" ? a.sampler_position : 9999;
+        const bPos =
+          typeof b.sampler_position === "number" ? b.sampler_position : 9999;
+        return aPos - bPos;
+      });
+  }, [recipes]);
 
   const isAuthed = !!currentUser;
 
   return (
     <div className="mainContainer">
       <Switch>
-        {/* Recipes index – public */}
         <Route exact path={path}>
           <Recipes
             recipes={recipes}
+            samplerRecipes={samplerRecipes}
             handleDelete={handleDelete}
             currentUser={currentUser}
             loading={loading}
@@ -67,7 +79,6 @@ function MainContainer({ currentUser }) {
           />
         </Route>
 
-        {/* New recipe – auth only */}
         <Route exact path={`${path}/new`}>
           {isAuthed ? (
             <RecipeCreate
@@ -79,7 +90,6 @@ function MainContainer({ currentUser }) {
           )}
         </Route>
 
-        {/* Edit recipe – auth only */}
         <Route exact path={`${path}/:id/edit`}>
           {isAuthed ? (
             <RecipeEdit
@@ -91,7 +101,6 @@ function MainContainer({ currentUser }) {
           )}
         </Route>
 
-        {/* Recipe details – public */}
         <Route path={`${path}/:id`}>
           <RecipeDetails currentUser={currentUser} />
         </Route>

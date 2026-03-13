@@ -8,16 +8,24 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :email,    presence: true, uniqueness: true
 
-  # Only allow username change once every 90 days
   validate :username_change_cooldown, if: :will_save_change_to_username?
-
-  # When username DOES change, stamp the time
   before_update :stamp_username_changed_at, if: :will_save_change_to_username?
+
+  validates :password,
+    length: { minimum: 8 },
+    format: {
+      with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+\z/,
+      message: "must include at least one lowercase letter, one uppercase letter, one number, and one special character"
+    },
+    if: :password_present?
 
   private
 
+  def password_present?
+    password.present?
+  end
+
   def username_change_cooldown
-    # If never changed before, allow it
     return if username_changed_at.nil?
 
     if username_changed_at > 90.days.ago

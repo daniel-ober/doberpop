@@ -1,5 +1,4 @@
-// client/src/components/ResetPassword/ResetPassword.jsx
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import "./ResetPassword.css";
 
@@ -8,6 +7,17 @@ const API_BASE = process.env.REACT_APP_API_URL || "";
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
+const passwordRules = (pw) => {
+  const s = pw || "";
+  return {
+    length: s.length >= 8,
+    lower: /[a-z]/.test(s),
+    upper: /[A-Z]/.test(s),
+    number: /[0-9]/.test(s),
+    special: /[^A-Za-z0-9]/.test(s),
+  };
+};
 
 export default function ResetPassword() {
   const query = useQuery();
@@ -20,6 +30,8 @@ export default function ResetPassword() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  const pw = useMemo(() => passwordRules(password), [password]);
 
   if (!token) {
     return (
@@ -107,6 +119,33 @@ export default function ResetPassword() {
               minLength={8}
             />
           </label>
+
+          <div className="rp-password-hint">
+            Your new password must include:
+          </div>
+
+          <div className="rp-password-checklist" aria-label="Password requirements">
+            <div className={`rp-password-item ${pw.length ? "is-ok" : ""}`}>
+              <span className="rp-password-icon">{pw.length ? "✓" : "•"}</span>
+              At least 8 characters
+            </div>
+            <div className={`rp-password-item ${pw.lower ? "is-ok" : ""}`}>
+              <span className="rp-password-icon">{pw.lower ? "✓" : "•"}</span>
+              One lowercase letter
+            </div>
+            <div className={`rp-password-item ${pw.upper ? "is-ok" : ""}`}>
+              <span className="rp-password-icon">{pw.upper ? "✓" : "•"}</span>
+              One uppercase letter
+            </div>
+            <div className={`rp-password-item ${pw.number ? "is-ok" : ""}`}>
+              <span className="rp-password-icon">{pw.number ? "✓" : "•"}</span>
+              One number
+            </div>
+            <div className={`rp-password-item ${pw.special ? "is-ok" : ""}`}>
+              <span className="rp-password-icon">{pw.special ? "✓" : "•"}</span>
+              One special character
+            </div>
+          </div>
 
           {error && <div className="rp-error">{error}</div>}
           {message && <div className="rp-success">{message}</div>}

@@ -1,5 +1,7 @@
 # app/controllers/password_resets_controller.rb
 class PasswordResetsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:create, :update]
+
   # These endpoints are public – user is not logged in yet
 
   # POST /auth/password/forgot
@@ -19,12 +21,11 @@ class PasswordResetsController < ApplicationController
       reset_url = "#{client_base_url}/reset-password?token=#{token}"
 
       begin
-        # Using Resend gem
-        Resend.api_key = ENV["RESEND_API_KEY"]
+        Resend.api_key = ENV.fetch("RESEND_API_KEY")
 
-        Resend::Emails.send(
-          from: "Doberpop <#{ENV.fetch("RESEND_FROM_EMAIL", "noreply-doberpopgourmet@gmail.com")}>",
-          to: user.email,
+        Resend::Emails.send({
+          from: ENV.fetch("RESEND_FROM_EMAIL", "noreply@doberpop.com"),
+          to: [user.email],
           subject: "Reset your Doberpop password",
           html: <<~HTML
             <p>Hi #{user.username || "there"},</p>
@@ -34,14 +35,12 @@ class PasswordResetsController < ApplicationController
             </p>
             <p>If you didn't request this, you can safely ignore this email.</p>
           HTML
-        )
+        })
       rescue => e
         Rails.logger.error("Password reset email send failed: #{e.class} - #{e.message}")
-        # Even if email fails, do NOT reveal that to the client (avoid account enumeration).
       end
     end
 
-    # Always respond with generic success message to avoid user enumeration
     render json: {
       message: "If your email exists in our system, you'll receive a reset link shortly."
     }
@@ -86,6 +85,6 @@ class PasswordResetsController < ApplicationController
   end
 
   def client_base_url
-    ENV.fetch("CLIENT_BASE_URL", "http://localhost:3000")
+    ENV.fetch("CLIENT_BASE_URL", "http://localhost:3001")
   end
 end

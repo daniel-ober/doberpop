@@ -1,5 +1,9 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
+import "../../styles/auth.css";
 import "./ForgotPassword.css";
+
+import logo from "../../assets/images/logo-reduced.png";
 
 const API_BASE = process.env.REACT_APP_API_URL || "";
 
@@ -43,35 +47,58 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="fp-wrapper">
-      <div className="fp-card">
-        <h1 className="fp-title">Forgot your password?</h1>
-        <p className="fp-subtitle">
-          Enter your email and we’ll send you a reset link.
-        </p>
+    <div className="auth auth--forgot">
+      <div className="auth__card fpCard">
+        <div className="auth__top fpTop">
+          <img className="auth__logo fpLogo" src={logo} alt="Doberpop" />
+          <h1 className="auth__title fpTitle">Forgot your password?</h1>
+          <p className="auth__subtitle fpSubtitle">
+            Enter your email and we’ll send you a reset link.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="fp-form">
-          <label className="fp-label">
-            Email
+        {error ? (
+          <div className="auth__alert" role="alert">
+            {error}
+          </div>
+        ) : null}
+
+        {message ? (
+          <div className="auth__alert auth__alert--success" role="status">
+            {message}
+          </div>
+        ) : null}
+
+        <form onSubmit={handleSubmit} className="auth__form fpForm">
+          <label className="auth__label fpLabel">
+            <span className="auth__labelText">Email</span>
             <input
               type="email"
-              className="fp-input"
+              className="auth__input fpInput"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              placeholder="you@example.com"
             />
           </label>
 
-          {error && <div className="fp-error">{error}</div>}
-          {message && <div className="fp-success">{message}</div>}
+          <div className="auth__actions fpActions">
+            <button
+              className="auth__btn auth__btn--primary fpButton"
+              disabled={submitting || !email.trim()}
+              type="submit"
+            >
+              {submitting ? "Sending..." : "Send reset link"}
+            </button>
+          </div>
 
-          <button
-            className="fp-button"
-            disabled={submitting || !email.trim()}
-          >
-            {submitting ? "Sending..." : "Send reset link"}
-          </button>
+          <div className="auth__fineprint fpFineprint">
+            Remembered it?{" "}
+            <Link to="/login" className="auth__link">
+              Back to sign in
+            </Link>
+          </div>
         </form>
       </div>
     </div>

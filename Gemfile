@@ -42,6 +42,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'dotenv-rails'
   gem 'listen', '~> 3.3'
   gem 'spring'
   gem 'pry-rails'

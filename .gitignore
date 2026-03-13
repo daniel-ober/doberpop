@@ -28,3 +28,20 @@ node_modules
 .DS_Store
 .env
 .env.*
+# secrets
+.env
+.env.*
+!.env.example
+firebase-service-account.json
+
+.env.development
+client/.env.development
+.env
+.env.*
+!.env.example
+!client/.env.example
+
+# Local Netlify folder
+.netlify
+
+client/.env.production

@@ -1,6 +1,7 @@
 // client/src/api/passwordReset.js
 
-const API_BASE = process.env.REACT_APP_API_URL || "";
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
 
 /**
  * POST /auth/password/forgot
@@ -15,20 +16,16 @@ export async function requestPasswordReset(email) {
     body: JSON.stringify({ email }),
   });
 
-  // Backend will usually return 200 even if user not found,
-  // but we still guard against unexpected failures.
   let data = {};
   try {
     data = await res.json();
-  } catch (e) {
-    // ignore parse errors – just use a generic message
-  }
+  } catch (e) {}
 
   if (!res.ok) {
     throw new Error(data.error || "Unable to send password reset email.");
   }
 
-  return data; // { message: "If your email exists, you'll receive a reset link shortly." }
+  return data;
 }
 
 /**
@@ -57,5 +54,5 @@ export async function resetPassword({ token, password, passwordConfirmation }) {
     throw new Error(data.error || "Unable to reset password.");
   }
 
-  return data; // { message: "Password updated successfully." }
+  return data;
 }

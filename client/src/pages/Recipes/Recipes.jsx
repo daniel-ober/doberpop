@@ -33,12 +33,13 @@ function getTotalSignatureCount(recipes) {
 }
 
 export default function Recipes(props) {
-  const {
-    recipes = [],
-    handleDelete,
-    currentUser,
-    totalSignatureCount: totalSignatureCountFromServer,
-  } = props;
+const {
+  recipes = [],
+  samplerRecipes = [],
+  handleDelete,
+  currentUser,
+  totalSignatureCount: totalSignatureCountFromServer,
+} = props;
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -92,15 +93,16 @@ export default function Recipes(props) {
 
     const load = async () => {
       try {
-        const data = await getFavorites();
+        const data = await getFavorites(normalizedUserId);
         const ids = Array.isArray(data?.recipe_ids) ? data.recipe_ids : [];
         if (alive) setFavoriteIds(new Set(ids));
-      } catch {
-        // ignore favorites fetch failures
+      } catch (err) {
+        console.error("Failed to load favorites:", err);
       }
     };
 
     if (normalizedUserId != null) load();
+
     return () => {
       alive = false;
     };
@@ -139,9 +141,14 @@ export default function Recipes(props) {
     });
 
     try {
-      if (nextState) await favoriteRecipe(recipeId);
-      else await unfavoriteRecipe(recipeId);
-    } catch {
+      if (nextState) {
+        await favoriteRecipe(normalizedUserId, recipeId);
+      } else {
+        await unfavoriteRecipe(normalizedUserId, recipeId);
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+
       // rollback on error
       setFavoriteIds((prev) => {
         const next = new Set(prev);
@@ -161,7 +168,7 @@ export default function Recipes(props) {
   const byTab = useMemo(() => {
     // All official Doberpop recipes (public only)
     const doberpop = recipes.filter(
-      (r) => r.source === "doberpop" && r.published === true
+      (r) => r.source === "doberpop" && r.published === true,
     );
 
     // ALL recipes created by the signed-in user (private + shared)
@@ -175,7 +182,7 @@ export default function Recipes(props) {
 
     // Community = user-created + shared (kept for future)
     const community = recipes.filter(
-      (r) => r.source === "user" && r.published === true
+      (r) => r.source === "user" && r.published === true,
     );
 
     const favorites = recipes.filter((r) => favoriteIds.has(r.id));
@@ -201,24 +208,15 @@ export default function Recipes(props) {
     // (show_in_sampler + sampler_position), capped by
     // SAMPLE_RECIPE_LIMIT.
     // -------------------------------------------------------
-    if (!isAuthed && tab === "doberpop") {
-      let list = (byTab.doberpop || [])
-        .filter((r) => r.show_in_sampler)
-        .sort((a, b) => {
-          const aPos =
-            typeof a.sampler_position === "number" ? a.sampler_position : 0;
-          const bPos =
-            typeof b.sampler_position === "number" ? b.sampler_position : 0;
-          return aPos - bPos;
-        });
+if (!isAuthed && tab === "doberpop") {
+  let list = [...samplerRecipes];
 
-      if (q) {
-        list = list.filter((r) => (r.name || "").toLowerCase().includes(q));
-      }
+  if (q) {
+    list = list.filter((r) => (r.name || "").toLowerCase().includes(q));
+  }
 
-      // guests see the curated sampler list, up to the configured limit
-      return list.slice(0, SAMPLE_RECIPE_LIMIT);
-    }
+  return list.slice(0, SAMPLE_RECIPE_LIMIT);
+}
 
     // -------------------------------------------------------
     // EVERY OTHER CASE:
@@ -282,16 +280,16 @@ export default function Recipes(props) {
     }
 
     return list;
-  }, [byTab, tab, query, sort, mineFilter, isAuthed]);
+  }, [byTab, tab, query, sort, mineFilter, isAuthed, samplerRecipes]);
 
   const emptyTitle =
     tab === "doberpop"
       ? "No Doberpop recipes found."
       : tab === "mine"
-      ? "No recipes found in My Recipes."
-      : tab === "community"
-      ? "No community recipes found."
-      : "No favorites yet.";
+        ? "No recipes found in My Recipes."
+        : tab === "community"
+          ? "No community recipes found."
+          : "No favorites yet.";
 
   const emptyText =
     tab === "favorites"
