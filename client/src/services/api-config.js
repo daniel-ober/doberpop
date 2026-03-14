@@ -3,9 +3,9 @@ import axios from "axios";
 
 /**
  * Centralized API client
- * - Rails API runs on :3000
- * - React client runs on :3001
- * - Base URL comes from env, with safe fallback
+ * - Rails API runs on :3000 locally
+ * - React client runs on :3001 locally
+ * - Production should use REACT_APP_API_BASE_URL
  */
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || "http://localhost:3000",
@@ -15,9 +15,6 @@ const api = axios.create({
   },
 });
 
-/**
- * Attach JWT token (if present) to every request
- */
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
@@ -31,11 +28,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/**
- * Global response handling
- * - Warn on unauthorized (expired / invalid token)
- * - Let calling code handle the error
- */
 api.interceptors.response.use(
   (response) => response,
   (error) => {
