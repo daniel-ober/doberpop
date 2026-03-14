@@ -21,10 +21,11 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
+
     if (token) {
-      // use lowercase 'authorization' (axios normalizes but this keeps it consistent everywhere)
       config.headers.authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -40,10 +41,8 @@ api.interceptors.response.use(
   (error) => {
     if (error?.response?.status === 401) {
       console.warn("Unauthorized API response (401)");
-      // optional future hook:
-      // localStorage.removeItem("authToken");
-      // window.location.href = "/login";
     }
+
     return Promise.reject(error);
   }
 );

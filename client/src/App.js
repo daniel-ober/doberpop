@@ -12,11 +12,11 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import AccountSettings from "./pages/Account/AccountSettings";
 import Privacy from "./pages/Privacy/Privacy";
 
-// Forgot + Reset (components)
+// Forgot + Reset
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 
-// App container (Recipes + nested children)
+// Recipes
 import MainContainer from "./containers/MainContainer";
 
 // Auth
@@ -31,17 +31,26 @@ import "./App.css";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
   const history = useHistory();
 
   useEffect(() => {
     const verify = async () => {
       try {
         const user = await verifyUser();
-        setCurrentUser(user);
-      } catch {
-        setCurrentUser(null);
+
+        if (user) {
+          console.log("AUTH USER:", user);
+          setCurrentUser(user);
+        }
+      } catch (err) {
+        console.log("VERIFY USER FAILED:", err);
+      } finally {
+        setAuthChecked(true);
       }
     };
+
     verify();
   }, []);
 
@@ -56,14 +65,17 @@ function App() {
 
   const handleLogin = async (formData) => {
     const payload = {
-      identifier: (formData.identifier || formData.username || "").trim(),
+      identifier: (formData.identifier || "").trim(),
       password: formData.password,
     };
 
     const user = await loginUser(payload);
+
+    console.log("LOGIN SUCCESS:", user);
+
     setCurrentUser(user);
 
-    history.push(isAdminUser(user) ? "/admin" : "/home");
+    history.replace(isAdminUser(user) ? "/admin" : "/home");
   };
 
   const handleRegister = async (formData) => {
@@ -82,6 +94,7 @@ function App() {
     });
 
     setCurrentUser(user);
+
     history.push(isAdminUser(user) ? "/admin" : "/home");
   };
 
@@ -92,21 +105,27 @@ function App() {
   };
 
   const handleAccountUpdated = (updatedUser) => {
-    // keep App state in sync after settings change
     setCurrentUser(updatedUser);
   };
+
+  if (!authChecked) return null;
 
   return (
     <Layout currentUser={currentUser} handleLogout={handleLogout}>
       <Switch>
-        {/* Public */}
-        <Route exact path="/" component={Landing} />
+        <Route exact path="/">
+          {currentUser ? (
+            <Redirect to={isAdminUser(currentUser) ? "/admin" : "/home"} />
+          ) : (
+            <Landing />
+          )}
+        </Route>
 
         <Route path="/login">
           {currentUser ? (
             <Redirect to={isAdminUser(currentUser) ? "/admin" : "/home"} />
           ) : (
-            <Login handleLogin={handleLogin} />
+            <Login handleLogin={handleLogin} currentUser={currentUser} />
           )}
         </Route>
 
@@ -118,14 +137,10 @@ function App() {
           )}
         </Route>
 
-        {/* Forgot + Reset are PUBLIC */}
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
-
-        {/* Privacy is PUBLIC */}
         <Route path="/privacy" component={Privacy} />
 
-        {/* Authenticated-only pages */}
         <Route path="/admin">
           {currentUser && isAdminUser(currentUser) ? (
             <AdminDashboard />
@@ -149,13 +164,10 @@ function App() {
           )}
         </Route>
 
-        {/* Recipes index + detail are PUBLIC.
-            MainContainer internally protects create/edit. */}
         <Route path="/recipes">
           <MainContainer currentUser={currentUser} />
         </Route>
 
-        {/* Fallback */}
         <Redirect to="/" />
       </Switch>
     </Layout>

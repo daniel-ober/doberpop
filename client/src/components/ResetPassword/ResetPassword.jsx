@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
+import { confirmPasswordReset } from "firebase/auth";
+import { auth } from "../../services/firebase";
 import "./ResetPassword.css";
-
-const API_BASE = process.env.REACT_APP_API_URL || "";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -23,7 +23,7 @@ export default function ResetPassword() {
   const query = useQuery();
   const history = useHistory();
 
-  const token = query.get("token") || "";
+  const oobCode = query.get("oobCode") || "";
 
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -33,14 +33,13 @@ export default function ResetPassword() {
 
   const pw = useMemo(() => passwordRules(password), [password]);
 
-  if (!token) {
+  if (!oobCode) {
     return (
       <div className="rp-wrapper">
         <div className="rp-card">
           <h1 className="rp-title">Invalid or expired link</h1>
           <p className="rp-subtitle">
-            This reset link is missing or expired. Try requesting another one
-            from the forgot password page.
+            This reset link is missing or expired. Try requesting another one.
           </p>
         </div>
       </div>
@@ -60,24 +59,10 @@ export default function ResetPassword() {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/auth/password/reset`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token,
-          password,
-          password_confirmation: passwordConfirmation,
-        }),
-      });
-
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {}
-
-      if (!res.ok) throw new Error(data.error || "Unable to reset password");
+      await confirmPasswordReset(auth, oobCode, password);
 
       setMessage("Your password was updated successfully.");
+
       setTimeout(() => {
         history.push("/login");
       }, 1600);
@@ -124,26 +109,21 @@ export default function ResetPassword() {
             Your new password must include:
           </div>
 
-          <div className="rp-password-checklist" aria-label="Password requirements">
+          <div className="rp-password-checklist">
             <div className={`rp-password-item ${pw.length ? "is-ok" : ""}`}>
-              <span className="rp-password-icon">{pw.length ? "✓" : "•"}</span>
-              At least 8 characters
+              {pw.length ? "✓" : "•"} At least 8 characters
             </div>
             <div className={`rp-password-item ${pw.lower ? "is-ok" : ""}`}>
-              <span className="rp-password-icon">{pw.lower ? "✓" : "•"}</span>
-              One lowercase letter
+              {pw.lower ? "✓" : "•"} One lowercase letter
             </div>
             <div className={`rp-password-item ${pw.upper ? "is-ok" : ""}`}>
-              <span className="rp-password-icon">{pw.upper ? "✓" : "•"}</span>
-              One uppercase letter
+              {pw.upper ? "✓" : "•"} One uppercase letter
             </div>
             <div className={`rp-password-item ${pw.number ? "is-ok" : ""}`}>
-              <span className="rp-password-icon">{pw.number ? "✓" : "•"}</span>
-              One number
+              {pw.number ? "✓" : "•"} One number
             </div>
             <div className={`rp-password-item ${pw.special ? "is-ok" : ""}`}>
-              <span className="rp-password-icon">{pw.special ? "✓" : "•"}</span>
-              One special character
+              {pw.special ? "✓" : "•"} One special character
             </div>
           </div>
 

@@ -9,11 +9,13 @@ import logo from "../../assets/images/logo-reduced.png";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function extractAuthError(err) {
-  // Keep error generic on purpose (avoid account enumeration)
   const status = err?.response?.status;
+
   if (status === 401) return "Invalid username/email or password.";
-  if (status === 422)
+  if (status === 422) {
     return "Unable to sign in. Please check your details and try again.";
+  }
+
   return "Something went wrong. Please try again.";
 }
 
@@ -63,7 +65,11 @@ export default function Login(props) {
 
   const handleBlur = (e) => {
     const { name } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
   };
 
   const submit = async (e) => {
@@ -120,6 +126,7 @@ export default function Login(props) {
         <form className="auth__form" onSubmit={submit}>
           <label className="auth__label">
             <span className="auth__labelText">{identifierLabel}</span>
+
             <input
               type="text"
               name="identifier"
@@ -134,6 +141,7 @@ export default function Login(props) {
               spellCheck={false}
               inputMode="text"
             />
+
             {showIdentifierError ? (
               <div className="auth__errorText">{identifierClientError}</div>
             ) : null}
@@ -141,6 +149,7 @@ export default function Login(props) {
 
           <label className="auth__label">
             <span className="auth__labelText">Password</span>
+
             <input
               type="password"
               name="password"
@@ -153,6 +162,7 @@ export default function Login(props) {
               }`}
               autoComplete="current-password"
             />
+
             {showPasswordError ? (
               <div className="auth__errorText">{passwordClientError}</div>
             ) : null}

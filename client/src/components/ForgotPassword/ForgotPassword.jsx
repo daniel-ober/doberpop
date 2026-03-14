@@ -3,9 +3,10 @@ import { useState } from "react";
 import "../../styles/auth.css";
 import "./ForgotPassword.css";
 
-import logo from "../../assets/images/logo-reduced.png";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../services/firebase";
 
-const API_BASE = process.env.REACT_APP_API_URL || "";
+import logo from "../../assets/images/logo-reduced.png";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -20,24 +21,18 @@ export default function ForgotPassword() {
     setMessage("");
 
     try {
-      const res = await fetch(`${API_BASE}/auth/password/forgot`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+      await sendPasswordResetEmail(auth, email.trim(), {
+        url: "https://doberpop-prod.web.app/reset-password",
+        handleCodeInApp: true
       });
-
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {}
-
-      if (!res.ok) throw new Error(data.error || "Unable to send reset email");
 
       setMessage(
         "If an account exists for that email, you'll receive a reset link shortly."
       );
     } catch (err) {
       console.error(err);
+
+      // intentionally vague for security
       setMessage(
         "If an account exists for that email, you'll receive a reset link shortly."
       );
